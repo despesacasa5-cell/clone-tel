@@ -107,18 +107,31 @@ export default function Dashboard() {
   }
 
   async function processAction(id, action) {
-    setActionLoading(p => ({ ...p, [id]: action }))
-    await fetch(`/api/processes/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action }),
-    })
-    await loadProcesses()
-    if (selectedProc?.id === id) {
-      const updated = await fetch(`/api/processes/${id}`).then(r => r.json())
-      setSelectedProc(updated)
+    setActionLoading(p => ({ ...p, [id]: action }));
+    try {
+      const res = await fetch(`/api/processes/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+
+      if (res.ok) {
+        await loadProcesses(); // Recarrega a lista completa para garantir sincronia
+        
+        // Se este processo for o que está aberto no painel lateral, atualiza os detalhes
+        if (selectedProc?.id === id) {
+          const updated = await fetch(`/api/processes/${id}`).then(r => r.json());
+          setSelectedProc(updated);
+        }
+      } else {
+        const data = await res.json();
+        alert(`Erro: ${data.error || 'Falha ao atualizar processo'}`);
+      }
+    } catch (err) {
+      console.error("Erro na ação:", err);
+    } finally {
+      setActionLoading(p => ({ ...p, [id]: null }));
     }
-    setActionLoading(p => ({ ...p, [id]: null }))
   }
 
   async function deleteProcess(id) {
