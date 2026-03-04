@@ -67,6 +67,7 @@ API_HASH=seu_api_hash
 - **Privacidade**: Usuários com configurações de privacidade restritivas não podem ser adicionados por terceiros (serão pulados automaticamente).
 - **Termos de uso**: Use com responsabilidade e em conformidade com os Termos de Serviço do Telegram.
 
+
 ---
 
 ## 🗂 Estrutura do projeto
