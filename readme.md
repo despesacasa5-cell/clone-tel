@@ -1,62 +1,69 @@
 # TG Forwarder
 
-Painel de controle para encaminhar mensagens entre grupos do Telegram.
+Painel de controle para clonar mensagens entre grupos do Telegram em tempo real.  
+Usa **gramjs (MTProto)** — funciona com conta pessoal, grupos privados e qualquer tipo de mídia.
+
+## Como funciona
+
+O clonador funciona exatamente como o `telegram.js` original:
+1. Conecta com sua conta pessoal via MTProto (gramjs)
+2. Escuta novas mensagens nos grupos de **origem**
+3. Tenta `forwardMessages` (sem download, mais rápido)
+4. Se bloqueado, baixa a mídia e reenvia via `sendFile`
+
+Suporta: textos, fotos, vídeos, GIFs, documentos, áudios, stickers, enquetes, localizações.
 
 ## Pré-requisitos
 
 - Node.js 18+
-- Bot do Telegram (crie com [@BotFather](https://t.me/BotFather))
-- O bot deve ser **administrador** nos grupos de origem e destino
+- Conta no Telegram
+- API credentials em [my.telegram.org](https://my.telegram.org)
 
 ## Instalação local
 
 ```bash
 npm install
 cp .env.example .env.local
-# edite .env.local com suas variáveis
+# Edite .env.local com TG_API_ID, TG_API_HASH, AUTH_PASSWORD, SESSION_SECRET
 npm run dev
 ```
 
-Acesse `http://localhost:3000` e faça login.
-
-## Deploy na Vercel
-
-1. Faça push para o GitHub:
-```bash
-git add .
-git commit -m "initial commit"
-git push
-```
-
-2. Importe o repositório em [vercel.com/new](https://vercel.com/new)
-
-3. Configure as variáveis de ambiente no painel da Vercel:
-   - `AUTH_USERNAME` — usuário do painel (ex: `admin`)
-   - `AUTH_PASSWORD` — senha do painel
-   - `TELEGRAM_BOT_TOKEN` — token do seu bot
-   - `SESSION_SECRET` — string aleatória com 32+ caracteres
-
-4. Clique em **Deploy**
+Acesse `http://localhost:3000`.
 
 ## Variáveis de ambiente
 
 | Variável | Descrição |
 |---|---|
-| `AUTH_USERNAME` | Usuário para login no painel |
-| `AUTH_PASSWORD` | Senha para login no painel |
-| `TELEGRAM_BOT_TOKEN` | Token do bot (@BotFather) |
-| `SESSION_SECRET` | Chave secreta da sessão (32+ chars) |
+| `AUTH_USERNAME` | Usuário do painel (padrão: admin) |
+| `AUTH_PASSWORD` | Senha do painel |
+| `SESSION_SECRET` | Chave secreta da sessão web (32+ chars) |
+| `TG_API_ID` | App api_id do my.telegram.org |
+| `TG_API_HASH` | App api_hash do my.telegram.org |
 
-## Como usar
+## Deploy na Vercel
 
-1. **Crie um processo**: clique em "+ Novo Processo", informe as origens (chat IDs) e o destino
-2. **Inicie**: clique em "▶ Iniciar"
-3. **Encaminhe**: use "⚡ Encaminhar Agora" para disparar manualmente ou configure um cron job chamando `POST /api/telegram/forward` com `{ "processId": "..." }`
+```bash
+git add .
+git commit -m "feat: telegram mtproto forwarder"
+git push
+```
 
-## Encontrando o Chat ID
+1. Importe em [vercel.com/new](https://vercel.com/new)
+2. Configure as 5 variáveis acima
+3. Deploy
 
-Use o bot [@userinfobot](https://t.me/userinfobot) ou adicione seu bot a um grupo e chame `getUpdates` para ver os IDs.
+> ⚠️ **Importante**: A Vercel usa funções serverless stateless. O client MTProto (worker) e os logs em memória se perdem quando a função "esfria". Para uso contínuo, hospede em um VPS (Railway, Fly.io, DigitalOcean) ou use **Upstash Redis** para persistir o estado.
 
-## Notas sobre a Vercel
+## Fluxo de uso no painel
 
-A Vercel usa funções serverless stateless — o estado em memória (`lib/store.js`) é reiniciado a cada deploy ou após inatividade. Para persistência real, integre um banco como **Upstash Redis** ou **PlanetScale**.
+1. Crie um processo informando os IDs de origem e destino
+2. Clique em **🔑 Fazer Login** e autentique com seu número do Telegram
+3. Confirme o código recebido (+ senha 2FA se necessário)
+4. Clique em **▶ Iniciar** — o clonador começa a monitorar em tempo real
+5. Acompanhe os logs em tempo real clicando em **▼ Logs**
+
+## Obtendo IDs de grupos
+
+- Encaminhe uma mensagem do grupo para [@userinfobot](https://t.me/userinfobot)
+- Ou use [@getidsbot](https://t.me/getidsbot)
+- IDs de canais/supergrupos começam com `-100`
