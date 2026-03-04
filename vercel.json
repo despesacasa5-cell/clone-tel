@@ -5,13 +5,17 @@
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/api/auth",   "destination": "/api/auth.js"   },
-    { "source": "/api/groups", "destination": "/api/groups.js" },
-    { "source": "/api/clone",  "destination": "/api/clone.js"  }
+    { "source": "/api/auth",     "destination": "/api/auth.js"     },
+    { "source": "/api/groups",   "destination": "/api/groups.js"   },
+    { "source": "/api/clone",    "destination": "/api/clone.js"    },
+    { "source": "/api/messages", "destination": "/api/messages.js" },
+    { "source": "/api/login",    "destination": "/api/login.js"    }
   ],
   "functions": {
-    "api/auth.js":   { "maxDuration": 60, "memory": 512 },
-    "api/groups.js": { "maxDuration": 30, "memory": 512 },
-    "api/clone.js":  { "maxDuration": 300, "memory": 1024 }
+    "api/auth.js":     { "maxDuration": 60,  "memory": 512  },
+    "api/groups.js":   { "maxDuration": 30,  "memory": 512  },
+    "api/clone.js":    { "maxDuration": 300, "memory": 1024 },
+    "api/messages.js": { "maxDuration": 300, "memory": 1024 },
+    "api/login.js":    { "maxDuration": 10,  "memory": 256  }
   }
 }

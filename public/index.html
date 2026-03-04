@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TG Cloner — Telegram Group Cloner</title>
+  <title>TG Cloner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -22,1100 +22,760 @@
       --mono: 'Share Tech Mono', monospace;
       --sans: 'Syne', sans-serif;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ─── Grid Background ─── */
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
       background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
-
-    /* ─── Glow blobs ─── */
-    .blob {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.12;
-      pointer-events: none;
-      z-index: 0;
-    }
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.10; pointer-events: none; z-index: 0; }
     .blob-1 { width: 500px; height: 500px; background: var(--accent); top: -200px; right: -100px; }
     .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -150px; left: -100px; }
 
-    /* ─── Layout ─── */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
     }
-
-    /* ─── Header ─── */
-    header {
-      text-align: center;
-      margin-bottom: 56px;
-    }
-
-    .logo-mark {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    h1 {
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -1px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 13px;
-      margin-top: 8px;
-      letter-spacing: 1px;
-    }
-
-    /* ─── Steps indicator ─── */
-    .steps {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-bottom: 48px;
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: default;
-    }
-
-    .step-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      transition: all 0.3s;
-    }
-
-    .step-label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      transition: color 0.3s;
-    }
-
-    .step.active .step-num {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(0,229,255,0.08);
-      box-shadow: 0 0 16px rgba(0,229,255,0.2);
-    }
-
-    .step.active .step-label { color: var(--accent); }
-
-    .step.done .step-num {
-      border-color: var(--green);
-      background: rgba(63,185,80,0.1);
-      color: var(--green);
-    }
-
-    .step.done .step-label { color: var(--green); }
-
-    .step-line {
-      width: 48px;
-      height: 1px;
-      background: var(--border);
-      margin: 0 4px;
-    }
-
-    /* ─── Cards / Panels ─── */
-    .panel {
+    .login-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 20px;
-      display: none;
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%; max-width: 400px;
+      text-align: center;
       animation: fadeUp 0.4s ease;
     }
+    .login-logo { font-size: 40px; margin-bottom: 16px; }
+    .login-title { font-size: 28px; font-weight: 800; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+    .login-sub { color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 1px; margin-bottom: 32px; }
 
+    /* ── APP ── */
+    #app { display: none; position: relative; z-index: 1; }
+    .container { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; }
+    .topbar-icon { width: 36px; height: 36px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .topbar-title { font-size: 20px; font-weight: 800; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-logout { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 8px 16px; border-radius: 6px; font-family: var(--sans); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ── STEPS ── */
+    .steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 40px; flex-wrap: wrap; gap: 4px; }
+    .step { display: flex; align-items: center; gap: 6px; cursor: default; }
+    .step-num { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: var(--muted); transition: all 0.3s; }
+    .step-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; transition: color 0.3s; }
+    .step.active .step-num { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.08); box-shadow: 0 0 16px rgba(0,229,255,0.2); }
+    .step.active .step-label { color: var(--accent); }
+    .step.done .step-num { border-color: var(--green); background: rgba(63,185,80,0.1); color: var(--green); }
+    .step.done .step-label { color: var(--green); }
+    .step-line { width: 40px; height: 1px; background: var(--border); }
+
+    /* ── PANELS ── */
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 20px; display: none; animation: fadeUp 0.4s ease; }
     .panel.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .badge { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 20px; background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); letter-spacing: 1px; }
+    .panel-desc { color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .panel-title .badge {
-      font-family: var(--mono);
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: rgba(0,229,255,0.1);
-      color: var(--accent);
-      border: 1px solid rgba(0,229,255,0.2);
-      letter-spacing: 1px;
-    }
-
-    .panel-desc {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-
-    /* ─── Form elements ─── */
-    .field {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      color: var(--muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
+    /* ── FORM ── */
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 7px; text-transform: uppercase; }
     input, select {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      appearance: none;
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px; color: var(--text);
+      font-family: var(--mono); font-size: 14px; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; appearance: none;
     }
-
-    input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
-    }
-
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,255,0.08); }
     input::placeholder { color: var(--muted); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width:560px) { .field-row { grid-template-columns: 1fr; } }
 
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    /* ── MODE TABS ── */
+    .mode-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .mode-tab {
+      flex: 1; padding: 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--muted); font-family: var(--sans); font-size: 13px;
+      font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center;
     }
+    .mode-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .mode-tab.active { border-color: var(--accent); background: rgba(0,229,255,0.08); color: var(--accent); }
 
-    @media (max-width: 560px) {
-      .field-row { grid-template-columns: 1fr; }
-    }
-
-    /* ─── Buttons ─── */
+    /* ── BUTTONS ── */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px 28px;
-      border-radius: 8px;
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 12px 24px; border-radius: 8px; font-family: var(--sans);
+      font-size: 14px; font-weight: 700; cursor: pointer; border: none;
+      transition: all 0.2s; position: relative; overflow: hidden;
     }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #00b4cc);
-      color: #000;
-      width: 100%;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(0,229,255,0.25);
-    }
-
+    .btn-primary { background: linear-gradient(135deg,var(--accent),#00b4cc); color: #000; width: 100%; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,255,0.25); }
     .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-cancel { background: rgba(248,81,73,0.1); color: var(--red); border: 1px solid rgba(248,81,73,0.25); }
+    .btn-cancel:hover { background: rgba(248,81,73,0.18); }
+    .btn-row { display: flex; gap: 10px; margin-top: 8px; }
 
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .btn-danger {
-      background: rgba(248,81,73,0.1);
-      color: var(--red);
-      border: 1px solid rgba(248,81,73,0.3);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    /* ─── Alert / Toast ─── */
-    .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: none;
-      align-items: flex-start;
-      gap: 10px;
-      line-height: 1.5;
-    }
-
+    /* ── ALERTS ── */
+    .alert { padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 18px; display: none; align-items: flex-start; gap: 10px; line-height: 1.5; }
     .alert.show { display: flex; }
-    .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
     .alert-error { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.2); color: #ff7b72; }
     .alert-success { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.2); color: #7ee787; }
     .alert-info { background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.15); color: var(--accent); }
     .alert-warn { background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.2); color: #e3b341; }
 
-    /* ─── Session display ─── */
-    .session-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--green);
-      word-break: break-all;
-      line-height: 1.6;
-      margin-bottom: 16px;
-      position: relative;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
+    /* ── SESSION BOX ── */
+    .session-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 50px 12px 14px; font-family: var(--mono); font-size: 11px; color: var(--green); word-break: break-all; line-height: 1.6; margin-bottom: 14px; position: relative; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); padding: 3px 9px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
     .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 
-    /* ─── Group selector ─── */
-    .groups-grid {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 20px;
-      max-height: 280px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
+    /* ── GROUPS GRID ── */
+    .groups-grid { display: grid; gap: 8px; margin-bottom: 18px; max-height: 260px; overflow-y: auto; padding-right: 4px; }
     .groups-grid::-webkit-scrollbar { width: 4px; }
-    .groups-grid::-webkit-scrollbar-track { background: transparent; }
     .groups-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-    .group-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .group-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
     .group-card:hover { border-color: var(--accent); background: rgba(0,229,255,0.03); }
     .group-card.selected { border-color: var(--accent); background: rgba(0,229,255,0.06); }
-
-    .group-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
+    .group-avatar { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg,var(--accent2),var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .group-info { flex: 1; min-width: 0; }
+    .group-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .group-type { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(123,97,255,0.15); color: var(--accent2); border: 1px solid rgba(123,97,255,0.2); flex-shrink: 0; }
 
-    .group-name {
-      font-weight: 600;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    /* ── PROGRESS ── */
+    .progress-wrap { margin: 18px 0; }
+    .progress-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
+    .progress-text { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: right; }
 
-    .group-meta {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .group-type {
-      font-family: var(--mono);
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(123,97,255,0.15);
-      color: var(--accent2);
-      border: 1px solid rgba(123,97,255,0.2);
-      flex-shrink: 0;
-    }
-
-    /* ─── Clone progress ─── */
-    .progress-wrap {
-      margin: 20px 0;
-    }
-
-    .progress-bar {
-      height: 6px;
-      background: var(--surface2);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 3px;
-      transition: width 0.5s ease;
-      width: 0%;
-    }
-
-    .progress-text {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    /* ─── Stats ─── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 20px 0;
-    }
-
-    .stat-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 800;
-      font-family: var(--mono);
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-      letter-spacing: 0.5px;
-    }
-
+    /* ── STATS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+    .stat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+    .stat-value { font-size: 26px; font-weight: 800; font-family: var(--mono); }
+    .stat-label { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.5px; }
     .stat-added .stat-value { color: var(--green); }
     .stat-skipped .stat-value { color: var(--yellow); }
     .stat-errors .stat-value { color: var(--red); }
 
-    /* ─── Loader spinner ─── */
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(0,0,0,0.3);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
+    /* ── SPINNER ── */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── Divider ─── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 24px 0;
-    }
-
-    /* ─── Link ─── */
+    /* ── MISC ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-
-    /* ─── Notice box ─── */
-    .notice {
-      background: rgba(210,153,34,0.06);
-      border: 1px solid rgba(210,153,34,0.2);
-      border-radius: 8px;
-      padding: 14px 16px;
-      font-size: 13px;
-      color: #e3b341;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
+    .notice { background: rgba(210,153,34,0.06); border: 1px solid rgba(210,153,34,0.2); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #e3b341; line-height: 1.6; margin-bottom: 18px; }
     .notice strong { color: #f0c040; }
-
-    /* ─── Code hint ─── */
-    code {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--accent);
-    }
+    code { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    .cancel-bar { display: none; background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; align-items: center; justify-content: space-between; gap: 12px; }
+    .cancel-bar.show { display: flex; }
+    .cancel-bar span { font-size: 13px; color: #ff7b72; }
+    #cancel-status { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
   </style>
 </head>
 <body>
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
 
+<!-- ══════════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">✈</div>
+    <div class="login-title">TG Cloner</div>
+    <div class="login-sub">// ACESSO RESTRITO</div>
+    <div class="field">
+      <label>Senha de acesso</label>
+      <input type="password" id="site-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <div id="login-alert" class="alert" style="margin-bottom:16px"></div>
+    <button class="btn btn-primary" onclick="doLogin()">
+      <span id="login-btn-text">Entrar</span>
+      <span id="login-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,0.2);border-top-color:#000"></span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     APP
+══════════════════════════════════════════════ -->
+<div id="app">
   <div class="container">
-    <!-- Header -->
-    <header>
-      <div class="logo-mark">
-        <div class="logo-icon">✈</div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-icon">✈</div>
+        <div class="topbar-title">TG Cloner</div>
       </div>
-      <h1>TG Cloner</h1>
-      <p class="subtitle">// TELEGRAM GROUP MEMBER CLONER · GRAMJS MTProto</p>
-    </header>
+      <button class="btn-logout" onclick="doLogout()">⏏ Sair</button>
+    </div>
 
     <!-- Steps -->
     <div class="steps">
-      <div class="step active" id="step-1">
-        <div class="step-num">1</div>
-        <div class="step-label">Credenciais</div>
-      </div>
+      <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">Credenciais</div></div>
       <div class="step-line"></div>
-      <div class="step" id="step-2">
-        <div class="step-num">2</div>
-        <div class="step-label">Autenticação</div>
-      </div>
+      <div class="step" id="step-2"><div class="step-num">2</div><div class="step-label">Autenticação</div></div>
       <div class="step-line"></div>
-      <div class="step" id="step-3">
-        <div class="step-num">3</div>
-        <div class="step-label">Grupos</div>
-      </div>
+      <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">Grupos</div></div>
       <div class="step-line"></div>
-      <div class="step" id="step-4">
-        <div class="step-num">4</div>
-        <div class="step-label">Clonar</div>
-      </div>
+      <div class="step" id="step-4"><div class="step-num">4</div><div class="step-label">Operação</div></div>
     </div>
 
-    <!-- ─── PAINEL 1: Credenciais ─── -->
+    <!-- ── PAINEL 1: Credenciais ── -->
     <div class="panel active" id="panel-1">
-      <div class="panel-title">
-        🔑 Credenciais da API
-        <span class="badge">PASSO 1</span>
-      </div>
-      <p class="panel-desc">
-        Acesse <a href="https://my.telegram.org/auth" target="_blank">my.telegram.org</a>, faça login e vá em
-        <strong>API development tools</strong> para obter seu <code>api_id</code> e <code>api_hash</code>.
-      </p>
-
-      <div class="notice">
-        <strong>⚠ Atenção:</strong> Nunca compartilhe suas credenciais. Elas ficam salvas apenas localmente no seu navegador.
-      </div>
-
+      <div class="panel-title">🔑 Credenciais da API <span class="badge">PASSO 1</span></div>
+      <p class="panel-desc">Acesse <a href="https://my.telegram.org/auth" target="_blank">my.telegram.org</a> → <strong>API development tools</strong> para obter seu <code>api_id</code> e <code>api_hash</code>.</p>
       <div class="field-row">
-        <div class="field">
-          <label>API ID</label>
-          <input type="number" id="apiId" placeholder="1234567" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label>API Hash</label>
-          <input type="text" id="apiHash" placeholder="abc123def456..." autocomplete="off" />
-        </div>
+        <div class="field"><label>API ID</label><input type="number" id="apiId" placeholder="1234567" autocomplete="off" /></div>
+        <div class="field"><label>API Hash</label><input type="text" id="apiHash" placeholder="abc123..." autocomplete="off" /></div>
       </div>
-
-      <div class="field">
-        <label>Número de Telefone</label>
-        <input type="tel" id="phone" placeholder="+5511999999999" autocomplete="off" />
-      </div>
-
-      <div class="field">
-        <label>Session String (opcional — se já tiver)</label>
-        <input type="text" id="existingSession" placeholder="Cole aqui para pular autenticação..." autocomplete="off" />
-      </div>
-
+      <div class="field"><label>Número de Telefone</label><input type="tel" id="phone" placeholder="+5511999999999" autocomplete="off" /></div>
+      <div class="field"><label>Session String (opcional — pula autenticação)</label><input type="text" id="existingSession" placeholder="Cole aqui para pular autenticação..." autocomplete="off" /></div>
       <div id="alert-1" class="alert"></div>
-
       <button class="btn btn-primary" onclick="handleCredentials()">
         <span id="btn1-text">Continuar</span>
-        <span id="btn1-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,0.2);border-top-color:#000;"></span>
+        <span id="btn1-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,0.2);border-top-color:#000"></span>
       </button>
     </div>
 
-    <!-- ─── PAINEL 2: Auth / Código ─── -->
+    <!-- ── PAINEL 2: Verificação ── -->
     <div class="panel" id="panel-2">
-      <div class="panel-title">
-        📱 Verificação
-        <span class="badge">PASSO 2</span>
-      </div>
-      <p class="panel-desc" id="panel2-desc">
-        Um código de verificação foi enviado para o seu Telegram. Digite-o abaixo.
-      </p>
-
-      <div class="field" id="code-field">
-        <label>Código de verificação</label>
-        <input type="text" id="verifyCode" placeholder="12345" maxlength="6" autocomplete="off" />
-      </div>
-
-      <div class="field" id="pass-field" style="display:none">
-        <label>Senha 2FA</label>
-        <input type="password" id="twoFAPass" placeholder="Sua senha de dois fatores" autocomplete="off" />
-      </div>
-
+      <div class="panel-title">📱 Verificação <span class="badge">PASSO 2</span></div>
+      <p class="panel-desc" id="panel2-desc">Um código foi enviado ao seu Telegram. Digite-o abaixo.</p>
+      <div class="field" id="code-field"><label>Código de verificação</label><input type="text" id="verifyCode" placeholder="12345" maxlength="6" autocomplete="off" /></div>
+      <div class="field" id="pass-field" style="display:none"><label>Senha 2FA</label><input type="password" id="twoFAPass" placeholder="Senha de dois fatores" autocomplete="off" /></div>
       <div id="alert-2" class="alert"></div>
-
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="goToStep(1)">← Voltar</button>
+        <button class="btn btn-secondary" style="flex:0 0 auto;padding:12px 20px" onclick="goToStep(1)">← Voltar</button>
         <button class="btn btn-primary" onclick="handleVerify()" style="flex:1">
           <span id="btn2-text">Verificar</span>
-          <span id="btn2-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,0.2);border-top-color:#000;"></span>
+          <span id="btn2-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,0.2);border-top-color:#000"></span>
         </button>
       </div>
     </div>
 
-    <!-- ─── PAINEL 3: Selecionar Grupos ─── -->
+    <!-- ── PAINEL 3: Grupos ── -->
     <div class="panel" id="panel-3">
-      <div class="panel-title">
-        👥 Selecionar Grupos
-        <span class="badge">PASSO 3</span>
-      </div>
-      <p class="panel-desc">
-        Escolha o grupo <strong>origem</strong> (de onde clonar) e o grupo <strong>destino</strong> (para onde adicionar os membros).
-        Você precisa ser administrador do grupo destino.
-      </p>
-
+      <div class="panel-title">👥 Selecionar Grupos <span class="badge">PASSO 3</span></div>
+      <p class="panel-desc">Escolha o grupo <strong>origem</strong> e o grupo <strong>destino</strong>. Você precisa ser admin do grupo destino.</p>
       <div id="alert-3" class="alert"></div>
-
-      <div id="groups-loading" class="alert alert-info show">
-        <span class="alert-icon">⏳</span>
-        <span>Carregando seus grupos e canais...</span>
-      </div>
-
+      <div id="groups-loading" class="alert alert-info show"><span class="alert-icon">⏳</span><span>Carregando grupos...</span></div>
       <div id="groups-content" style="display:none">
-        <label style="margin-bottom:12px">Grupo Origem (copiar membros DE)</label>
+        <label style="margin-bottom:10px;display:block">Grupo Origem</label>
         <div class="groups-grid" id="source-groups"></div>
-
         <div class="divider"></div>
-
-        <label style="margin-bottom:12px">Grupo Destino (adicionar membros EM)</label>
+        <label style="margin-bottom:10px;display:block">Grupo Destino</label>
         <div class="groups-grid" id="target-groups"></div>
       </div>
-
-      <div class="btn-row" style="margin-top:20px">
-        <button class="btn btn-secondary" onclick="goToStep(1)">← Reiniciar</button>
-        <button class="btn btn-primary" onclick="goToClone()" style="flex:1">
-          Configurar clone →
-        </button>
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn btn-secondary" style="flex:0 0 auto;padding:12px 20px" onclick="goToStep(1)">← Reiniciar</button>
+        <button class="btn btn-primary" onclick="goToOperation()" style="flex:1">Configurar operação →</button>
       </div>
     </div>
 
-    <!-- ─── PAINEL 4: Clonar ─── -->
+    <!-- ── PAINEL 4: Operação ── -->
     <div class="panel" id="panel-4">
-      <div class="panel-title">
-        ⚡ Clonar Membros
-        <span class="badge">PASSO 4</span>
+      <div class="panel-title">⚡ Operação <span class="badge">PASSO 4</span></div>
+
+      <!-- Mode Tabs -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-members" onclick="setMode('members')">👥 Clonar Membros</button>
+        <button class="mode-tab" id="tab-messages" onclick="setMode('messages')">💬 Clonar Mensagens</button>
       </div>
 
-      <div id="clone-config">
-        <p class="panel-desc">Configure os parâmetros da clonagem abaixo.</p>
+      <!-- Config form -->
+      <div id="op-config">
+        <div id="op-summary" class="notice" style="background:rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.15);color:var(--accent);margin-bottom:18px"></div>
 
-        <div id="clone-summary" class="notice" style="background:rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.15);color:var(--accent)"></div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Máximo de membros</label>
-            <input type="number" id="cloneLimit" value="50" min="1" max="200" />
-          </div>
-          <div class="field">
-            <label>Delay entre adições (ms)</label>
-            <input type="number" id="cloneDelay" value="3000" min="1000" max="30000" />
+        <!-- Members config -->
+        <div id="config-members">
+          <div class="field-row">
+            <div class="field"><label>Máx. membros</label><input type="number" id="cloneLimit" value="50" min="1" max="200" /></div>
+            <div class="field"><label>Delay entre adições (ms)</label><input type="number" id="cloneDelay" value="3000" min="1000" max="30000" /></div>
           </div>
         </div>
 
-        <div class="notice">
-          <strong>⚠ Recomendações:</strong> Use delay mínimo de 3000ms para evitar flood ban do Telegram.
-          Máximo recomendado: 50 membros por sessão.
+        <!-- Messages config -->
+        <div id="config-messages" style="display:none">
+          <div class="field-row">
+            <div class="field"><label>Máx. mensagens</label><input type="number" id="msgLimit" value="100" min="1" max="200" /></div>
+            <div class="field"><label>Delay entre envios (ms)</label><input type="number" id="msgDelay" value="1500" min="500" max="30000" /></div>
+          </div>
         </div>
+
+        <div class="notice"><strong>⚠ Recomendações:</strong> Use delays adequados para evitar flood ban. Máx. 50 membros ou 100 mensagens por operação.</div>
 
         <div id="alert-4" class="alert"></div>
 
         <div class="btn-row">
-          <button class="btn btn-secondary" onclick="goToStep(3)">← Voltar</button>
-          <button class="btn btn-primary" onclick="startClone()" id="btn-clone" style="flex:1">
-            🚀 Iniciar Clonagem
-          </button>
+          <button class="btn btn-secondary" style="flex:0 0 auto;padding:12px 20px" onclick="goToStep(3)">← Voltar</button>
+          <button class="btn btn-primary" onclick="startOperation()" id="btn-start" style="flex:1">🚀 Iniciar</button>
         </div>
       </div>
 
-      <!-- Progress -->
-      <div id="clone-progress" style="display:none">
-        <div id="alert-4b" class="alert alert-info show">
-          <span class="alert-icon">⚡</span>
-          <span id="progress-msg">Iniciando clonagem...</span>
+      <!-- In progress -->
+      <div id="op-running" style="display:none">
+        <div id="cancel-bar" class="cancel-bar show">
+          <span>⚡ Operação em andamento...</span>
+          <button class="btn btn-cancel" style="padding:8px 16px;font-size:13px" onclick="cancelOperation()">✕ Cancelar</button>
         </div>
-
+        <div id="cancel-status"></div>
         <div class="progress-wrap">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-          <div class="progress-text" id="progress-text">0%</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          <div class="progress-text" id="progress-text">aguardando...</div>
         </div>
-
         <div class="stats-grid">
-          <div class="stat-card stat-added">
-            <div class="stat-value" id="stat-added">0</div>
-            <div class="stat-label">ADICIONADOS</div>
-          </div>
-          <div class="stat-card stat-skipped">
-            <div class="stat-value" id="stat-skipped">0</div>
-            <div class="stat-label">PULADOS</div>
-          </div>
-          <div class="stat-card stat-errors">
-            <div class="stat-value" id="stat-errors">0</div>
-            <div class="stat-label">ERROS</div>
-          </div>
+          <div class="stat-card stat-added"><div class="stat-value" id="stat-ok">0</div><div class="stat-label" id="stat-ok-label">ADICIONADOS</div></div>
+          <div class="stat-card stat-skipped"><div class="stat-value" id="stat-skip">0</div><div class="stat-label">PULADOS</div></div>
+          <div class="stat-card stat-errors"><div class="stat-value" id="stat-err">0</div><div class="stat-label">ERROS</div></div>
         </div>
       </div>
 
-      <!-- Resultado final -->
-      <div id="clone-result" style="display:none">
-        <div class="alert alert-success show" style="margin-bottom:20px">
-          <span class="alert-icon">✅</span>
-          <span>Clonagem concluída!</span>
+      <!-- Result -->
+      <div id="op-result" style="display:none">
+        <div id="result-alert" class="alert alert-success show" style="margin-bottom:18px">
+          <span class="alert-icon">✅</span><span id="result-msg">Operação concluída!</span>
         </div>
-
         <div class="stats-grid">
-          <div class="stat-card stat-added">
-            <div class="stat-value" id="res-added">0</div>
-            <div class="stat-label">ADICIONADOS</div>
-          </div>
-          <div class="stat-card stat-skipped">
-            <div class="stat-value" id="res-skipped">0</div>
-            <div class="stat-label">PULADOS</div>
-          </div>
-          <div class="stat-card stat-errors">
-            <div class="stat-value" id="res-errors">0</div>
-            <div class="stat-label">ERROS</div>
-          </div>
+          <div class="stat-card stat-added"><div class="stat-value" id="res-ok">0</div><div class="stat-label" id="res-ok-label">ADICIONADOS</div></div>
+          <div class="stat-card stat-skipped"><div class="stat-value" id="res-skip">0</div><div class="stat-label">PULADOS</div></div>
+          <div class="stat-card stat-errors"><div class="stat-value" id="res-err">0</div><div class="stat-label">ERROS</div></div>
         </div>
-
-        <button class="btn btn-secondary" onclick="goToStep(3)" style="margin-top:16px;width:100%">
-          ← Fazer nova clonagem
-        </button>
+        <div class="btn-row" style="margin-top:16px">
+          <button class="btn btn-secondary" onclick="resetOperation()" style="flex:1">↩ Nova operação</button>
+          <button class="btn btn-secondary" onclick="goToStep(3)" style="flex:1">← Trocar grupos</button>
+        </div>
       </div>
     </div>
 
-    <!-- ─── Session Info (sempre visível depois de autenticar) ─── -->
+    <!-- Session panel -->
     <div id="session-panel" class="panel" style="display:none;border-color:rgba(63,185,80,0.2)">
-      <div class="panel-title" style="font-size:14px;color:var(--green)">
-        🔐 Sessão Ativa
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">
-        Salve esta session string para evitar autenticar novamente:
-      </p>
-      <div class="session-box" id="session-display">
-        —
-        <button class="copy-btn" onclick="copySession()">copiar</button>
-      </div>
+      <div class="panel-title" style="font-size:14px;color:var(--green)">🔐 Sessão Ativa</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Salve esta session string para evitar autenticar novamente:</p>
+      <div class="session-box" id="session-display">—<button class="copy-btn" onclick="copySession()">copiar</button></div>
     </div>
-  </div>
 
-  <script>
-    // ─── State ───────────────────────────────────────────────────────────────
-    const state = {
-      apiId: '',
-      apiHash: '',
-      phone: '',
-      session: '',
-      sessionId: '',   // temp session for auth flow
-      requires2FA: false,
-      groups: [],
-      sourceGroup: null,
-      targetGroup: null,
-    };
+  </div><!-- /container -->
+</div><!-- /app -->
 
-    // Persiste credenciais no localStorage
-    const LS_KEY = 'tgcloner_creds';
-    function loadSaved() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-        if (saved.apiId) document.getElementById('apiId').value = saved.apiId;
-        if (saved.apiHash) document.getElementById('apiHash').value = saved.apiHash;
-        if (saved.phone) document.getElementById('phone').value = saved.phone;
-        if (saved.session) document.getElementById('existingSession').value = saved.session;
-      } catch {}
-    }
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const state = {
+  apiId: '', apiHash: '', phone: '', session: '',
+  sessionId: '', requires2FA: false,
+  groups: [], sourceGroup: null, targetGroup: null,
+  mode: 'members',
+  cancelRequested: false,
+  running: false,
+};
 
-    function saveCreds() {
-      try {
-        localStorage.setItem(LS_KEY, JSON.stringify({
-          apiId: state.apiId,
-          apiHash: state.apiHash,
-          phone: state.phone,
-          session: state.session,
-        }));
-      } catch {}
-    }
+const LS_CREDS = 'tgcloner_creds';
+const LS_TOKEN = 'tgcloner_token';
 
-    // ─── Utilities ───────────────────────────────────────────────────────────
-    function showAlert(panelId, type, msg) {
-      const el = document.getElementById(`alert-${panelId}`);
-      el.className = `alert alert-${type} show`;
-      el.innerHTML = `<span class="alert-icon">${{error:'❌',success:'✅',info:'ℹ️',warn:'⚠️'}[type]}</span><span>${msg}</span>`;
-    }
+// ═══════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════
+function checkAuth() {
+  const token = localStorage.getItem(LS_TOKEN);
+  if (token) { showApp(); return; }
+  document.getElementById('login-screen').style.display = 'flex';
+}
 
-    function hideAlert(panelId) {
-      const el = document.getElementById(`alert-${panelId}`);
-      if (el) { el.className = 'alert'; el.innerHTML = ''; }
-    }
+async function doLogin() {
+  const pw = document.getElementById('site-password').value;
+  if (!pw) return;
 
-    function setLoading(btnNum, loading) {
-      document.getElementById(`btn${btnNum}-text`).style.display = loading ? 'none' : 'inline';
-      document.getElementById(`btn${btnNum}-spinner`).style.display = loading ? 'inline-block' : 'none';
-      const btn = document.querySelector(`#panel-${btnNum} .btn-primary`);
-      if (btn) btn.disabled = loading;
-    }
+  setLoginLoading(true);
+  hideAlert('login');
+  try {
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pw }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Senha incorreta');
+    localStorage.setItem(LS_TOKEN, d.token);
+    showApp();
+  } catch(e) {
+    showAlertEl('login-alert', 'error', e.message);
+  } finally {
+    setLoginLoading(false);
+  }
+}
 
-    function goToStep(n) {
-      for (let i = 1; i <= 4; i++) {
-        const panel = document.getElementById(`panel-${i}`);
-        const step = document.getElementById(`step-${i}`);
-        panel.classList.remove('active');
-        step.classList.remove('active', 'done');
-        if (i < n) step.classList.add('done');
-        else if (i === n) { panel.classList.add('active'); step.classList.add('active'); }
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+function setLoginLoading(v) {
+  document.getElementById('login-btn-text').style.display = v ? 'none' : 'inline';
+  document.getElementById('login-spinner').style.display = v ? 'inline-block' : 'none';
+}
 
-    const API = (path) => `/api${path}`;
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadSaved();
+}
 
-    async function post(path, body) {
-      const r = await fetch(API(path), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data.error || 'Erro desconhecido');
-      return data;
-    }
+function doLogout() {
+  localStorage.removeItem(LS_TOKEN);
+  location.reload();
+}
 
-    // ─── Step 1: Credenciais ─────────────────────────────────────────────────
-    async function handleCredentials() {
-      hideAlert(1);
-      const apiId   = document.getElementById('apiId').value.trim();
-      const apiHash = document.getElementById('apiHash').value.trim();
-      const phone   = document.getElementById('phone').value.trim();
-      const existing = document.getElementById('existingSession').value.trim();
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function showAlertEl(id, type, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const icons = { error:'❌', success:'✅', info:'ℹ️', warn:'⚠️' };
+  el.className = `alert alert-${type} show`;
+  el.innerHTML = `<span class="alert-icon">${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+}
+function showAlert(n, type, msg) { showAlertEl(`alert-${n}`, type, msg); }
+function hideAlert(n) {
+  const el = document.getElementById(typeof n === 'number' ? `alert-${n}` : n);
+  if (el) { el.className = 'alert'; el.innerHTML = ''; }
+}
 
-      if (!apiId || !apiHash) return showAlert(1, 'error', 'API ID e API Hash são obrigatórios.');
-      if (!phone && !existing) return showAlert(1, 'error', 'Informe o telefone ou uma session string existente.');
+function setLoading(n, v) {
+  const t = document.getElementById(`btn${n}-text`);
+  const s = document.getElementById(`btn${n}-spinner`);
+  if (t) t.style.display = v ? 'none' : 'inline';
+  if (s) s.style.display = v ? 'inline-block' : 'none';
+  const btn = document.querySelector(`#panel-${n} .btn-primary`);
+  if (btn) btn.disabled = v;
+}
 
-      state.apiId = apiId;
-      state.apiHash = apiHash;
-      state.phone = phone;
+function goToStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`panel-${i}`).classList.remove('active');
+    const st = document.getElementById(`step-${i}`);
+    st.classList.remove('active','done');
+    if (i < n) st.classList.add('done');
+    else if (i === n) { document.getElementById(`panel-${i}`).classList.add('active'); st.classList.add('active'); }
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-      // Se já tem session, pula auth
-      if (existing) {
-        state.session = existing;
-        saveCreds();
-        showSessionPanel(existing);
-        await loadGroups();
-        goToStep(3);
+const API = p => `/api${p}`;
+
+async function post(path, body) {
+  const r = await fetch(API(path), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'Erro desconhecido');
+  return d;
+}
+
+function loadSaved() {
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_CREDS) || '{}');
+    if (s.apiId)   document.getElementById('apiId').value = s.apiId;
+    if (s.apiHash) document.getElementById('apiHash').value = s.apiHash;
+    if (s.phone)   document.getElementById('phone').value = s.phone;
+    if (s.session) document.getElementById('existingSession').value = s.session;
+  } catch {}
+}
+
+function saveCreds() {
+  try { localStorage.setItem(LS_CREDS, JSON.stringify({ apiId: state.apiId, apiHash: state.apiHash, phone: state.phone, session: state.session })); } catch {}
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+// STEP 1: Credenciais
+// ═══════════════════════════════════════════
+async function handleCredentials() {
+  hideAlert(1);
+  const apiId  = document.getElementById('apiId').value.trim();
+  const apiHash = document.getElementById('apiHash').value.trim();
+  const phone  = document.getElementById('phone').value.trim();
+  const existing = document.getElementById('existingSession').value.trim();
+
+  if (!apiId || !apiHash) return showAlert(1,'error','API ID e API Hash são obrigatórios.');
+  if (!phone && !existing) return showAlert(1,'error','Informe o telefone ou uma session string existente.');
+
+  state.apiId = apiId; state.apiHash = apiHash; state.phone = phone;
+
+  if (existing) {
+    state.session = existing;
+    saveCreds();
+    showSessionPanel(existing);
+    await loadGroups();
+    goToStep(3);
+    return;
+  }
+
+  setLoading(1, true);
+  try {
+    const d = await post('/auth', { action:'sendCode', apiId, apiHash, phone });
+    state.sessionId = d.sessionId;
+    saveCreds();
+    goToStep(2);
+    showAlert(2,'info', d.message);
+  } catch(e) {
+    showAlert(1,'error', e.message);
+  } finally {
+    setLoading(1, false);
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP 2: Verificação
+// ═══════════════════════════════════════════
+async function handleVerify() {
+  hideAlert(2);
+  setLoading(2, true);
+  try {
+    let d;
+    if (state.requires2FA) {
+      const pw = document.getElementById('twoFAPass').value;
+      if (!pw) { showAlert(2,'error','Digite a senha 2FA.'); return; }
+      d = await post('/auth', { action:'verify2FA', sessionId: state.sessionId, password: pw });
+    } else {
+      const code = document.getElementById('verifyCode').value.trim();
+      if (!code) { showAlert(2,'error','Digite o código.'); return; }
+      d = await post('/auth', { action:'verifyCode', sessionId: state.sessionId, code });
+      if (d.requires2FA) {
+        state.requires2FA = true;
+        document.getElementById('code-field').style.display = 'none';
+        document.getElementById('pass-field').style.display = 'block';
+        document.getElementById('panel2-desc').textContent = 'Sua conta tem 2FA. Digite sua senha abaixo.';
+        showAlert(2,'warn','Senha 2FA necessária.');
         return;
       }
-
-      setLoading(1, true);
-      try {
-        const data = await post('/auth', { action: 'sendCode', apiId, apiHash, phone });
-        state.sessionId = data.sessionId;
-        saveCreds();
-        goToStep(2);
-        showAlert(2, 'info', data.message);
-      } catch (err) {
-        showAlert(1, 'error', err.message);
-      } finally {
-        setLoading(1, false);
-      }
     }
+    state.session = d.session;
+    saveCreds();
+    showSessionPanel(d.session);
+    await loadGroups();
+    goToStep(3);
+  } catch(e) {
+    showAlert(2,'error', e.message);
+  } finally {
+    setLoading(2, false);
+  }
+}
 
-    // ─── Step 2: Verificação ─────────────────────────────────────────────────
-    async function handleVerify() {
-      hideAlert(2);
-      setLoading(2, true);
+// ═══════════════════════════════════════════
+// STEP 3: Grupos
+// ═══════════════════════════════════════════
+async function loadGroups() {
+  const lEl = document.getElementById('groups-loading');
+  lEl.className = 'alert alert-info show';
+  lEl.innerHTML = '<span class="alert-icon">⏳</span><span>Carregando grupos...</span>';
+  document.getElementById('groups-content').style.display = 'none';
+  try {
+    const d = await post('/groups', { apiId: state.apiId, apiHash: state.apiHash, sessionString: state.session });
+    state.groups = d.groups;
+    renderGroups(d.groups);
+    lEl.className = 'alert';
+    document.getElementById('groups-content').style.display = 'block';
+  } catch(e) {
+    lEl.className = 'alert alert-error show';
+    lEl.innerHTML = `<span class="alert-icon">❌</span><span>${e.message}</span>`;
+  }
+}
 
-      try {
-        let data;
+function renderGroups(groups) {
+  ['source-groups','target-groups'].forEach((id, idx) => {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    if (!groups.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">Nenhum grupo encontrado.</p>'; return; }
+    const role = idx === 0 ? 'source' : 'target';
+    groups.forEach(g => {
+      const emoji = g.type === 'channel' ? '📢' : '👥';
+      el.insertAdjacentHTML('beforeend', `
+        <div class="group-card" data-id="${g.id}" onclick="selectGroup(this,'${role}')">
+          <div class="group-avatar">${emoji}</div>
+          <div class="group-info">
+            <div class="group-name">${esc(g.title)}</div>
+            <div class="group-meta">${g.membersCount ? g.membersCount+' membros' : 'id: '+g.id}</div>
+          </div>
+          <span class="group-type">${g.type.toUpperCase()}</span>
+        </div>`);
+    });
+  });
+}
 
-        if (state.requires2FA) {
-          const password = document.getElementById('twoFAPass').value;
-          if (!password) { showAlert(2, 'error', 'Digite a senha 2FA.'); return; }
-          data = await post('/auth', { action: 'verify2FA', sessionId: state.sessionId, password });
-        } else {
-          const code = document.getElementById('verifyCode').value.trim();
-          if (!code) { showAlert(2, 'error', 'Digite o código de verificação.'); return; }
-          data = await post('/auth', { action: 'verifyCode', sessionId: state.sessionId, code });
+function selectGroup(card, role) {
+  card.closest('.groups-grid').querySelectorAll('.group-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const g = state.groups.find(x => x.id === card.dataset.id);
+  if (role === 'source') state.sourceGroup = g; else state.targetGroup = g;
+}
 
-          if (data.requires2FA) {
-            state.requires2FA = true;
-            document.getElementById('code-field').style.display = 'none';
-            document.getElementById('pass-field').style.display = 'block';
-            document.getElementById('panel2-desc').textContent = 'Sua conta tem verificação em dois fatores. Digite sua senha abaixo.';
-            showAlert(2, 'warn', 'Senha 2FA necessária.');
-            return;
-          }
-        }
+function goToOperation() {
+  if (!state.sourceGroup) return showAlert(3,'error','Selecione o grupo de origem.');
+  if (!state.targetGroup) return showAlert(3,'error','Selecione o grupo de destino.');
+  if (state.sourceGroup.id === state.targetGroup.id) return showAlert(3,'error','Grupos devem ser diferentes.');
+  resetOperation();
+  document.getElementById('op-summary').innerHTML =
+    `<strong>Origem:</strong> ${esc(state.sourceGroup.title)}<br><strong>Destino:</strong> ${esc(state.targetGroup.title)}`;
+  goToStep(4);
+}
 
-        state.session = data.session;
-        saveCreds();
-        showSessionPanel(data.session);
-        await loadGroups();
-        goToStep(3);
+// ═══════════════════════════════════════════
+// STEP 4: Operação
+// ═══════════════════════════════════════════
+function setMode(m) {
+  state.mode = m;
+  document.getElementById('tab-members').classList.toggle('active', m === 'members');
+  document.getElementById('tab-messages').classList.toggle('active', m === 'messages');
+  document.getElementById('config-members').style.display = m === 'members' ? 'block' : 'none';
+  document.getElementById('config-messages').style.display = m === 'messages' ? 'block' : 'none';
+  document.getElementById('stat-ok-label').textContent = m === 'members' ? 'ADICIONADOS' : 'ENCAMINHADOS';
+  document.getElementById('res-ok-label').textContent  = m === 'members' ? 'ADICIONADOS' : 'ENCAMINHADOS';
+}
 
-      } catch (err) {
-        showAlert(2, 'error', err.message);
-      } finally {
-        setLoading(2, false);
-      }
-    }
+function resetOperation() {
+  state.cancelRequested = false;
+  state.running = false;
+  document.getElementById('op-config').style.display = 'block';
+  document.getElementById('op-running').style.display = 'none';
+  document.getElementById('op-result').style.display = 'none';
+  document.getElementById('cancel-bar').classList.remove('show');
+  document.getElementById('cancel-status').textContent = '';
+  hideAlert(4);
+}
 
-    // ─── Groups ──────────────────────────────────────────────────────────────
-    async function loadGroups() {
-      document.getElementById('groups-loading').classList.add('show');
-      document.getElementById('groups-content').style.display = 'none';
+function cancelOperation() {
+  if (!state.running) return;
+  state.cancelRequested = true;
+  document.getElementById('cancel-status').textContent = '⏳ Cancelando após operação atual...';
+  document.querySelector('#cancel-bar .btn-cancel').disabled = true;
+  document.querySelector('#cancel-bar .btn-cancel').textContent = 'Cancelando...';
+}
 
-      try {
-        const data = await post('/groups', {
-          apiId: state.apiId,
-          apiHash: state.apiHash,
-          sessionString: state.session,
-        });
+async function startOperation() {
+  if (state.mode === 'members') await runCloneMembers();
+  else await runCloneMessages();
+}
 
-        state.groups = data.groups;
-        renderGroups(data.groups);
-        document.getElementById('groups-loading').classList.remove('show');
-        document.getElementById('groups-content').style.display = 'block';
+async function runCloneMembers() {
+  const limit   = parseInt(document.getElementById('cloneLimit').value) || 50;
+  const delayMs = parseInt(document.getElementById('cloneDelay').value) || 3000;
 
-      } catch (err) {
-        document.getElementById('groups-loading').innerHTML =
-          `<span class="alert-icon">❌</span><span>${err.message}</span>`;
-        document.getElementById('groups-loading').className = 'alert alert-error show';
-      }
-    }
+  document.getElementById('op-config').style.display = 'none';
+  document.getElementById('op-running').style.display = 'block';
+  document.getElementById('cancel-bar').classList.add('show');
+  state.running = true;
+  state.cancelRequested = false;
+  document.getElementById('progress-text').textContent = 'Processando...';
+  document.getElementById('progress-fill').style.width = '10%';
 
-    function renderGroups(groups) {
-      const sourceEl = document.getElementById('source-groups');
-      const targetEl = document.getElementById('target-groups');
-      sourceEl.innerHTML = '';
-      targetEl.innerHTML = '';
+  try {
+    const d = await post('/clone', {
+      apiId: state.apiId, apiHash: state.apiHash, sessionString: state.session,
+      sourceGroupId: state.sourceGroup.id, targetGroupId: state.targetGroup.id,
+      limit, delayMs,
+    });
 
-      if (!groups.length) {
-        sourceEl.innerHTML = '<p style="color:var(--muted);font-size:14px">Nenhum grupo encontrado.</p>';
-        return;
-      }
+    const r = d.results;
+    document.getElementById('stat-ok').textContent   = r.added;
+    document.getElementById('stat-skip').textContent = r.skipped;
+    document.getElementById('stat-err').textContent  = r.errors.length;
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-text').textContent = '100%';
+    showResult(r.added, r.skipped, r.errors.length, false);
+  } catch(e) {
+    state.running = false;
+    document.getElementById('op-running').style.display = 'none';
+    document.getElementById('op-config').style.display = 'block';
+    showAlert(4,'error', e.message);
+  }
+}
 
-      groups.forEach(g => {
-        const emoji = g.type === 'channel' ? '📢' : '👥';
-        const card = `
-          <div class="group-card" data-id="${g.id}" onclick="selectGroup(this,'source')">
-            <div class="group-avatar">${emoji}</div>
-            <div class="group-info">
-              <div class="group-name">${escHtml(g.title)}</div>
-              <div class="group-meta">${g.membersCount ? g.membersCount + ' membros' : 'id: ' + g.id}</div>
-            </div>
-            <span class="group-type">${g.type.toUpperCase()}</span>
-          </div>`;
-        sourceEl.insertAdjacentHTML('beforeend', card);
-        targetEl.insertAdjacentHTML('beforeend', card.replace("selectGroup(this,'source')", "selectGroup(this,'target')"));
-      });
-    }
+async function runCloneMessages() {
+  const limit   = parseInt(document.getElementById('msgLimit').value) || 100;
+  const delayMs = parseInt(document.getElementById('msgDelay').value) || 1500;
 
-    function selectGroup(card, role) {
-      const container = card.closest('.groups-grid');
-      container.querySelectorAll('.group-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      const id = card.dataset.id;
-      const group = state.groups.find(g => g.id === id);
-      if (role === 'source') state.sourceGroup = group;
-      else state.targetGroup = group;
-    }
+  document.getElementById('op-config').style.display = 'none';
+  document.getElementById('op-running').style.display = 'block';
+  document.getElementById('cancel-bar').classList.add('show');
+  state.running = true;
+  state.cancelRequested = false;
+  document.getElementById('progress-fill').style.width = '10%';
+  document.getElementById('progress-text').textContent = 'Processando...';
 
-    function goToClone() {
-      if (!state.sourceGroup) return showAlert(3, 'error', 'Selecione o grupo de origem.');
-      if (!state.targetGroup) return showAlert(3, 'error', 'Selecione o grupo de destino.');
-      if (state.sourceGroup.id === state.targetGroup.id) return showAlert(3, 'error', 'Grupos devem ser diferentes.');
+  try {
+    const d = await post('/messages', {
+      apiId: state.apiId, apiHash: state.apiHash, sessionString: state.session,
+      sourceGroupId: state.sourceGroup.id, targetGroupId: state.targetGroup.id,
+      limit, delayMs,
+    });
 
-      document.getElementById('clone-summary').innerHTML =
-        `<strong>Origem:</strong> ${escHtml(state.sourceGroup.title)}<br>
-         <strong>Destino:</strong> ${escHtml(state.targetGroup.title)}`;
+    const r = d.results;
+    document.getElementById('stat-ok').textContent   = r.forwarded;
+    document.getElementById('stat-skip').textContent = r.skipped;
+    document.getElementById('stat-err').textContent  = r.errors.length;
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-text').textContent = '100%';
+    showResult(r.forwarded, r.skipped, r.errors.length, state.cancelRequested);
+  } catch(e) {
+    state.running = false;
+    document.getElementById('op-running').style.display = 'none';
+    document.getElementById('op-config').style.display = 'block';
+    showAlert(4,'error', e.message);
+  }
+}
 
-      // Reset clone panel state
-      document.getElementById('clone-config').style.display = 'block';
-      document.getElementById('clone-progress').style.display = 'none';
-      document.getElementById('clone-result').style.display = 'none';
+function showResult(ok, skip, errs, cancelled) {
+  state.running = false;
+  document.getElementById('op-running').style.display = 'none';
+  document.getElementById('op-result').style.display = 'block';
+  document.getElementById('cancel-bar').classList.remove('show');
+  document.getElementById('res-ok').textContent   = ok;
+  document.getElementById('res-skip').textContent = skip;
+  document.getElementById('res-err').textContent  = errs;
+  if (cancelled) {
+    document.getElementById('result-alert').className = 'alert alert-warn show';
+    document.getElementById('result-msg').textContent = 'Operação cancelada pelo usuário.';
+  } else {
+    document.getElementById('result-alert').className = 'alert alert-success show';
+    document.getElementById('result-msg').textContent = 'Operação concluída com sucesso!';
+  }
+}
 
-      goToStep(4);
-    }
+// ═══════════════════════════════════════════
+// SESSION
+// ═══════════════════════════════════════════
+function showSessionPanel(session) {
+  const p = document.getElementById('session-panel');
+  p.style.display = 'block';
+  document.getElementById('session-display').childNodes[0].textContent = session;
+}
 
-    // ─── Clone ───────────────────────────────────────────────────────────────
-    async function startClone() {
-      const limit = parseInt(document.getElementById('cloneLimit').value) || 50;
-      const delayMs = parseInt(document.getElementById('cloneDelay').value) || 3000;
+function copySession() {
+  const text = document.getElementById('session-display').childNodes[0].textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.querySelector('.copy-btn');
+    b.textContent = 'copiado!';
+    setTimeout(() => b.textContent = 'copiar', 2000);
+  });
+}
 
-      document.getElementById('clone-config').style.display = 'none';
-      document.getElementById('clone-progress').style.display = 'block';
-
-      document.getElementById('progress-fill').style.width = '0%';
-      document.getElementById('progress-text').textContent = '0%';
-      document.getElementById('progress-msg').textContent = `Adicionando membros de "${state.sourceGroup.title}"...`;
-      ['added','skipped','errors'].forEach(k => document.getElementById(`stat-${k}`).textContent = '0');
-
-      try {
-        const data = await post('/clone', {
-          apiId: state.apiId,
-          apiHash: state.apiHash,
-          sessionString: state.session,
-          sourceGroupId: state.sourceGroup.id,
-          targetGroupId: state.targetGroup.id,
-          limit,
-          delayMs,
-        });
-
-        const r = data.results;
-        document.getElementById('progress-fill').style.width = '100%';
-        document.getElementById('progress-text').textContent = '100%';
-        document.getElementById('stat-added').textContent = r.added;
-        document.getElementById('stat-skipped').textContent = r.skipped;
-        document.getElementById('stat-errors').textContent = r.errors.length;
-
-        // Show final result
-        document.getElementById('clone-progress').style.display = 'none';
-        document.getElementById('clone-result').style.display = 'block';
-        document.getElementById('res-added').textContent = r.added;
-        document.getElementById('res-skipped').textContent = r.skipped;
-        document.getElementById('res-errors').textContent = r.errors.length;
-
-      } catch (err) {
-        document.getElementById('clone-progress').style.display = 'none';
-        document.getElementById('clone-config').style.display = 'block';
-        showAlert(4, 'error', err.message);
-      }
-    }
-
-    // ─── Session panel ───────────────────────────────────────────────────────
-    function showSessionPanel(session) {
-      const panel = document.getElementById('session-panel');
-      panel.style.display = 'block';
-      document.getElementById('session-display').childNodes[0].textContent = session;
-    }
-
-    function copySession() {
-      const text = document.getElementById('session-display').childNodes[0].textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.textContent = 'copiado!';
-        setTimeout(() => btn.textContent = 'copiar', 2000);
-      });
-    }
-
-    function escHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    // Init
-    loadSaved();
-  </script>
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+checkAuth();
+</script>
 </body>
 </html>
