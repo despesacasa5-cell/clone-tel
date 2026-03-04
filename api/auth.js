@@ -2,31 +2,41 @@
 const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 
-// Armazena sessões temporárias em memória (por requestId)
+// Armazena sessões temporárias em memória (por sessionId)
+// Nota: em serverless cada invocação pode ser uma instância diferente.
+// Para produção real, use Redis ou KV store. Para uso pessoal, funciona ok.
 const pendingSessions = new Map();
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Content-Type", "application/json");
 
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { action, apiId, apiHash, phone, code, password, sessionId } = req.body;
-
+  let client;
   try {
-    // ── STEP 1: Iniciar sessão e enviar código ──────────────────────────
+    const { action, apiId, apiHash, phone, code, password, sessionId } = req.body || {};
+
+    // ── STEP 1: Enviar código SMS ──────────────────────────────────────────
     if (action === "sendCode") {
       if (!apiId || !apiHash || !phone) {
         return res.status(400).json({ error: "apiId, apiHash e phone são obrigatórios" });
       }
 
-      const session = new StringSession("");
-      const client = new TelegramClient(session, parseInt(apiId), apiHash, {
-        connectionRetries: 3,
-        timeout: 30000,
-      });
+      client = new TelegramClient(
+        new StringSession(""),
+        parseInt(apiId),
+        apiHash,
+        {
+          connectionRetries: 3,
+          retryDelay: 1000,
+          autoReconnect: false,
+          baseLogger: { levels: [], log: () => {} },
+        }
+      );
 
       await client.connect();
 
@@ -36,74 +46,98 @@ module.exports = async (req, res) => {
       );
 
       const sid = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      pendingSessions.set(sid, { client, phoneCodeHash: result.phoneCodeHash, phone, apiId, apiHash });
+      pendingSessions.set(sid, {
+        client,
+        phoneCodeHash: result.phoneCodeHash,
+        phone,
+        apiId,
+        apiHash,
+      });
 
-      // Limpa sessão antiga após 10 min
-      setTimeout(() => pendingSessions.delete(sid), 600000);
+      setTimeout(() => {
+        const s = pendingSessions.get(sid);
+        if (s) { s.client.disconnect().catch(() => {}); pendingSessions.delete(sid); }
+      }, 600000);
 
-      return res.json({ success: true, sessionId: sid, message: "Código enviado para " + phone });
+      return res.status(200).json({ success: true, sessionId: sid, message: "Código enviado para " + phone });
     }
 
-    // ── STEP 2: Verificar código ────────────────────────────────────────
+    // ── STEP 2: Verificar código ───────────────────────────────────────────
     if (action === "verifyCode") {
       if (!sessionId || !code) {
         return res.status(400).json({ error: "sessionId e code são obrigatórios" });
       }
 
       const pending = pendingSessions.get(sessionId);
-      if (!pending) return res.status(404).json({ error: "Sessão não encontrada ou expirada" });
+      if (!pending) {
+        return res.status(404).json({
+          error: "Sessão não encontrada. Isso pode ocorrer em ambientes serverless — tente reenviar o código.",
+        });
+      }
 
-      const { client, phoneCodeHash, phone } = pending;
+      const { phoneCodeHash, phone } = pending;
+      client = pending.client;
 
       try {
         await client.invoke(
           new (require("telegram/tl").Api.auth.SignIn)({
             phoneNumber: phone,
             phoneCodeHash,
-            phoneCode: code,
+            phoneCode: code.trim(),
           })
         );
       } catch (err) {
         if (err.errorMessage === "SESSION_PASSWORD_NEEDED") {
-          return res.json({ success: true, requires2FA: true, sessionId, message: "2FA necessário" });
+          return res.status(200).json({
+            success: true,
+            requires2FA: true,
+            sessionId,
+            message: "2FA necessário",
+          });
         }
         throw err;
       }
 
       const sessionString = client.session.save();
-      await client.disconnect();
+      await client.disconnect().catch(() => {});
       pendingSessions.delete(sessionId);
 
-      return res.json({ success: true, session: sessionString, message: "Autenticado com sucesso!" });
+      return res.status(200).json({ success: true, session: sessionString, message: "Autenticado com sucesso!" });
     }
 
-    // ── STEP 3: 2FA Password ────────────────────────────────────────────
+    // ── STEP 3: 2FA ───────────────────────────────────────────────────────
     if (action === "verify2FA") {
       if (!sessionId || !password) {
         return res.status(400).json({ error: "sessionId e password são obrigatórios" });
       }
 
       const pending = pendingSessions.get(sessionId);
-      if (!pending) return res.status(404).json({ error: "Sessão não encontrada ou expirada" });
+      if (!pending) {
+        return res.status(404).json({ error: "Sessão não encontrada ou expirada." });
+      }
 
-      const { client } = pending;
+      client = pending.client;
 
       await client.signInWithPassword(
         { apiId: parseInt(pending.apiId), apiHash: pending.apiHash },
-        { password: async () => password, onError: (err) => { throw err; } }
+        {
+          password: async () => password,
+          onError: (err) => { throw err; },
+        }
       );
 
       const sessionString = client.session.save();
-      await client.disconnect();
+      await client.disconnect().catch(() => {});
       pendingSessions.delete(sessionId);
 
-      return res.json({ success: true, session: sessionString, message: "Autenticado com 2FA!" });
+      return res.status(200).json({ success: true, session: sessionString, message: "Autenticado com 2FA!" });
     }
 
-    return res.status(400).json({ error: "Action inválida" });
+    return res.status(400).json({ error: "Action inválida. Use: sendCode, verifyCode, verify2FA" });
 
   } catch (err) {
-    console.error("[auth] Erro:", err.message);
-    return res.status(500).json({ error: err.message || "Erro interno" });
+    console.error("[auth] Erro:", err);
+    if (client) await client.disconnect().catch(() => {});
+    return res.status(500).json({ error: err.message || "Erro interno no servidor" });
   }
 };
