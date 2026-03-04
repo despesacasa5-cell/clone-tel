@@ -1,28 +1,33 @@
 {
   "version": 2,
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "installCommand": "npm install",
+  "framework": null,
   "builds": [
     {
       "src": "api/*.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/auth",
+      "dest": "/api/auth.js"
+    },
+    {
+      "src": "/api/groups",
+      "dest": "/api/groups.js"
+    },
+    {
+      "src": "/api/clone",
+      "dest": "/api/clone.js"
     },
     {
       "src": "/(.*)",
       "dest": "/public/$1"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "functions": {
     "api/*.js": {
       "maxDuration": 300,
