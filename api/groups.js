@@ -23,12 +23,7 @@ module.exports = async (req, res) => {
       new StringSession(sessionString),
       parseInt(apiId),
       apiHash,
-      {
-        connectionRetries: 3,
-        retryDelay: 1000,
-        autoReconnect: false,
-        baseLogger: { levels: [], log: () => {} },
-      }
+      { connectionRetries: 3, retryDelay: 1000, autoReconnect: false }
     );
 
     await client.connect();

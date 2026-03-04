@@ -2,10 +2,20 @@
 const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 
-// Armazena sessões temporárias em memória (por sessionId)
-// Nota: em serverless cada invocação pode ser uma instância diferente.
-// Para produção real, use Redis ou KV store. Para uso pessoal, funciona ok.
 const pendingSessions = new Map();
+
+function makeClient(apiId, apiHash, sessionStr = "") {
+  return new TelegramClient(
+    new StringSession(sessionStr),
+    parseInt(apiId),
+    apiHash,
+    {
+      connectionRetries: 3,
+      retryDelay: 1000,
+      autoReconnect: false,
+    }
+  );
+}
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -26,18 +36,7 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: "apiId, apiHash e phone são obrigatórios" });
       }
 
-      client = new TelegramClient(
-        new StringSession(""),
-        parseInt(apiId),
-        apiHash,
-        {
-          connectionRetries: 3,
-          retryDelay: 1000,
-          autoReconnect: false,
-          baseLogger: { levels: [], log: () => {} },
-        }
-      );
-
+      client = makeClient(apiId, apiHash);
       await client.connect();
 
       const result = await client.sendCode(
@@ -71,7 +70,7 @@ module.exports = async (req, res) => {
       const pending = pendingSessions.get(sessionId);
       if (!pending) {
         return res.status(404).json({
-          error: "Sessão não encontrada. Isso pode ocorrer em ambientes serverless — tente reenviar o código.",
+          error: "Sessão expirada (ambiente serverless). Clique em Reiniciar e tente novamente — desta vez insira o código rapidamente.",
         });
       }
 
@@ -88,12 +87,7 @@ module.exports = async (req, res) => {
         );
       } catch (err) {
         if (err.errorMessage === "SESSION_PASSWORD_NEEDED") {
-          return res.status(200).json({
-            success: true,
-            requires2FA: true,
-            sessionId,
-            message: "2FA necessário",
-          });
+          return res.status(200).json({ success: true, requires2FA: true, sessionId, message: "2FA necessário" });
         }
         throw err;
       }
@@ -120,10 +114,7 @@ module.exports = async (req, res) => {
 
       await client.signInWithPassword(
         { apiId: parseInt(pending.apiId), apiHash: pending.apiHash },
-        {
-          password: async () => password,
-          onError: (err) => { throw err; },
-        }
+        { password: async () => password, onError: (err) => { throw err; } }
       );
 
       const sessionString = client.session.save();
@@ -133,7 +124,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: true, session: sessionString, message: "Autenticado com 2FA!" });
     }
 
-    return res.status(400).json({ error: "Action inválida. Use: sendCode, verifyCode, verify2FA" });
+    return res.status(400).json({ error: "Action inválida." });
 
   } catch (err) {
     console.error("[auth] Erro:", err);
