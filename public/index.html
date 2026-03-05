@@ -14,18 +14,15 @@
     .blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:.10;pointer-events:none;z-index:0;}
     .blob-1{width:500px;height:500px;background:var(--accent);top:-200px;right:-100px;}
     .blob-2{width:400px;height:400px;background:var(--accent2);bottom:-150px;left:-100px;}
-
     /* LOGIN */
     #login-screen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:var(--bg);}
     .login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:400px;text-align:center;animation:fadeUp .4s ease;}
     .login-logo{font-size:40px;margin-bottom:14px;}
     .login-title{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
     .login-sub{color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;margin-bottom:28px;}
-
     /* SHELL */
     #app{display:none;position:relative;z-index:1;}
     .shell{display:flex;min-height:100vh;}
-
     /* SIDEBAR */
     .sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
     .sidebar-brand{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
@@ -40,9 +37,7 @@
     .nav-badge{margin-left:auto;font-family:var(--mono);font-size:9px;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
     .nav-badge.green{background:var(--green);color:#000;}
     .nav-badge.blue{background:var(--accent);color:#000;}
-    .nav-badge.muted{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
     .sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);}
-
     /* MAIN */
     .main{flex:1;overflow-y:auto;}
     .page{display:none;max-width:800px;margin:0 auto;padding:32px 24px 80px;}
@@ -51,7 +46,6 @@
     .page-header{margin-bottom:24px;}
     .page-title{font-size:20px;font-weight:800;margin-bottom:4px;}
     .page-sub{color:var(--muted);font-size:13px;}
-
     /* STEPS */
     .steps{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;margin-bottom:24px;}
     .step{display:flex;align-items:center;gap:6px;}
@@ -62,23 +56,20 @@
     .step.done .step-num{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);}
     .step.done .step-label{color:var(--green);}
     .step-line{width:28px;height:1px;background:var(--border);}
-
-    /* CARDS */
+    /* CARD */
     .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:14px;}
     .card-title{font-size:15px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
     .badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2);letter-spacing:1px;}
     .card-desc{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.6;}
-
     /* SAVED SESSIONS */
-    .session-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+    .session-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px;cursor:pointer;transition:all .2s;}
     .session-item:hover{border-color:var(--accent);}
     .session-item.selected{border-color:var(--accent);background:rgba(0,229,255,.05);}
-    .session-item-info{flex:1;min-width:0;}
-    .session-item-phone{font-weight:700;font-size:13px;}
-    .session-item-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
-    .session-item-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;line-height:1;transition:color .2s;}
-    .session-item-del:hover{color:var(--red);}
-
+    .si-info{flex:1;min-width:0;}
+    .si-phone{font-weight:700;font-size:13px;}
+    .si-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
+    .si-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;line-height:1;transition:color .2s;flex-shrink:0;}
+    .si-del:hover{color:var(--red);}
     /* FORM */
     .field{margin-bottom:14px;}
     label{display:block;font-size:11px;font-weight:600;letter-spacing:.7px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;}
@@ -87,7 +78,6 @@
     input::placeholder{color:var(--muted);}
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     @media(max-width:540px){.field-row{grid-template-columns:1fr;}}
-
     /* TOGGLE */
     .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:14px;cursor:pointer;transition:border-color .2s;}
     .toggle-row:hover{border-color:var(--accent);}
@@ -100,13 +90,16 @@
     .tgl-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.3s;}
     input:checked+.tgl-slider{background:var(--accent);}
     input:checked+.tgl-slider:before{transform:translateX(18px);background:#000;}
-
     /* MODE TABS */
     .mode-tabs{display:flex;gap:8px;margin-bottom:18px;}
     .mode-tab{flex:1;padding:10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
     .mode-tab:hover{border-color:var(--accent);color:var(--accent);}
     .mode-tab.active{border-color:var(--accent);background:rgba(0,229,255,.08);color:var(--accent);}
-
+    /* SCHEDULE TABS */
+    .sched-tabs{display:flex;gap:6px;margin-bottom:16px;}
+    .sched-tab{flex:1;padding:9px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+    .sched-tab:hover{border-color:var(--accent2);color:var(--accent2);}
+    .sched-tab.active{border-color:var(--accent2);background:rgba(123,97,255,.1);color:var(--accent2);}
     /* BUTTONS */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 22px;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
     .btn-primary{background:linear-gradient(135deg,var(--accent),#00b4cc);color:#000;width:100%;}
@@ -114,14 +107,14 @@
     .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;}
     .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
     .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+    .btn-purple{background:rgba(123,97,255,.15);color:var(--accent2);border:1px solid rgba(123,97,255,.3);width:100%;}
+    .btn-purple:hover{background:rgba(123,97,255,.25);}
     .btn-warn{background:rgba(210,153,34,.1);color:var(--yellow);border:1px solid rgba(210,153,34,.25);}
     .btn-warn:hover{background:rgba(210,153,34,.2);}
     .btn-danger{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.25);}
     .btn-danger:hover{background:rgba(248,81,73,.2);}
     .btn-sm{padding:7px 13px;font-size:12px;}
     .btn-row{display:flex;gap:8px;margin-top:8px;}
-    .btn-full{width:100%;}
-
     /* ALERTS */
     .alert{padding:11px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;display:none;align-items:flex-start;gap:9px;line-height:1.5;}
     .alert.show{display:flex;}
@@ -130,12 +123,6 @@
     .as{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:#7ee787;}
     .ai2{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--accent);}
     .aw{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.2);color:#e3b341;}
-
-    /* SESSION BOX */
-    .sbox{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 46px 10px 12px;font-family:var(--mono);font-size:11px;color:var(--green);word-break:break-all;line-height:1.6;position:relative;}
-    .copy-btn{position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;transition:all .2s;}
-    .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
-
     /* GROUPS */
     .groups-grid{display:grid;gap:7px;max-height:220px;overflow-y:auto;padding-right:4px;margin-bottom:12px;}
     .groups-grid::-webkit-scrollbar{width:3px;}
@@ -148,15 +135,14 @@
     .g-name{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .g-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:1px;}
     .g-type{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(123,97,255,.15);color:var(--accent2);border:1px solid rgba(123,97,255,.2);flex-shrink:0;}
-
     /* OPS */
-    .ops-list{display:flex;flex-direction:column;gap:12px;}
+    .ops-list{display:flex;flex-direction:column;gap:10px;}
     .op-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
     .op-card.running{border-color:rgba(0,229,255,.3);}
     .op-card.paused{border-color:rgba(210,153,34,.3);}
     .op-card.done{border-color:rgba(63,185,80,.25);}
     .op-card.cancelled,.op-card.error{border-color:rgba(248,81,73,.2);opacity:.75;}
-    .op-head{padding:14px 16px;display:flex;align-items:center;gap:12px;}
+    .op-head{padding:13px 15px;display:flex;align-items:center;gap:11px;}
     .op-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
     .op-dot.running{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.5s infinite;}
     .op-dot.paused{background:var(--yellow);}
@@ -167,21 +153,29 @@
     .op-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .op-sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
     .op-acts{display:flex;gap:6px;flex-shrink:0;}
-    .op-body{padding:0 16px 14px;}
-    .op-pb{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+    .op-body{padding:0 15px 13px;}
+    .op-pb{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:7px;}
     .op-pf{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .5s ease;}
-    .op-stats{display:flex;gap:14px;}
+    .op-stats{display:flex;gap:14px;flex-wrap:wrap;}
     .op-stat{font-family:var(--mono);font-size:11px;color:var(--muted);}
     .op-stat.ok span{color:var(--green);}
     .op-stat.sk span{color:var(--yellow);}
     .op-stat.er span{color:var(--red);}
     .op-stat span{color:var(--text);}
-    .op-log{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;}
-    .empty-ops{text-align:center;padding:50px 20px;color:var(--muted);}
-    .empty-ops-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
-
+    .op-log{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:5px;}
+    /* SCHEDULE CARDS */
+    .sched-card{background:var(--surface);border:1px solid rgba(123,97,255,.25);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+    .sched-card.paused{opacity:.6;}
+    .sched-dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);margin-top:4px;flex-shrink:0;}
+    .sched-card.paused .sched-dot{background:var(--muted);}
+    .sched-info{flex:1;min-width:0;}
+    .sched-title{font-size:13px;font-weight:700;}
+    .sched-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;line-height:1.6;}
+    .sched-acts{display:flex;gap:6px;flex-shrink:0;}
     /* MISC */
-    .divider{height:1px;background:var(--border);margin:16px 0;}
+    .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+    .empty-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
+    .divider{height:1px;background:var(--border);margin:14px 0;}
     a{color:var(--accent);text-decoration:none;}
     a:hover{text-decoration:underline;}
     code{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:11px;color:var(--accent);}
@@ -189,14 +183,15 @@
     .notice strong{color:#f0c040;}
     .spinner{width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    .section-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
-    .or-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;}
+    .section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:9px;}
+    .or-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:12px;}
     .or-divider:before,.or-divider:after{content:'';flex:1;height:1px;background:var(--border);}
-
+    .sbox{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 46px 10px 12px;font-family:var(--mono);font-size:11px;color:var(--green);word-break:break-all;line-height:1.6;position:relative;}
+    .copy-btn{position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;transition:all .2s;}
+    .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
     @media(max-width:680px){
       .sidebar{width:58px;}
-      .sb-title,.nav-item span:not(.ni),.nav-section{display:none;}
-      .nav-badge{display:none;}
+      .sb-title,.nav-item span:not(.ni),.nav-section,.nav-badge{display:none;}
       .sidebar-brand{justify-content:center;padding:14px 0;}
       .nav-item{justify-content:center;padding:10px 0;}
       .page{padding:20px 14px 60px;}
@@ -241,9 +236,12 @@
         <span class="ni">📋</span><span>Operações</span>
         <span class="nav-badge green" id="ops-badge" style="display:none">0</span>
       </button>
-      <button class="nav-item" id="nav-sessions" onclick="showPage('page-sessions');loadSessions()">
+      <button class="nav-item" id="nav-sched" onclick="showPage('page-sched');loadSchedules()">
+        <span class="ni">🕐</span><span>Agendamentos</span>
+        <span class="nav-badge blue" id="sched-badge" style="display:none">0</span>
+      </button>
+      <button class="nav-item" id="nav-sessions" onclick="showPage('page-sessions');loadSessionsPage()">
         <span class="ni">🔐</span><span>Sessões</span>
-        <span class="nav-badge blue" id="sess-badge" style="display:none">0</span>
       </button>
     </nav>
     <div class="sidebar-footer">
@@ -255,7 +253,7 @@
 
   <main class="main">
 
-    <!-- ══ CONFIG ══ -->
+    <!-- ══ CONFIGURAR ══ -->
     <div class="page active" id="page-config">
       <div class="steps" style="margin-top:12px">
         <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">Credenciais</div></div>
@@ -267,25 +265,17 @@
         <div class="step" id="step-4"><div class="step-num">4</div><div class="step-label">Operação</div></div>
       </div>
 
-      <!-- P1 -->
+      <!-- PAINEL 1 -->
       <div class="card" id="panel-1">
         <div class="card-title">🔑 Credenciais <span class="badge">PASSO 1</span></div>
         <p class="card-desc">Acesse <a href="https://my.telegram.org/auth" target="_blank">my.telegram.org</a> → <strong>API development tools</strong> para obter suas credenciais.</p>
-
-        <!-- Sessões salvas -->
-        <div id="saved-sessions-wrap" style="display:none;margin-bottom:16px">
+        <div id="saved-sess-wrap" style="display:none;margin-bottom:14px">
           <div class="section-label">Sessões salvas</div>
-          <div id="saved-sessions-list"></div>
-          <button class="btn btn-primary" onclick="loadSelectedSession()" id="btn-load-sess" style="display:none;margin-top:8px">
-            ✅ Usar sessão selecionada
-          </button>
+          <div id="saved-sess-list"></div>
+          <button class="btn btn-primary" id="btn-use-sess" onclick="useSelectedSession()" style="display:none;margin-top:8px">✅ Usar sessão selecionada</button>
         </div>
-        <div id="saved-sessions-loading" class="alert ai2" style="display:none;margin-bottom:14px">
-          <span class="ai">⏳</span><span>Carregando sessões salvas...</span>
-        </div>
-
+        <div id="saved-sess-loading" class="alert ai2" style="display:none;margin-bottom:12px"><span class="ai">⏳</span><span>Buscando sessões salvas...</span></div>
         <div class="or-divider" id="or-div" style="display:none">ou autenticar novo número</div>
-
         <div class="field-row">
           <div class="field"><label>API ID</label><input type="number" id="apiId" placeholder="1234567"/></div>
           <div class="field"><label>API Hash</label><input type="text" id="apiHash" placeholder="abc123..."/></div>
@@ -298,7 +288,7 @@
         </button>
       </div>
 
-      <!-- P2 -->
+      <!-- PAINEL 2 -->
       <div class="card" id="panel-2" style="display:none">
         <div class="card-title">📱 Verificação <span class="badge">PASSO 2</span></div>
         <p class="card-desc" id="p2desc">Um código foi enviado ao seu Telegram.</p>
@@ -314,7 +304,7 @@
         </div>
       </div>
 
-      <!-- P3 -->
+      <!-- PAINEL 3 -->
       <div class="card" id="panel-3" style="display:none">
         <div class="card-title">👥 Grupos <span class="badge">PASSO 3</span></div>
         <p class="card-desc">Escolha o grupo <strong>origem</strong> e o <strong>destino</strong>. Você precisa ser admin do destino.</p>
@@ -333,7 +323,7 @@
         </div>
       </div>
 
-      <!-- P4 -->
+      <!-- PAINEL 4 -->
       <div class="card" id="panel-4" style="display:none">
         <div class="card-title">⚡ Operação <span class="badge">PASSO 4</span></div>
         <div class="mode-tabs">
@@ -342,6 +332,7 @@
         </div>
         <div id="op-summary" class="alert ai2 show" style="margin-bottom:16px"></div>
 
+        <!-- Config Membros -->
         <div id="cfg-members">
           <div class="field-row">
             <div class="field"><label>Máx. membros</label><input type="number" id="cloneLimit" value="50" min="1" max="200"/></div>
@@ -349,12 +340,12 @@
           </div>
         </div>
 
+        <!-- Config Mensagens -->
         <div id="cfg-messages" style="display:none">
           <div class="field-row">
             <div class="field"><label>Msgs por batch</label><input type="number" id="msgBatch" value="20" min="1" max="50"/></div>
             <div class="field"><label>Delay entre msgs (ms)</label><input type="number" id="msgDelay" value="1500" min="500" max="30000"/></div>
           </div>
-
           <label class="toggle-row" for="tgl-new">
             <div class="tgl-info">
               <div class="tgl-label" id="tgl-lbl">📜 Todas as mensagens</div>
@@ -362,26 +353,20 @@
             </div>
             <div class="tgl-sw"><input type="checkbox" id="tgl-new" onchange="onMsgToggle()"/><span class="tgl-slider"></span></div>
           </label>
-
           <div id="msg-limit-wrap" class="field">
             <label>Total máximo de mensagens</label>
             <input type="number" id="msgLimit" value="100" min="1" max="5000"/>
           </div>
         </div>
 
-        <div class="notice"><strong>⚠ Dica:</strong> Use delays altos para evitar flood ban. Operações longas rodam em batches com pause/cancel.</div>
+        <div class="notice"><strong>⚠ Dica:</strong> Delays adequados evitam flood ban. Operações longas rodam em batches com pause/cancel.</div>
         <div id="alert-4" class="alert"></div>
         <div class="btn-row">
           <button class="btn btn-secondary btn-sm" onclick="showPanel(3)">← Voltar</button>
-          <button class="btn btn-primary" onclick="startOp()" style="flex:1">🚀 Iniciar Operação</button>
+          <button class="btn btn-primary" onclick="startOp()" style="flex:1">🚀 Iniciar Agora</button>
         </div>
-      </div>
-
-      <!-- Session ativa -->
-      <div id="sess-panel" class="card" style="display:none;border-color:rgba(63,185,80,.2)">
-        <div class="card-title" style="font-size:13px;color:var(--green)">🔐 Sessão Ativa</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Salva automaticamente no MongoDB.</p>
-        <div class="sbox" id="sess-display">—<button class="copy-btn" onclick="copySess()">copiar</button></div>
+        <div style="height:8px"></div>
+        <button class="btn btn-purple" onclick="openScheduler()">🕐 Agendar Operação</button>
       </div>
     </div>
 
@@ -389,17 +374,35 @@
     <div class="page" id="page-ops">
       <div class="page-header">
         <div class="page-title">📋 Operações</div>
-        <div class="page-sub">Histórico e controle das operações. Dados persistidos no MongoDB.</div>
+        <div class="page-sub">Histórico e controle das operações em tempo real.</div>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
         <button class="btn btn-secondary btn-sm" onclick="loadOpsFromDb()">↺ Atualizar</button>
         <button class="btn btn-danger btn-sm" onclick="clearFinished()">🗑 Limpar finalizadas</button>
       </div>
       <div id="ops-loading" class="alert ai2" style="display:none"><span class="ai">⏳</span><span>Carregando...</span></div>
-      <div id="ops-list" class="ops-list">
-        <div class="empty-ops" id="ops-empty">
-          <div class="empty-ops-icon">📭</div>
+      <div class="ops-list" id="ops-list">
+        <div class="empty-state" id="ops-empty">
+          <div class="empty-icon">📭</div>
           <div>Nenhuma operação ainda.<br>Configure uma em <strong>Configurar</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AGENDAMENTOS ══ -->
+    <div class="page" id="page-sched">
+      <div class="page-header">
+        <div class="page-title">🕐 Agendamentos</div>
+        <div class="page-sub">Operações agendadas para rodar automaticamente. O frontend verifica a cada minuto.</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <button class="btn btn-secondary btn-sm" onclick="loadSchedules()">↺ Atualizar</button>
+      </div>
+      <div id="sched-loading" class="alert ai2" style="display:none"><span class="ai">⏳</span><span>Carregando...</span></div>
+      <div id="sched-list">
+        <div class="empty-state" id="sched-empty">
+          <div class="empty-icon">🕐</div>
+          <div>Nenhum agendamento ainda.<br>Crie um no <strong>Passo 4 → Agendar Operação</strong>.</div>
         </div>
       </div>
     </div>
@@ -408,13 +411,46 @@
     <div class="page" id="page-sessions">
       <div class="page-header">
         <div class="page-title">🔐 Sessões Salvas</div>
-        <div class="page-sub">Sessões Telegram persistidas no MongoDB. Use-as para pular autenticação.</div>
+        <div class="page-sub">Sessões Telegram persistidas no MongoDB.</div>
       </div>
       <div id="page-sess-loading" class="alert ai2" style="display:none"><span class="ai">⏳</span><span>Carregando...</span></div>
       <div id="page-sess-list"></div>
-      <div id="page-sess-empty" class="empty-ops" style="display:none">
-        <div class="empty-ops-icon">🔑</div>
-        <div>Nenhuma sessão salva ainda.<br>Autentique via <strong>Configurar</strong> para criar uma.</div>
+      <div class="empty-state" id="page-sess-empty" style="display:none">
+        <div class="empty-icon">🔑</div>
+        <div>Nenhuma sessão salva ainda.</div>
+      </div>
+    </div>
+
+    <!-- ══ MODAL: AGENDAR ══ -->
+    <div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:480px;margin:16px;animation:fadeUp .3s ease;max-height:90vh;overflow-y:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div style="font-size:16px;font-weight:800">🕐 Agendar Operação</div>
+          <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1">✕</button>
+        </div>
+        <div id="modal-summary" class="alert ai2 show" style="margin-bottom:16px"></div>
+        <div class="field">
+          <label>Tipo de agendamento</label>
+          <div class="sched-tabs">
+            <button class="sched-tab active" id="stab-once" onclick="setSchedMode('once')">Uma vez</button>
+            <button class="sched-tab" id="stab-interval" onclick="setSchedMode('interval')">Intervalo</button>
+            <button class="sched-tab" id="stab-daily" onclick="setSchedMode('daily')">Diário</button>
+          </div>
+        </div>
+        <div id="sched-once">
+          <div class="field"><label>Data e hora</label><input type="datetime-local" id="sched-datetime"/></div>
+        </div>
+        <div id="sched-interval" style="display:none">
+          <div class="field"><label>Repetir a cada (minutos)</label><input type="number" id="sched-interval-min" value="60" min="5" max="1440"/></div>
+        </div>
+        <div id="sched-daily" style="display:none">
+          <div class="field"><label>Horário diário</label><input type="time" id="sched-daily-time" value="08:00"/></div>
+        </div>
+        <div id="modal-alert" class="alert" style="margin-bottom:12px"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancelar</button>
+          <button class="btn btn-purple" onclick="saveSchedule()" style="flex:1">💾 Salvar Agendamento</button>
+        </div>
       </div>
     </div>
 
@@ -426,44 +462,26 @@
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
-const S = {
-  apiId:'', apiHash:'', phone:'', session:'',
-  sessionId:'', requires2FA:false,
-  groups:[], srcGroup:null, tgtGroup:null,
-  mode:'members',
-  selectedSavedSession:null,
-};
-const ops = []; // runtime ops (memória)
-let opSeq = 0;
-const LS_TOKEN = 'tgcloner_token';
-const LS_CREDS = 'tgcloner_creds';
+const S={apiId:'',apiHash:'',phone:'',session:'',sessionId:'',sessionDbId:'',requires2FA:false,groups:[],srcGroup:null,tgtGroup:null,mode:'members',schedMode:'once'};
+const ops=[];
+let opSeq=0;
+const LS_TOKEN='tgcloner_token';
+const LS_CREDS='tgcloner_creds';
 
 // ═══════════════════════════════════════════
 // LOGIN
 // ═══════════════════════════════════════════
-function checkAuth(){
-  if(localStorage.getItem(LS_TOKEN)){showApp();return;}
-  document.getElementById('login-screen').style.display='flex';
-}
+function checkAuth(){if(localStorage.getItem(LS_TOKEN)){showApp();return;}document.getElementById('login-screen').style.display='flex';}
 async function doLogin(){
-  const pw=document.getElementById('site-pw').value; if(!pw)return;
-  setBtnLoad('login',true);hideA('login-alert');
-  try{
-    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
-    const d=await r.json(); if(!r.ok)throw new Error(d.error);
-    localStorage.setItem(LS_TOKEN,d.token); showApp();
-  }catch(e){showA('login-alert','ae',e.message);}
-  finally{setBtnLoad('login',false);}
+  const pw=document.getElementById('site-pw').value;if(!pw)return;
+  setBL('login',true);hideA('login-alert');
+  try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error);
+    localStorage.setItem(LS_TOKEN,d.token);showApp();
+  }catch(e){showA('login-alert','ae',e.message);}finally{setBL('login',false);}
 }
-function setBtnLoad(n,v){
-  document.getElementById(`${n}-txt`).style.display=v?'none':'inline';
-  document.getElementById(`${n}-spin`).style.display=v?'inline-block':'none';
-}
-function showApp(){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  loadSaved(); fetchSavedSessions();
-}
+function setBL(n,v){document.getElementById(`${n}-txt`).style.display=v?'none':'inline';document.getElementById(`${n}-spin`).style.display=v?'inline-block':'none';}
+function showApp(){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';loadSaved();fetchSavedSessions();startSchedulerTick();}
 function doLogout(){localStorage.removeItem(LS_TOKEN);location.reload();}
 
 // ═══════════════════════════════════════════
@@ -472,8 +490,8 @@ function doLogout(){localStorage.removeItem(LS_TOKEN);location.reload();}
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  ['nav-config','nav-ops','nav-sessions'].forEach(n=>document.getElementById(n).classList.remove('active'));
-  const m={  'page-config':'nav-config','page-ops':'nav-ops','page-sessions':'nav-sessions'};
+  ['nav-config','nav-ops','nav-sched','nav-sessions'].forEach(n=>document.getElementById(n)?.classList.remove('active'));
+  const m={'page-config':'nav-config','page-ops':'nav-ops','page-sched':'nav-sched','page-sessions':'nav-sessions'};
   if(m[id])document.getElementById(m[id]).classList.add('active');
 }
 function showPanel(n){
@@ -481,7 +499,7 @@ function showPanel(n){
     document.getElementById(`panel-${i}`).style.display=i===n?'block':'none';
     const st=document.getElementById(`step-${i}`);
     st.classList.remove('active','done');
-    if(i<n)st.classList.add('done'); else if(i===n)st.classList.add('active');
+    if(i<n)st.classList.add('done');else if(i===n)st.classList.add('active');
   });
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -489,109 +507,66 @@ function showPanel(n){
 // ═══════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════
-function showA(id,cls,msg){
-  const el=document.getElementById(id); if(!el)return;
-  const icons={'ae':'❌','as':'✅','ai2':'ℹ️','aw':'⚠️'};
-  el.className=`alert ${cls} show`;
-  el.innerHTML=`<span class="ai">${icons[cls]||'ℹ️'}</span><span>${msg}</span>`;
-}
+function showA(id,cls,msg){const el=document.getElementById(id);if(!el)return;const icons={'ae':'❌','as':'✅','ai2':'ℹ️','aw':'⚠️'};el.className=`alert ${cls} show`;el.innerHTML=`<span class="ai">${icons[cls]||'ℹ️'}</span><span>${msg}</span>`;}
 function hideA(id){const el=document.getElementById(id);if(el){el.className='alert';el.innerHTML='';}}
 function sa(n,c,m){showA(`alert-${n}`,c,m);}
 function ha(n){hideA(`alert-${n}`);}
-function setLd(n,v){
-  const t=document.getElementById(`btn${n}-txt`),s=document.getElementById(`btn${n}-spin`);
-  if(t)t.style.display=v?'none':'inline'; if(s)s.style.display=v?'inline-block':'none';
-  const b=document.querySelector(`#panel-${n} .btn-primary`); if(b)b.disabled=v;
-}
-function loadSaved(){
-  try{const c=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');
-    if(c.apiId)document.getElementById('apiId').value=c.apiId;
-    if(c.apiHash)document.getElementById('apiHash').value=c.apiHash;
-    if(c.phone)document.getElementById('phone').value=c.phone;
-  }catch{}
-}
-function saveCreds(){
-  try{localStorage.setItem(LS_CREDS,JSON.stringify({apiId:S.apiId,apiHash:S.apiHash,phone:S.phone}));}catch{}
-}
+function setLd(n,v){const t=document.getElementById(`btn${n}-txt`),s=document.getElementById(`btn${n}-spin`);if(t)t.style.display=v?'none':'inline';if(s)s.style.display=v?'inline-block':'none';const b=document.querySelector(`#panel-${n} .btn-primary`);if(b)b.disabled=v;}
+function loadSaved(){try{const c=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');if(c.apiId)document.getElementById('apiId').value=c.apiId;if(c.apiHash)document.getElementById('apiHash').value=c.apiHash;if(c.phone)document.getElementById('phone').value=c.phone;}catch{}}
+function saveCreds(){try{localStorage.setItem(LS_CREDS,JSON.stringify({apiId:S.apiId,apiHash:S.apiHash,phone:S.phone}));}catch{}}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-async function post(path,body){
-  const r=await fetch(`/api${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json(); if(!r.ok)throw new Error(d.error||'Erro');
-  return d;
-}
+async function post(path,body){const r=await fetch(`/api${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erro');return d;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function fmtDate(d){return d?new Date(d).toLocaleString('pt-BR'):'—';}
 
 // ═══════════════════════════════════════════
-// SAVED SESSIONS (MongoDB)
+// SAVED SESSIONS
 // ═══════════════════════════════════════════
 async function fetchSavedSessions(){
-  const wrap=document.getElementById('saved-sessions-wrap');
-  const loading=document.getElementById('saved-sessions-loading');
-  const orDiv=document.getElementById('or-div');
-  loading.style.display='flex';
+  document.getElementById('saved-sess-loading').style.display='flex';
   try{
     const d=await post('/auth',{action:'getSessions'});
-    loading.style.display='none';
-    if(d.sessions&&d.sessions.length>0){
-      wrap.style.display='block';
-      orDiv.style.display='flex';
-      renderSavedSessions(d.sessions);
-      document.getElementById('sess-badge').style.display='inline';
-      document.getElementById('sess-badge').textContent=d.sessions.length;
+    document.getElementById('saved-sess-loading').style.display='none';
+    if(d.sessions&&d.sessions.length){
+      document.getElementById('saved-sess-wrap').style.display='block';
+      document.getElementById('or-div').style.display='flex';
+      document.getElementById('saved-sess-list').innerHTML=d.sessions.map(s=>`
+        <div class="session-item" id="si-${s._id}" onclick="selectSess('${s._id}','${esc(s.phone)}','${s.apiId||''}','${esc(s.apiHash||'')}')">
+          <div style="font-size:20px">📱</div>
+          <div class="si-info">
+            <div class="si-phone">${esc(s.phone)}</div>
+            <div class="si-meta">Último uso: ${fmtDate(s.lastUsedAt)}</div>
+          </div>
+          <button class="si-del" onclick="event.stopPropagation();delSess('${s._id}')">✕</button>
+        </div>`).join('');
     }
-  }catch(e){loading.style.display='none';}
+  }catch(e){document.getElementById('saved-sess-loading').style.display='none';}
 }
 
-function renderSavedSessions(sessions){
-  const list=document.getElementById('saved-sessions-list');
-  list.innerHTML=sessions.map(s=>`
-    <div class="session-item" id="si-${s._id}" onclick="selectSavedSession('${s._id}','${esc(s.phone)}','${s.apiId||''}','${esc(s.apiHash||'')}')">
-      <div style="font-size:20px">📱</div>
-      <div class="session-item-info">
-        <div class="session-item-phone">${esc(s.phone)}</div>
-        <div class="session-item-meta">Último uso: ${s.lastUsedAt?new Date(s.lastUsedAt).toLocaleString('pt-BR'):'nunca'}</div>
-      </div>
-      <button class="session-item-del" onclick="event.stopPropagation();deleteSavedSession('${s._id}')" title="Deletar">✕</button>
-    </div>`).join('');
-}
-
-function selectSavedSession(id,phone,apiId,apiHash){
+function selectSess(id,phone,apiId,apiHash){
   document.querySelectorAll('.session-item').forEach(el=>el.classList.remove('selected'));
-  const el=document.getElementById(`si-${id}`); if(el)el.classList.add('selected');
-  S.selectedSavedSession={id,phone,apiId,apiHash};
-  document.getElementById('btn-load-sess').style.display='block';
+  document.getElementById(`si-${id}`)?.classList.add('selected');
+  S.sessionDbId=id; S.phone=phone; S.apiId=apiId; S.apiHash=apiHash;
+  document.getElementById('btn-use-sess').style.display='block';
 }
 
-async function loadSelectedSession(){
-  if(!S.selectedSavedSession)return;
+async function useSelectedSession(){
+  if(!S.sessionDbId)return;
   try{
-    const d=await post('/auth',{action:'loadSession',sessionDbId:S.selectedSavedSession.id});
-    S.session=d.session; S.apiId=d.apiId||S.selectedSavedSession.apiId;
-    S.apiHash=d.apiHash||S.selectedSavedSession.apiHash;
-    S.phone=d.phone||S.selectedSavedSession.phone;
-    showSessPanel(S.session);
+    const d=await post('/auth',{action:'loadSession',sessionDbId:S.sessionDbId});
+    S.session=d.session; S.apiId=d.apiId||S.apiId; S.apiHash=d.apiHash||S.apiHash; S.phone=d.phone||S.phone;
     await loadGroups(); showPanel(3);
   }catch(e){sa(1,'ae',e.message);}
 }
 
-async function deleteSavedSession(id){
+async function delSess(id){
   if(!confirm('Deletar esta sessão?'))return;
-  try{
-    await post('/auth',{action:'deleteSession',sessionDbId:id});
-    document.getElementById(`si-${id}`)?.remove();
-    if(!document.querySelector('.session-item')){
-      document.getElementById('saved-sessions-wrap').style.display='none';
-      document.getElementById('or-div').style.display='none';
-    }
-  }catch(e){alert('Erro ao deletar: '+e.message);}
+  try{await post('/auth',{action:'deleteSession',sessionDbId:id});document.getElementById(`si-${id}`)?.remove();}catch(e){alert(e.message);}
 }
 
-// Página de sessões
-async function loadSessions(){
-  const loading=document.getElementById('page-sess-loading');
-  const list=document.getElementById('page-sess-list');
-  const empty=document.getElementById('page-sess-empty');
-  loading.style.display='flex'; list.innerHTML=''; empty.style.display='none';
+async function loadSessionsPage(){
+  const loading=document.getElementById('page-sess-loading'),list=document.getElementById('page-sess-list'),empty=document.getElementById('page-sess-empty');
+  loading.style.display='flex';list.innerHTML='';empty.style.display='none';
   try{
     const d=await post('/auth',{action:'getSessions'});
     loading.style.display='none';
@@ -602,15 +577,14 @@ async function loadSessions(){
           <div style="font-size:24px">📱</div>
           <div style="flex:1">
             <div style="font-weight:700;font-size:14px">${esc(s.phone)}</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px">
-              Criada: ${s.createdAt?new Date(s.createdAt).toLocaleString('pt-BR'):'—'}<br>
-              Último uso: ${s.lastUsedAt?new Date(s.lastUsedAt).toLocaleString('pt-BR'):'—'}
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px">
+              Criada: ${fmtDate(s.createdAt)}<br>Último uso: ${fmtDate(s.lastUsedAt)}
             </div>
           </div>
-          <button class="btn btn-danger btn-sm" onclick="deleteSavedSession('${s._id}');this.closest('.card').remove()">✕ Deletar</button>
+          <button class="btn btn-danger btn-sm" onclick="delSess('${s._id}');this.closest('.card').remove()">✕</button>
         </div>
       </div>`).join('');
-  }catch(e){loading.style.display='none';list.innerHTML=`<div style="color:var(--red);font-size:13px">${e.message}</div>`;}
+  }catch(e){loading.style.display='none';}
 }
 
 // ═══════════════════════════════════════════
@@ -623,70 +597,58 @@ async function handleCredentials(){
   const phone=document.getElementById('phone').value.trim();
   if(!apiId||!apiHash)return sa(1,'ae','API ID e API Hash são obrigatórios.');
   if(!phone)return sa(1,'ae','Informe o número de telefone.');
-  S.apiId=apiId; S.apiHash=apiHash; S.phone=phone; saveCreds();
+  S.apiId=apiId;S.apiHash=apiHash;S.phone=phone;saveCreds();
   setLd(1,true);
   try{
     const d=await post('/auth',{action:'sendCode',apiId,apiHash,phone});
-    S.sessionId=d.sessionId; showPanel(2); sa(2,'ai2',d.message);
-  }catch(e){sa(1,'ae',e.message);}
-  finally{setLd(1,false);}
+    S.sessionId=d.sessionId;showPanel(2);sa(2,'ai2',d.message);
+  }catch(e){sa(1,'ae',e.message);}finally{setLd(1,false);}
 }
 
 // ═══════════════════════════════════════════
 // STEP 2
 // ═══════════════════════════════════════════
 async function handleVerify(){
-  ha(2); setLd(2,true);
+  ha(2);setLd(2,true);
   try{
     let d;
     if(S.requires2FA){
-      const pw=document.getElementById('twoFAPass').value; if(!pw){sa(2,'ae','Digite a senha 2FA.');return;}
+      const pw=document.getElementById('twoFAPass').value;if(!pw){sa(2,'ae','Digite a senha 2FA.');return;}
       d=await post('/auth',{action:'verify2FA',sessionId:S.sessionId,password:pw});
     }else{
-      const code=document.getElementById('verifyCode').value.trim(); if(!code){sa(2,'ae','Digite o código.');return;}
+      const code=document.getElementById('verifyCode').value.trim();if(!code){sa(2,'ae','Digite o código.');return;}
       d=await post('/auth',{action:'verifyCode',sessionId:S.sessionId,code});
-      if(d.requires2FA){
-        S.requires2FA=true;
-        document.getElementById('code-field').style.display='none';
-        document.getElementById('pass-field').style.display='block';
-        document.getElementById('p2desc').textContent='Sua conta tem 2FA. Digite sua senha:';
-        sa(2,'aw','Senha 2FA necessária.'); return;
-      }
+      if(d.requires2FA){S.requires2FA=true;document.getElementById('code-field').style.display='none';document.getElementById('pass-field').style.display='block';document.getElementById('p2desc').textContent='Sua conta tem 2FA. Digite sua senha:';sa(2,'aw','Senha 2FA necessária.');return;}
     }
-    S.session=d.session; showSessPanel(d.session);
-    await loadGroups(); showPanel(3);
-    fetchSavedSessions(); // atualiza lista
-  }catch(e){sa(2,'ae',e.message);}
-  finally{setLd(2,false);}
+    S.session=d.session;
+    await loadGroups();showPanel(3);
+    fetchSavedSessions();
+  }catch(e){sa(2,'ae',e.message);}finally{setLd(2,false);}
 }
 
 // ═══════════════════════════════════════════
-// STEP 3: GROUPS
+// STEP 3
 // ═══════════════════════════════════════════
 async function loadGroups(){
   const lEl=document.getElementById('grp-loading');
-  lEl.className='alert ai2 show'; lEl.innerHTML='<span class="ai">⏳</span><span>Carregando grupos...</span>';
+  lEl.className='alert ai2 show';lEl.innerHTML='<span class="ai">⏳</span><span>Carregando grupos...</span>';
   document.getElementById('grp-content').style.display='none';
   try{
     const d=await post('/groups',{apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session});
-    S.groups=d.groups; renderGroups(d.groups);
-    lEl.className='alert'; document.getElementById('grp-content').style.display='block';
-  }catch(e){
-    lEl.className='alert ae show';
-    lEl.innerHTML=`<span class="ai">❌</span><span>${e.message}</span>`;
-  }
+    S.groups=d.groups;renderGroups(d.groups);
+    lEl.className='alert';document.getElementById('grp-content').style.display='block';
+  }catch(e){lEl.className='alert ae show';lEl.innerHTML=`<span class="ai">❌</span><span>${e.message}</span>`;}
 }
 function renderGroups(groups){
   ['src-groups','tgt-groups'].forEach((id,idx)=>{
-    const el=document.getElementById(id); el.innerHTML='';
+    const el=document.getElementById(id);el.innerHTML='';
     if(!groups.length){el.innerHTML='<p style="color:var(--muted);font-size:12px">Nenhum grupo.</p>';return;}
     const role=idx===0?'src':'tgt';
     groups.forEach(g=>{
       el.insertAdjacentHTML('beforeend',`
         <div class="group-card" data-id="${g.id}" onclick="pickGroup(this,'${role}')">
           <div class="g-av">${g.type==='channel'?'📢':'👥'}</div>
-          <div class="g-info"><div class="g-name">${esc(g.title)}</div>
-          <div class="g-meta">${g.membersCount?g.membersCount+' membros':'id: '+g.id}</div></div>
+          <div class="g-info"><div class="g-name">${esc(g.title)}</div><div class="g-meta">${g.membersCount?g.membersCount+' membros':'id: '+g.id}</div></div>
           <span class="g-type">${g.type.toUpperCase()}</span>
         </div>`);
     });
@@ -696,7 +658,7 @@ function pickGroup(card,role){
   card.closest('.groups-grid').querySelectorAll('.group-card').forEach(c=>c.classList.remove('selected'));
   card.classList.add('selected');
   const g=S.groups.find(x=>x.id===card.dataset.id);
-  if(role==='src')S.srcGroup=g; else S.tgtGroup=g;
+  if(role==='src')S.srcGroup=g;else S.tgtGroup=g;
 }
 function goToOp(){
   if(!S.srcGroup)return sa(3,'ae','Selecione o grupo de origem.');
@@ -721,8 +683,20 @@ function setMode(m){
 function onMsgToggle(){
   const isNew=document.getElementById('tgl-new').checked;
   document.getElementById('tgl-lbl').textContent=isNew?'🆕 Apenas mensagens novas':'📜 Todas as mensagens';
-  document.getElementById('tgl-desc').textContent=isNew?'Encaminha somente mensagens após esta operação iniciar':'Encaminha o histórico completo do grupo de origem';
+  document.getElementById('tgl-desc').textContent=isNew?'Encaminha somente mensagens após esta operação iniciar':'Encaminha o histórico completo do grupo';
   document.getElementById('msg-limit-wrap').style.display=isNew?'none':'block';
+}
+
+// ═══════════════════════════════════════════
+// BUILD PARAMS
+// ═══════════════════════════════════════════
+function buildParams(){
+  if(S.mode==='members'){
+    return{limit:parseInt(document.getElementById('cloneLimit').value)||50,delayMs:parseInt(document.getElementById('cloneDelay').value)||3000};
+  }else{
+    const onlyNew=document.getElementById('tgl-new').checked;
+    return{batchSize:parseInt(document.getElementById('msgBatch').value)||20,delayMs:parseInt(document.getElementById('msgDelay').value)||1500,onlyNew,msgLimit:onlyNew?999999:(parseInt(document.getElementById('msgLimit').value)||100)};
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -733,72 +707,59 @@ async function startOp(){
   ha(4);
   const id=++opSeq;
   const type=S.mode;
+  const params=buildParams();
+  const label=`${type==='members'?'👥':'💬'} ${S.srcGroup.title} → ${S.tgtGroup.title}`;
 
-  // Salva no MongoDB
   let dbId=null;
   try{
-    const r=await post('/operations',{
-      action:'create', type,
-      label:`${type==='members'?'👥':'💬'} ${S.srcGroup.title} → ${S.tgtGroup.title}`,
-      sourceGroup:{id:S.srcGroup.id,title:S.srcGroup.title},
-      targetGroup:{id:S.tgtGroup.id,title:S.tgtGroup.title},
-      params:{},
-    });
+    const r=await post('/operations',{action:'create',type,label,sourceGroup:{id:S.srcGroup.id,title:S.srcGroup.title},targetGroup:{id:S.tgtGroup.id,title:S.tgtGroup.title},params:{}});
     dbId=r.opId;
-  }catch(e){console.warn('DB save failed:',e.message);}
+  }catch(e){console.warn('DB:',e.message);}
 
-  if(type==='members'){
-    const op=createOp(id,'members',`👥 Membros: ${S.srcGroup.title} → ${S.tgtGroup.title}`,dbId,{
-      apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,
-      sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id,
-      limit:parseInt(document.getElementById('cloneLimit').value)||50,
-      delayMs:parseInt(document.getElementById('cloneDelay').value)||3000,
-    });
-    runMembersOp(op);
-  }else{
-    const onlyNew=document.getElementById('tgl-new').checked;
-    const op=createOp(id,'messages',`💬 Msgs: ${S.srcGroup.title} → ${S.tgtGroup.title}`,dbId,{
-      apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,
-      sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id,
-      batchSize:parseInt(document.getElementById('msgBatch').value)||20,
-      delayMs:parseInt(document.getElementById('msgDelay').value)||1500,
-      onlyNew,
-      msgLimit:onlyNew?999999:(parseInt(document.getElementById('msgLimit').value)||100),
-      minId:0, offsetId:0,
-    });
-    runMsgsOp(op);
-  }
+  const fullParams={...params,apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id};
+  const op=createOp(id,type,label,dbId,fullParams);
+
+  // ← FIXED: navigate THEN run
   showPage('page-ops');
+
+  if(type==='members') runMembersOp(op);
+  else runMsgsOp(op);
 }
 
 // ═══════════════════════════════════════════
 // OP MANAGEMENT
 // ═══════════════════════════════════════════
 function createOp(id,type,label,dbId,params){
-  const op={id,type,label,dbId,status:'running',ok:0,skip:0,err:0,total:0,progress:0,log:'',cancelFlag:false,pauseFlag:false,params};
-  ops.unshift(op); updateBadge(); renderOps(); return op;
+  const op={id,type,label,dbId,status:'running',ok:0,skip:0,err:0,total:0,progress:0,log:'Iniciando...',cancelFlag:false,pauseFlag:false,params};
+  ops.unshift(op);
+  updateBadge();
+  // Always re-render the full list so the new card appears
+  renderAllOps();
+  return op;
 }
+
 function updateBadge(){
   const n=ops.filter(o=>o.status==='running'||o.status==='paused').length;
   const b=document.getElementById('ops-badge');
-  b.style.display=n>0?'inline':'none'; b.textContent=n;
+  b.style.display=n>0?'inline':'none';b.textContent=n;
 }
-function statusLbl(s){return{running:'🔄 Rodando',paused:'⏸ Pausado',done:'✅ Concluído',cancelled:'⛔ Cancelado',error:'❌ Erro'}[s]||s;}
 
-function renderOps(){
-  const list=document.getElementById('ops-list');
-  const empty=document.getElementById('ops-empty');
-  if(!ops.length){empty.style.display='block';return;}
-  empty.style.display='none';
-  list.innerHTML=ops.map(op=>opCardHTML(op)).join('');
-}
+function statusLbl(s){return{running:'🔄 Rodando',paused:'⏸ Pausado',done:'✅ Concluído',cancelled:'⛔ Cancelado',error:'❌ Erro'}[s]||s;}
 
 function opCardHTML(op){
   const acts=
     (op.status==='running'?`<button class="btn btn-warn btn-sm" onclick="pauseOp(${op.id})">⏸ Pausar</button>`:'')+
     (op.status==='paused'?`<button class="btn btn-secondary btn-sm" onclick="resumeOp(${op.id})">▶ Retomar</button>`:'')+
     ((op.status==='running'||op.status==='paused')?`<button class="btn btn-danger btn-sm" onclick="cancelOp(${op.id})">✕ Cancelar</button>`:'');
-  const body=(op.status!=='done'&&op.status!=='cancelled'&&op.status!=='error')||op.total>0?`
+  return `<div class="op-card ${op.status}" id="opc-${op.id}">
+    <div class="op-head">
+      <div class="op-dot ${op.status}"></div>
+      <div class="op-info">
+        <div class="op-title">${esc(op.label)}</div>
+        <div class="op-sub">${statusLbl(op.status)} · ${op.ok} ok · ${op.skip} pulados · ${op.err} erros</div>
+      </div>
+      <div class="op-acts">${acts}</div>
+    </div>
     <div class="op-body">
       <div class="op-pb"><div class="op-pf" style="width:${op.progress}%"></div></div>
       <div class="op-stats">
@@ -808,34 +769,29 @@ function opCardHTML(op){
         ${op.total?`<div class="op-stat"><span>${op.progress}%</span></div>`:''}
       </div>
       ${op.log?`<div class="op-log">${esc(op.log)}</div>`:''}
-    </div>`:'';
-  return `<div class="op-card ${op.status}" id="opc-${op.id}">
-    <div class="op-head">
-      <div class="op-dot ${op.status}"></div>
-      <div class="op-info">
-        <div class="op-title">${esc(op.label)}</div>
-        <div class="op-sub">${statusLbl(op.status)} · ${op.ok} ok · ${op.skip} pulados · ${op.err} erros</div>
-      </div>
-      <div class="op-acts">${acts}</div>
-    </div>${body}</div>`;
+    </div>
+  </div>`;
+}
+
+function renderAllOps(){
+  const list=document.getElementById('ops-list');
+  const empty=document.getElementById('ops-empty');
+  if(!ops.length){empty.style.display='block';list.innerHTML='';return;}
+  empty.style.display='none';
+  list.innerHTML=ops.map(o=>opCardHTML(o)).join('');
 }
 
 function updateOpCard(op){
   const card=document.getElementById(`opc-${op.id}`);
-  if(!card){renderOps();return;}
-  card.outerHTML=opCardHTML(op);
+  if(card){card.outerHTML=opCardHTML(op);}
+  else{renderAllOps();}
   updateBadge();
 }
 
 function pauseOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='running'){op.pauseFlag=true;op.status='paused';updateOpCard(op);updateDbOp(op);}}
 function resumeOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);}}
 function cancelOp(id){const op=ops.find(o=>o.id===id);if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);}}
-
-async function clearFinished(){
-  ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));
-  try{await post('/operations',{action:'clearFinished'});}catch(e){}
-  renderOps(); updateBadge();
-}
+async function clearFinished(){ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));try{await post('/operations',{action:'clearFinished'});}catch{}renderAllOps();updateBadge();}
 
 async function loadOpsFromDb(){
   const loading=document.getElementById('ops-loading');
@@ -843,48 +799,39 @@ async function loadOpsFromDb(){
   try{
     const d=await post('/operations',{action:'list'});
     loading.style.display='none';
-    if(!d.operations||!d.operations.length){
-      if(!ops.length){document.getElementById('ops-empty').style.display='block';}
-      return;
-    }
-    document.getElementById('ops-empty').style.display='none';
-    // Merge: mostra ops em memória (com controles) + ops do DB (históricas)
     const memIds=new Set(ops.map(o=>o.dbId).filter(Boolean));
     const dbOps=d.operations.filter(o=>!memIds.has(o._id.toString()));
-    const allCards=[...ops.map(o=>opCardHTML(o)),
-      ...dbOps.map(o=>dbOpCardHTML(o))].join('');
-    document.getElementById('ops-list').innerHTML=allCards||
-      '<div class="empty-ops"><div class="empty-ops-icon">📭</div><div>Nenhuma operação.</div></div>';
+    const html=[...ops.map(o=>opCardHTML(o)),...dbOps.map(o=>dbOpCardHTML(o))].join('');
+    document.getElementById('ops-empty').style.display=html?'none':'block';
+    document.getElementById('ops-list').innerHTML=html||'';
   }catch(e){loading.style.display='none';}
 }
 
 function dbOpCardHTML(op){
-  const st=op.status;
-  const s=op.stats||{};
+  const st=op.status;const s=op.stats||{};
   return `<div class="op-card ${st}">
     <div class="op-head">
       <div class="op-dot ${st}"></div>
       <div class="op-info">
         <div class="op-title">${esc(op.label||'Operação')}</div>
-        <div class="op-sub">${statusLbl(st)} · ${s.ok||0} ok · ${s.skip||0} pulados · ${s.err||0} erros · ${new Date(op.createdAt).toLocaleString('pt-BR')}</div>
+        <div class="op-sub">${statusLbl(st)} · ${s.ok||0} ok · ${s.skip||0} pulados · ${s.err||0} erros · ${fmtDate(op.createdAt)}</div>
       </div>
     </div>
-    ${s.total>0?`<div class="op-body">
+    <div class="op-body">
       <div class="op-pb"><div class="op-pf" style="width:${s.progress||0}%"></div></div>
       <div class="op-stats">
         <div class="op-stat ok"><span>${s.ok||0}</span> ok</div>
         <div class="op-stat sk"><span>${s.skip||0}</span> pulados</div>
         <div class="op-stat er"><span>${s.err||0}</span> erros</div>
-      </div></div>`:''}
+      </div>
+    </div>
   </div>`;
 }
 
 async function updateDbOp(op){
   if(!op.dbId)return;
-  try{await post('/operations',{action:'update',opId:op.dbId,status:op.status,stats:{ok:op.ok,skip:op.skip,err:op.err,total:op.total,progress:op.progress},log:op.log});}
-  catch(e){}
+  try{await post('/operations',{action:'update',opId:op.dbId,status:op.status,stats:{ok:op.ok,skip:op.skip,err:op.err,total:op.total,progress:op.progress},log:op.log});}catch{}
 }
-
 async function waitUnpause(op){while(op.pauseFlag&&!op.cancelFlag)await sleep(500);}
 
 // ═══════════════════════════════════════════
@@ -892,108 +839,228 @@ async function waitUnpause(op){while(op.pauseFlag&&!op.cancelFlag)await sleep(50
 // ═══════════════════════════════════════════
 async function runMembersOp(op){
   try{
-    op.log='Enviando ao servidor...'; updateOpCard(op);
+    op.log='Enviando ao servidor...';updateOpCard(op);
     const d=await post('/clone',op.params);
     const r=d.results;
-    op.ok=r.added; op.skip=r.skipped; op.err=r.errors.length;
-    op.progress=100; op.total=r.added+r.skipped+r.errors.length;
-    op.status=op.cancelFlag?'cancelled':'done'; op.log='';
+    op.ok=r.added;op.skip=r.skipped;op.err=r.errors.length;
+    op.progress=100;op.total=r.added+r.skipped+r.errors.length;
+    op.status=op.cancelFlag?'cancelled':'done';op.log='';
   }catch(e){op.status='error';op.log=e.message;}
-  updateOpCard(op); await updateDbOp(op); updateBadge();
+  updateOpCard(op);await updateDbOp(op);updateBadge();
 }
 
 // ═══════════════════════════════════════════
-// RUN MESSAGES (batches, pause/cancel)
+// RUN MESSAGES
 // ═══════════════════════════════════════════
 async function runMsgsOp(op){
   const p=op.params;
-  let offsetId=0;      // para histórico: avança com lastProcessedId
-  let minId=0;         // para onlyNew: ID a partir do qual buscar
-  let processed=0;
-  const maxTotal=p.msgLimit;
+  let offsetId=0,minId=0,processed=0;
+  const maxTotal=p.msgLimit||100;
 
-  // Para "apenas novas": pega o ID da última mensagem atual para usar como baseline
   if(p.onlyNew){
     try{
-      const snap=await post('/messages',{
-        apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,
-        batchSize:1,delayMs:0,onlyNew:false,offsetId:0,minId:0,
-      });
+      const snap=await post('/messages',{apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,batchSize:1,delayMs:0,onlyNew:false,offsetId:0,minId:0});
       minId=snap.lastProcessedId||0;
-      op.log=`Baseline definido: msg ID ${minId}. Aguardando novas mensagens...`;
-      updateOpCard(op);
-    }catch(e){}
+      op.log=`Baseline ID ${minId}. Aguardando novas...`;updateOpCard(op);
+    }catch{}
   }
 
   try{
     while(true){
       await waitUnpause(op);
       if(op.cancelFlag){op.status='cancelled';break;}
-
       const remaining=maxTotal-processed;
       if(remaining<=0){op.status='done';break;}
-
-      const batchSize=Math.min(p.batchSize,remaining,50);
-      op.log=p.onlyNew?`Buscando novas após ID ${minId}...`:`Batch a partir do ID ${offsetId||0}...`;
+      const batchSize=Math.min(p.batchSize||20,remaining,50);
+      op.log=p.onlyNew?`Buscando novas após ID ${minId}...`:`Batch após ID ${offsetId}...`;
       updateOpCard(op);
 
-      const d=await post('/messages',{
-        apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,
-        batchSize,delayMs:p.delayMs,
-        onlyNew:p.onlyNew,
-        minId:p.onlyNew?minId:0,
-        offsetId:p.onlyNew?0:offsetId,
-      });
-
+      const d=await post('/messages',{apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,batchSize,delayMs:p.delayMs,onlyNew:p.onlyNew,minId:p.onlyNew?minId:0,offsetId:p.onlyNew?0:offsetId});
       const r=d.results;
-      op.ok+=r.forwarded; op.skip+=r.skipped; op.err+=r.errors.length;
+      op.ok+=r.forwarded;op.skip+=r.skipped;op.err+=r.errors.length;
       processed+=r.total;
-
-      if(d.lastProcessedId>0){
-        if(p.onlyNew) minId=d.lastProcessedId; // avança o baseline para novas buscas
-        else offsetId=d.lastProcessedId;        // avança paginação do histórico
-      }
-
-      if(maxTotal!==999999) op.progress=Math.min(100,Math.round(processed/maxTotal*100));
-      op.total=processed;
-      updateOpCard(op);
-      await updateDbOp(op);
+      if(d.lastProcessedId>0){if(p.onlyNew)minId=d.lastProcessedId;else offsetId=d.lastProcessedId;}
+      if(maxTotal!==999999)op.progress=Math.min(100,Math.round(processed/maxTotal*100));
+      op.total=processed;updateOpCard(op);await updateDbOp(op);
 
       if(p.onlyNew){
-        // Modo "apenas novas": pausa entre polls, continua indefinidamente
-        if(r.total===0){
-          op.log=`Aguardando novas mensagens... (último ID: ${minId})`;
-          updateOpCard(op);
-          await sleep(10000); // poll a cada 10s
-        }
+        if(r.total===0){op.log=`Aguardando novas... (último ID: ${minId})`;updateOpCard(op);await sleep(10000);}
       }else{
-        // Modo histórico: para quando não há mais mensagens
         if(!d.hasMore||r.total===0){op.status='done';break;}
         await sleep(1500);
       }
     }
   }catch(e){op.status='error';op.log=e.message;}
-
   if(op.status!=='cancelled'&&op.status!=='error')op.status='done';
-  op.log=''; if(op.status==='done')op.progress=100;
-  updateOpCard(op); await updateDbOp(op); updateBadge();
+  op.log='';if(op.status==='done')op.progress=100;
+  updateOpCard(op);await updateDbOp(op);updateBadge();
 }
 
 // ═══════════════════════════════════════════
-// SESSION DISPLAY
+// SCHEDULER UI
 // ═══════════════════════════════════════════
-function showSessPanel(session){
-  document.getElementById('sess-panel').style.display='block';
-  document.getElementById('sess-display').childNodes[0].textContent=session;
+function openScheduler(){
+  if(!S.srcGroup||!S.tgtGroup)return sa(4,'ae','Selecione os grupos primeiro.');
+  const el=document.getElementById('modal-summary');
+  el.className='alert ai2 show';
+  el.innerHTML=`<span class="ai">ℹ️</span><span><strong>Tipo:</strong> ${S.mode==='members'?'👥 Membros':'💬 Mensagens'}<br><strong>Origem:</strong> ${esc(S.srcGroup.title)}<br><strong>Destino:</strong> ${esc(S.tgtGroup.title)}</span>`;
+  // Default datetime: agora + 1h
+  const dt=new Date(Date.now()+3600000);
+  document.getElementById('sched-datetime').value=dt.toISOString().slice(0,16);
+  hideA('modal-alert');
+  document.getElementById('modal-overlay').style.display='flex';
 }
-function copySess(){
-  const t=document.getElementById('sess-display').childNodes[0].textContent.trim();
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.querySelector('.copy-btn');
-    b.textContent='copiado!'; setTimeout(()=>b.textContent='copiar',2000);
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+function setSchedMode(m){
+  S.schedMode=m;
+  ['once','interval','daily'].forEach(k=>{
+    document.getElementById(`stab-${k}`).classList.toggle('active',k===m);
+    document.getElementById(`sched-${k}`).style.display=k===m?'block':'none';
   });
+}
+
+async function saveSchedule(){
+  if(!S.srcGroup||!S.tgtGroup)return;
+  hideA('modal-alert');
+  const type=S.mode;
+  const params=buildParams();
+  let schedule={mode:S.schedMode};
+  if(S.schedMode==='once'){
+    const dt=document.getElementById('sched-datetime').value;
+    if(!dt)return showA('modal-alert','ae','Selecione a data e hora.');
+    schedule.runAt=new Date(dt).toISOString();
+  }else if(S.schedMode==='interval'){
+    schedule.intervalMinutes=parseInt(document.getElementById('sched-interval-min').value)||60;
+  }else{
+    schedule.dailyTime=document.getElementById('sched-daily-time').value||'08:00';
+  }
+  try{
+    await post('/scheduler',{
+      action:'create',type,
+      label:`${type==='members'?'👥':'💬'} ${S.srcGroup.title} → ${S.tgtGroup.title}`,
+      sourceGroup:{id:S.srcGroup.id,title:S.srcGroup.title},
+      targetGroup:{id:S.tgtGroup.id,title:S.tgtGroup.title},
+      params:{...params},
+      schedule,
+      sessionDbId:S.sessionDbId||null,
+    });
+    closeModal();
+    showPage('page-sched');loadSchedules();
+    updateSchedBadge();
+  }catch(e){showA('modal-alert','ae',e.message);}
+}
+
+async function loadSchedules(){
+  const loading=document.getElementById('sched-loading'),list=document.getElementById('sched-list'),empty=document.getElementById('sched-empty');
+  loading.style.display='flex';list.innerHTML='';empty.style.display='none';
+  try{
+    const d=await post('/scheduler',{action:'list'});
+    loading.style.display='none';
+    if(!d.schedules||!d.schedules.length){empty.style.display='block';return;}
+    list.innerHTML=d.schedules.map(s=>schedCardHTML(s)).join('');
+    updateSchedBadge(d.schedules);
+  }catch(e){loading.style.display='none';}
+}
+
+function schedModeLbl(s){
+  if(s.mode==='once')return`Uma vez em ${fmtDate(s.runAt)}`;
+  if(s.mode==='interval')return`A cada ${s.intervalMinutes} min`;
+  if(s.mode==='daily')return`Diariamente às ${s.dailyTime}`;
+  return s.mode;
+}
+
+function schedCardHTML(s){
+  const isPaused=s.status==='paused';
+  const isDone=s.status==='done';
+  return `<div class="sched-card ${isPaused?'paused':''}" id="sc-${s._id}">
+    <div class="sched-dot"></div>
+    <div class="sched-info">
+      <div class="sched-title">${esc(s.label||'Agendamento')}</div>
+      <div class="sched-meta">
+        📅 ${schedModeLbl(s.schedule)} · Execuções: ${s.runCount||0}<br>
+        ⏰ Próxima: ${s.nextRun?fmtDate(s.nextRun):'—'} · Última: ${fmtDate(s.lastRun)}<br>
+        Status: ${s.status==='active'?'✅ Ativo':s.status==='paused'?'⏸ Pausado':'✔ Concluído'}
+      </div>
+    </div>
+    <div class="sched-acts">
+      ${!isDone&&!isPaused?`<button class="btn btn-warn btn-sm" onclick="pauseSched('${s._id}')">⏸</button>`:''}
+      ${isPaused?`<button class="btn btn-secondary btn-sm" onclick="resumeSched('${s._id}')">▶</button>`:''}
+      <button class="btn btn-danger btn-sm" onclick="deleteSched('${s._id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+async function pauseSched(id){
+  await post('/scheduler',{action:'updateStatus',scheduleId:id,status:'paused'});
+  loadSchedules();
+}
+async function resumeSched(id){
+  await post('/scheduler',{action:'updateStatus',scheduleId:id,status:'active'});
+  loadSchedules();
+}
+async function deleteSched(id){
+  if(!confirm('Deletar agendamento?'))return;
+  await post('/scheduler',{action:'delete',scheduleId:id});
+  document.getElementById(`sc-${id}`)?.remove();
+  updateSchedBadge();
+}
+
+async function updateSchedBadge(schedules){
+  let count=0;
+  if(schedules){count=schedules.filter(s=>s.status==='active').length;}
+  else{try{const d=await post('/scheduler',{action:'list'});count=d.schedules.filter(s=>s.status==='active').length;}catch{}}
+  const b=document.getElementById('sched-badge');
+  b.style.display=count>0?'inline':'none';b.textContent=count;
+}
+
+// ═══════════════════════════════════════════
+// SCHEDULER TICKER (verifica agendamentos a cada 30s)
+// ═══════════════════════════════════════════
+function startSchedulerTick(){
+  setInterval(checkDueSchedules,30000);
+}
+
+async function checkDueSchedules(){
+  if(!S.session&&!S.sessionDbId)return; // sem sessão ativa, não pode executar
+  try{
+    const d=await post('/scheduler',{action:'getDue'});
+    if(!d.schedules||!d.schedules.length)return;
+    for(const sched of d.schedules){
+      // Marca como executado primeiro para evitar duplicatas
+      await post('/scheduler',{action:'markRun',scheduleId:sched._id.toString()});
+
+      // Carrega a sessão se necessário
+      let session=S.session,apiId=S.apiId,apiHash=S.apiHash;
+      if(!session&&sched.sessionDbId){
+        try{
+          const sd=await post('/auth',{action:'loadSession',sessionDbId:sched.sessionDbId});
+          session=sd.session;apiId=sd.apiId;apiHash=sd.apiHash;
+        }catch(e){console.warn('Sessão não encontrada para agendamento:',e.message);continue;}
+      }
+      if(!session)continue;
+
+      // Cria e executa a operação
+      const id=++opSeq;
+      const p=sched.params||{};
+      const fullParams={...p,apiId,apiHash,sessionString:session,sourceGroupId:sched.sourceGroup?.id,targetGroupId:sched.targetGroup?.id};
+      const label=`🕐 ${sched.label}`;
+      let dbId=null;
+      try{const r=await post('/operations',{action:'create',type:sched.type,label,sourceGroup:sched.sourceGroup,targetGroup:sched.targetGroup,params:{}});dbId=r.opId;}catch{}
+      const op=createOp(id,sched.type,label,dbId,fullParams);
+      if(sched.type==='members')runMembersOp(op);else runMsgsOp(op);
+
+      // Notifica usuário
+      if(Notification.permission==='granted'){
+        new Notification('TG Cloner',{body:`Agendamento iniciado: ${sched.label}`,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">✈</text></svg>'});
+      }
+    }
+    if(d.schedules.length>0)loadSchedules();
+  }catch(e){console.warn('Scheduler tick:',e.message);}
+}
+
+// Solicita permissão de notificação
+if('Notification' in window && Notification.permission==='default'){
+  Notification.requestPermission();
 }
 
 checkAuth();
