@@ -7,34 +7,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    :root{
-      --bg:#080c10;--surface:#0d1117;--surface2:#161b22;--border:#21262d;
-      --accent:#00e5ff;--accent2:#7b61ff;--green:#3fb950;--red:#f85149;
-      --yellow:#d29922;--text:#e6edf3;--muted:#6e7681;
-      --mono:'Share Tech Mono',monospace;--sans:'Syne',sans-serif;
-    }
+    :root{--bg:#080c10;--surface:#0d1117;--surface2:#161b22;--border:#21262d;--accent:#00e5ff;--accent2:#7b61ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--text:#e6edf3;--muted:#6e7681;--mono:'Share Tech Mono',monospace;--sans:'Syne',sans-serif;}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
-    body::before{content:'';position:fixed;inset:0;
-      background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
-      background-size:40px 40px;pointer-events:none;z-index:0;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
     .blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:.10;pointer-events:none;z-index:0;}
     .blob-1{width:500px;height:500px;background:var(--accent);top:-200px;right:-100px;}
     .blob-2{width:400px;height:400px;background:var(--accent2);bottom:-150px;left:-100px;}
 
-    /* ── LOGIN ── */
+    /* LOGIN */
     #login-screen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:var(--bg);}
     .login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:400px;text-align:center;animation:fadeUp .4s ease;}
     .login-logo{font-size:40px;margin-bottom:14px;}
     .login-title{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
     .login-sub{color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;margin-bottom:28px;}
 
-    /* ── LAYOUT ── */
+    /* SHELL */
     #app{display:none;position:relative;z-index:1;}
     .shell{display:flex;min-height:100vh;}
 
-    /* ── SIDEBAR ── */
-    .sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;}
+    /* SIDEBAR */
+    .sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
     .sidebar-brand{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
     .sb-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
     .sb-title{font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -43,175 +36,170 @@
     .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;cursor:pointer;transition:all .2s;color:var(--muted);font-size:13px;font-weight:600;border:none;background:transparent;width:100%;text-align:left;}
     .nav-item:hover{background:var(--surface2);color:var(--text);}
     .nav-item.active{background:rgba(0,229,255,.08);color:var(--accent);}
-    .nav-item .ni-icon{font-size:15px;flex-shrink:0;}
-    .nav-badge{margin-left:auto;background:var(--accent2);color:#fff;font-family:var(--mono);font-size:9px;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
-    .nav-badge.green{background:var(--green);}
-    .nav-badge.red{background:var(--red);}
+    .nav-item .ni{font-size:15px;flex-shrink:0;}
+    .nav-badge{margin-left:auto;font-family:var(--mono);font-size:9px;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
+    .nav-badge.green{background:var(--green);color:#000;}
+    .nav-badge.blue{background:var(--accent);color:#000;}
+    .nav-badge.muted{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
     .sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);}
 
-    /* ── MAIN ── */
+    /* MAIN */
     .main{flex:1;overflow-y:auto;}
-    .page{display:none;max-width:780px;margin:0 auto;padding:36px 28px 80px;}
+    .page{display:none;max-width:800px;margin:0 auto;padding:32px 24px 80px;}
     .page.active{display:block;animation:fadeUp .35s ease;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    .page-header{margin-bottom:24px;}
+    .page-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+    .page-sub{color:var(--muted);font-size:13px;}
 
-    /* ── PAGE HEADER ── */
-    .page-header{margin-bottom:28px;}
-    .page-title{font-size:22px;font-weight:800;margin-bottom:4px;}
-    .page-sub{color:var(--muted);font-size:13px;line-height:1.5;}
-
-    /* ── STEPS ── */
-    .steps{display:flex;align-items:center;justify-content:flex-start;gap:0;margin-bottom:28px;flex-wrap:wrap;row-gap:8px;}
+    /* STEPS */
+    .steps{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;margin-bottom:24px;}
     .step{display:flex;align-items:center;gap:6px;}
     .step-num{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--muted);transition:all .3s;}
-    .step-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.4px;transition:color .3s;}
+    .step-label{font-size:11px;color:var(--muted);font-weight:600;transition:color .3s;}
     .step.active .step-num{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.08);box-shadow:0 0 12px rgba(0,229,255,.2);}
     .step.active .step-label{color:var(--accent);}
     .step.done .step-num{border-color:var(--green);background:rgba(63,185,80,.1);color:var(--green);}
     .step.done .step-label{color:var(--green);}
-    .step-line{width:32px;height:1px;background:var(--border);}
+    .step-line{width:28px;height:1px;background:var(--border);}
 
-    /* ── CARDS ── */
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
+    /* CARDS */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:14px;}
     .card-title{font-size:15px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
     .badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2);letter-spacing:1px;}
-    .card-desc{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.6;}
+    .card-desc{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.6;}
 
-    /* ── FORM ── */
-    .field{margin-bottom:16px;}
+    /* SAVED SESSIONS */
+    .session-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+    .session-item:hover{border-color:var(--accent);}
+    .session-item.selected{border-color:var(--accent);background:rgba(0,229,255,.05);}
+    .session-item-info{flex:1;min-width:0;}
+    .session-item-phone{font-weight:700;font-size:13px;}
+    .session-item-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
+    .session-item-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;line-height:1;transition:color .2s;}
+    .session-item-del:hover{color:var(--red);}
+
+    /* FORM */
+    .field{margin-bottom:14px;}
     label{display:block;font-size:11px;font-weight:600;letter-spacing:.7px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;}
-    input,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+    input,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
     input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,255,.08);}
     input::placeholder{color:var(--muted);}
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     @media(max-width:540px){.field-row{grid-template-columns:1fr;}}
 
-    /* ── TOGGLE ── */
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:16px;cursor:pointer;}
+    /* TOGGLE */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:14px;cursor:pointer;transition:border-color .2s;}
     .toggle-row:hover{border-color:var(--accent);}
-    .toggle-info{flex:1;}
-    .toggle-label{font-size:13px;font-weight:600;}
-    .toggle-desc{font-size:11px;color:var(--muted);margin-top:2px;}
-    .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
-    .toggle-switch input{opacity:0;width:0;height:0;}
-    .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:.3s;cursor:pointer;}
-    .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.3s;}
-    input:checked+.toggle-slider{background:var(--accent);}
-    input:checked+.toggle-slider:before{transform:translateX(18px);background:#000;}
+    .tgl-info{flex:1;}
+    .tgl-label{font-size:13px;font-weight:600;}
+    .tgl-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+    .tgl-sw{position:relative;width:40px;height:22px;flex-shrink:0;margin-left:12px;}
+    .tgl-sw input{opacity:0;width:0;height:0;}
+    .tgl-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:.3s;cursor:pointer;}
+    .tgl-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.3s;}
+    input:checked+.tgl-slider{background:var(--accent);}
+    input:checked+.tgl-slider:before{transform:translateX(18px);background:#000;}
 
-    /* ── MODE TABS ── */
-    .mode-tabs{display:flex;gap:8px;margin-bottom:20px;}
-    .mode-tab{flex:1;padding:11px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+    /* MODE TABS */
+    .mode-tabs{display:flex;gap:8px;margin-bottom:18px;}
+    .mode-tab{flex:1;padding:10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
     .mode-tab:hover{border-color:var(--accent);color:var(--accent);}
     .mode-tab.active{border-color:var(--accent);background:rgba(0,229,255,.08);color:var(--accent);}
 
-    /* ── BUTTONS ── */
+    /* BUTTONS */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 22px;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
     .btn-primary{background:linear-gradient(135deg,var(--accent),#00b4cc);color:#000;width:100%;}
     .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,229,255,.25);}
-    .btn-primary:active{transform:translateY(0);}
     .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;}
     .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
     .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
     .btn-warn{background:rgba(210,153,34,.1);color:var(--yellow);border:1px solid rgba(210,153,34,.25);}
-    .btn-warn:hover{background:rgba(210,153,34,.18);}
+    .btn-warn:hover{background:rgba(210,153,34,.2);}
     .btn-danger{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.25);}
-    .btn-danger:hover{background:rgba(248,81,73,.18);}
-    .btn-sm{padding:7px 14px;font-size:12px;}
+    .btn-danger:hover{background:rgba(248,81,73,.2);}
+    .btn-sm{padding:7px 13px;font-size:12px;}
     .btn-row{display:flex;gap:8px;margin-top:8px;}
+    .btn-full{width:100%;}
 
-    /* ── ALERTS ── */
-    .alert{padding:11px 14px;border-radius:7px;font-size:13px;margin-bottom:16px;display:none;align-items:flex-start;gap:9px;line-height:1.5;}
+    /* ALERTS */
+    .alert{padding:11px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;display:none;align-items:flex-start;gap:9px;line-height:1.5;}
     .alert.show{display:flex;}
     .ai{font-size:14px;flex-shrink:0;margin-top:1px;}
-    .alert-error{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.2);color:#ff7b72;}
-    .alert-success{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:#7ee787;}
-    .alert-info{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--accent);}
-    .alert-warn{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.2);color:#e3b341;}
+    .ae{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.2);color:#ff7b72;}
+    .as{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:#7ee787;}
+    .ai2{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--accent);}
+    .aw{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.2);color:#e3b341;}
 
-    /* ── SESSION BOX ── */
-    .session-box{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 46px 10px 12px;font-family:var(--mono);font-size:11px;color:var(--green);word-break:break-all;line-height:1.6;position:relative;}
+    /* SESSION BOX */
+    .sbox{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 46px 10px 12px;font-family:var(--mono);font-size:11px;color:var(--green);word-break:break-all;line-height:1.6;position:relative;}
     .copy-btn{position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;transition:all .2s;}
     .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
 
-    /* ── GROUPS ── */
-    .groups-grid{display:grid;gap:7px;max-height:240px;overflow-y:auto;padding-right:4px;margin-bottom:14px;}
+    /* GROUPS */
+    .groups-grid{display:grid;gap:7px;max-height:220px;overflow-y:auto;padding-right:4px;margin-bottom:12px;}
     .groups-grid::-webkit-scrollbar{width:3px;}
     .groups-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
     .group-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;}
     .group-card:hover{border-color:var(--accent);}
     .group-card.selected{border-color:var(--accent);background:rgba(0,229,255,.05);}
-    .g-avatar{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+    .g-av{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
     .g-info{flex:1;min-width:0;}
     .g-name{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .g-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:1px;}
     .g-type{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(123,97,255,.15);color:var(--accent2);border:1px solid rgba(123,97,255,.2);flex-shrink:0;}
 
-    /* ── OPERATIONS LIST ── */
+    /* OPS */
     .ops-list{display:flex;flex-direction:column;gap:12px;}
-    .op-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+    .op-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
     .op-card.running{border-color:rgba(0,229,255,.3);}
     .op-card.paused{border-color:rgba(210,153,34,.3);}
-    .op-card.done{border-color:rgba(63,185,80,.3);}
-    .op-card.cancelled{border-color:rgba(248,81,73,.2);opacity:.7;}
-    .op-card.error{border-color:rgba(248,81,73,.4);}
-    .op-header{padding:14px 16px;display:flex;align-items:center;gap:12px;}
-    .op-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-    .op-status-dot.running{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.5s infinite;}
-    .op-status-dot.paused{background:var(--yellow);}
-    .op-status-dot.done{background:var(--green);}
-    .op-status-dot.cancelled{background:var(--muted);}
-    .op-status-dot.error{background:var(--red);}
-    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+    .op-card.done{border-color:rgba(63,185,80,.25);}
+    .op-card.cancelled,.op-card.error{border-color:rgba(248,81,73,.2);opacity:.75;}
+    .op-head{padding:14px 16px;display:flex;align-items:center;gap:12px;}
+    .op-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+    .op-dot.running{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.5s infinite;}
+    .op-dot.paused{background:var(--yellow);}
+    .op-dot.done{background:var(--green);}
+    .op-dot.cancelled,.op-dot.error{background:var(--red);}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
     .op-info{flex:1;min-width:0;}
     .op-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .op-subtitle{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
-    .op-actions{display:flex;gap:6px;flex-shrink:0;}
+    .op-sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;}
+    .op-acts{display:flex;gap:6px;flex-shrink:0;}
     .op-body{padding:0 16px 14px;}
-    .op-progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:8px;}
-    .op-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .5s ease;}
-    .op-stats{display:flex;gap:16px;}
+    .op-pb{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+    .op-pf{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .5s ease;}
+    .op-stats{display:flex;gap:14px;}
     .op-stat{font-family:var(--mono);font-size:11px;color:var(--muted);}
-    .op-stat span{color:var(--text);}
     .op-stat.ok span{color:var(--green);}
-    .op-stat.skip span{color:var(--yellow);}
-    .op-stat.err span{color:var(--red);}
-    .op-log{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;max-height:48px;overflow:hidden;}
-    .empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
-    .empty-icon{font-size:40px;margin-bottom:12px;opacity:.4;}
-    .empty-text{font-size:14px;}
+    .op-stat.sk span{color:var(--yellow);}
+    .op-stat.er span{color:var(--red);}
+    .op-stat span{color:var(--text);}
+    .op-log{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;}
+    .empty-ops{text-align:center;padding:50px 20px;color:var(--muted);}
+    .empty-ops-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
 
-    /* ── PROGRESS ── */
-    .progress-wrap{margin:14px 0;}
-    .progress-bar{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-    .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s ease;width:0%;}
-    .progress-text{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;}
-
-    /* ── STATS ── */
-    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0;}
-    .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center;}
-    .stat-value{font-size:24px;font-weight:800;font-family:var(--mono);}
-    .stat-label{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.4px;}
-    .stat-card.ok .stat-value{color:var(--green);}
-    .stat-card.skip .stat-value{color:var(--yellow);}
-    .stat-card.err .stat-value{color:var(--red);}
-
-    /* ── NOTICE ── */
-    .notice{background:rgba(210,153,34,.06);border:1px solid rgba(210,153,34,.2);border-radius:7px;padding:11px 13px;font-size:12px;color:#e3b341;line-height:1.6;margin-bottom:16px;}
-    .notice strong{color:#f0c040;}
-    .divider{height:1px;background:var(--border);margin:18px 0;}
+    /* MISC */
+    .divider{height:1px;background:var(--border);margin:16px 0;}
     a{color:var(--accent);text-decoration:none;}
     a:hover{text-decoration:underline;}
     code{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:11px;color:var(--accent);}
+    .notice{background:rgba(210,153,34,.06);border:1px solid rgba(210,153,34,.2);border-radius:7px;padding:11px 13px;font-size:12px;color:#e3b341;line-height:1.6;margin-bottom:14px;}
+    .notice strong{color:#f0c040;}
     .spinner{width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
+    .section-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+    .or-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;}
+    .or-divider:before,.or-divider:after{content:'';flex:1;height:1px;background:var(--border);}
 
     @media(max-width:680px){
-      .sidebar{width:60px;}
-      .sb-title,.nav-item span:not(.ni-icon),.nav-section,.nav-badge{display:none;}
-      .sidebar-brand{justify-content:center;padding:16px 0;}
+      .sidebar{width:58px;}
+      .sb-title,.nav-item span:not(.ni),.nav-section{display:none;}
+      .nav-badge{display:none;}
+      .sidebar-brand{justify-content:center;padding:14px 0;}
       .nav-item{justify-content:center;padding:10px 0;}
-      .page{padding:24px 16px 60px;}
+      .page{padding:20px 14px 60px;}
     }
   </style>
 </head>
@@ -226,12 +214,12 @@
     <div class="login-title">TG Cloner</div>
     <div class="login-sub">// ACESSO RESTRITO</div>
     <div class="field"><label>Senha de acesso</label>
-      <input type="password" id="site-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input type="password" id="site-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div id="login-alert" class="alert" style="margin-bottom:14px"></div>
+    <div id="login-alert" class="alert" style="margin-bottom:12px"></div>
     <button class="btn btn-primary" onclick="doLogin()">
-      <span id="login-btn-text">Entrar</span>
-      <span id="login-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
+      <span id="login-txt">Entrar</span>
+      <span id="login-spin" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
     </button>
   </div>
 </div>
@@ -239,8 +227,6 @@
 <!-- APP -->
 <div id="app">
 <div class="shell">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-brand">
       <div class="sb-icon">✈</div>
@@ -248,28 +234,29 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">Menu</div>
-      <button class="nav-item active" onclick="showPage('page-config')" id="nav-config">
-        <span class="ni-icon">⚙️</span><span>Configurar</span>
+      <button class="nav-item active" id="nav-config" onclick="showPage('page-config')">
+        <span class="ni">⚙️</span><span>Configurar</span>
       </button>
-      <button class="nav-item" onclick="showPage('page-ops')" id="nav-ops">
-        <span class="ni-icon">📋</span><span>Operações</span>
-        <span class="nav-badge" id="ops-badge" style="display:none">0</span>
+      <button class="nav-item" id="nav-ops" onclick="showPage('page-ops');loadOpsFromDb()">
+        <span class="ni">📋</span><span>Operações</span>
+        <span class="nav-badge green" id="ops-badge" style="display:none">0</span>
+      </button>
+      <button class="nav-item" id="nav-sessions" onclick="showPage('page-sessions');loadSessions()">
+        <span class="ni">🔐</span><span>Sessões</span>
+        <span class="nav-badge blue" id="sess-badge" style="display:none">0</span>
       </button>
     </nav>
     <div class="sidebar-footer">
       <button class="nav-item" onclick="doLogout()" style="color:var(--red)">
-        <span class="ni-icon">⏏</span><span>Sair</span>
+        <span class="ni">⏏</span><span>Sair</span>
       </button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
 
-    <!-- ══ PAGE: CONFIG ══ -->
+    <!-- ══ CONFIG ══ -->
     <div class="page active" id="page-config">
-
-      <!-- Steps -->
       <div class="steps" style="margin-top:12px">
         <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">Credenciais</div></div>
         <div class="step-line"></div>
@@ -280,624 +267,735 @@
         <div class="step" id="step-4"><div class="step-num">4</div><div class="step-label">Operação</div></div>
       </div>
 
-      <!-- PAINEL 1 -->
-      <div class="card" id="panel-1" style="display:block">
-        <div class="card-title">🔑 Credenciais da API <span class="badge">PASSO 1</span></div>
+      <!-- P1 -->
+      <div class="card" id="panel-1">
+        <div class="card-title">🔑 Credenciais <span class="badge">PASSO 1</span></div>
         <p class="card-desc">Acesse <a href="https://my.telegram.org/auth" target="_blank">my.telegram.org</a> → <strong>API development tools</strong> para obter suas credenciais.</p>
+
+        <!-- Sessões salvas -->
+        <div id="saved-sessions-wrap" style="display:none;margin-bottom:16px">
+          <div class="section-label">Sessões salvas</div>
+          <div id="saved-sessions-list"></div>
+          <button class="btn btn-primary" onclick="loadSelectedSession()" id="btn-load-sess" style="display:none;margin-top:8px">
+            ✅ Usar sessão selecionada
+          </button>
+        </div>
+        <div id="saved-sessions-loading" class="alert ai2" style="display:none;margin-bottom:14px">
+          <span class="ai">⏳</span><span>Carregando sessões salvas...</span>
+        </div>
+
+        <div class="or-divider" id="or-div" style="display:none">ou autenticar novo número</div>
+
         <div class="field-row">
           <div class="field"><label>API ID</label><input type="number" id="apiId" placeholder="1234567"/></div>
           <div class="field"><label>API Hash</label><input type="text" id="apiHash" placeholder="abc123..."/></div>
         </div>
         <div class="field"><label>Número de Telefone</label><input type="tel" id="phone" placeholder="+5511999999999"/></div>
-        <div class="field"><label>Session String (opcional)</label><input type="text" id="existingSession" placeholder="Cole aqui para pular autenticação..."/></div>
         <div id="alert-1" class="alert"></div>
         <button class="btn btn-primary" onclick="handleCredentials()">
-          <span id="btn1-text">Continuar</span>
-          <span id="btn1-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
+          <span id="btn1-txt">Enviar código</span>
+          <span id="btn1-spin" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
         </button>
       </div>
 
-      <!-- PAINEL 2 -->
+      <!-- P2 -->
       <div class="card" id="panel-2" style="display:none">
         <div class="card-title">📱 Verificação <span class="badge">PASSO 2</span></div>
-        <p class="card-desc" id="panel2-desc">Um código foi enviado ao seu Telegram. Digite-o abaixo.</p>
-        <div class="field" id="code-field"><label>Código de verificação</label><input type="text" id="verifyCode" placeholder="12345" maxlength="6"/></div>
+        <p class="card-desc" id="p2desc">Um código foi enviado ao seu Telegram.</p>
+        <div class="field" id="code-field"><label>Código</label><input type="text" id="verifyCode" placeholder="12345" maxlength="6"/></div>
         <div class="field" id="pass-field" style="display:none"><label>Senha 2FA</label><input type="password" id="twoFAPass" placeholder="Senha de dois fatores"/></div>
         <div id="alert-2" class="alert"></div>
         <div class="btn-row">
           <button class="btn btn-secondary btn-sm" onclick="showPanel(1)">← Voltar</button>
           <button class="btn btn-primary" onclick="handleVerify()" style="flex:1">
-            <span id="btn2-text">Verificar</span>
-            <span id="btn2-spinner" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
+            <span id="btn2-txt">Verificar</span>
+            <span id="btn2-spin" class="spinner" style="display:none;border-color:rgba(0,0,0,.2);border-top-color:#000"></span>
           </button>
         </div>
       </div>
 
-      <!-- PAINEL 3 -->
+      <!-- P3 -->
       <div class="card" id="panel-3" style="display:none">
-        <div class="card-title">👥 Selecionar Grupos <span class="badge">PASSO 3</span></div>
-        <p class="card-desc">Escolha o grupo <strong>origem</strong> e o grupo <strong>destino</strong>. Você precisa ser admin do destino.</p>
+        <div class="card-title">👥 Grupos <span class="badge">PASSO 3</span></div>
+        <p class="card-desc">Escolha o grupo <strong>origem</strong> e o <strong>destino</strong>. Você precisa ser admin do destino.</p>
         <div id="alert-3" class="alert"></div>
-        <div id="groups-loading" class="alert alert-info show"><span class="ai">⏳</span><span>Carregando grupos...</span></div>
-        <div id="groups-content" style="display:none">
-          <label style="display:block;margin-bottom:8px">Grupo Origem</label>
-          <div class="groups-grid" id="source-groups"></div>
+        <div id="grp-loading" class="alert ai2 show"><span class="ai">⏳</span><span>Carregando grupos...</span></div>
+        <div id="grp-content" style="display:none">
+          <div class="section-label" style="margin-bottom:8px">Origem</div>
+          <div class="groups-grid" id="src-groups"></div>
           <div class="divider"></div>
-          <label style="display:block;margin-bottom:8px">Grupo Destino</label>
-          <div class="groups-grid" id="target-groups"></div>
+          <div class="section-label" style="margin-bottom:8px">Destino</div>
+          <div class="groups-grid" id="tgt-groups"></div>
         </div>
-        <div class="btn-row" style="margin-top:14px">
+        <div class="btn-row" style="margin-top:12px">
           <button class="btn btn-secondary btn-sm" onclick="showPanel(1)">← Reiniciar</button>
-          <button class="btn btn-primary" onclick="goToOperation()" style="flex:1">Configurar operação →</button>
+          <button class="btn btn-primary" onclick="goToOp()" style="flex:1">Configurar →</button>
         </div>
       </div>
 
-      <!-- PAINEL 4 -->
+      <!-- P4 -->
       <div class="card" id="panel-4" style="display:none">
-        <div class="card-title">⚡ Configurar Operação <span class="badge">PASSO 4</span></div>
-
+        <div class="card-title">⚡ Operação <span class="badge">PASSO 4</span></div>
         <div class="mode-tabs">
           <button class="mode-tab active" id="tab-members" onclick="setMode('members')">👥 Membros</button>
           <button class="mode-tab" id="tab-messages" onclick="setMode('messages')">💬 Mensagens</button>
         </div>
+        <div id="op-summary" class="alert ai2 show" style="margin-bottom:16px"></div>
 
-        <div id="op-summary" class="alert alert-info show" style="margin-bottom:16px"></div>
-
-        <!-- Config Membros -->
-        <div id="config-members">
+        <div id="cfg-members">
           <div class="field-row">
             <div class="field"><label>Máx. membros</label><input type="number" id="cloneLimit" value="50" min="1" max="200"/></div>
             <div class="field"><label>Delay entre adições (ms)</label><input type="number" id="cloneDelay" value="3000" min="1000" max="30000"/></div>
           </div>
         </div>
 
-        <!-- Config Mensagens -->
-        <div id="config-messages" style="display:none">
+        <div id="cfg-messages" style="display:none">
           <div class="field-row">
-            <div class="field"><label>Mensagens por batch</label><input type="number" id="msgBatch" value="20" min="1" max="50"/></div>
-            <div class="field"><label>Delay entre envios (ms)</label><input type="number" id="msgDelay" value="1500" min="500" max="30000"/></div>
+            <div class="field"><label>Msgs por batch</label><input type="number" id="msgBatch" value="20" min="1" max="50"/></div>
+            <div class="field"><label>Delay entre msgs (ms)</label><input type="number" id="msgDelay" value="1500" min="500" max="30000"/></div>
           </div>
 
-          <!-- Toggle: Todas vs Novas -->
-          <label style="display:block;margin-bottom:8px">Quais mensagens encaminhar?</label>
-          <label class="toggle-row" for="toggle-only-new">
-            <div class="toggle-info">
-              <div class="toggle-label" id="toggle-msg-label">📜 Todas as mensagens</div>
-              <div class="toggle-desc" id="toggle-msg-desc">Encaminha o histórico completo do grupo de origem</div>
+          <label class="toggle-row" for="tgl-new">
+            <div class="tgl-info">
+              <div class="tgl-label" id="tgl-lbl">📜 Todas as mensagens</div>
+              <div class="tgl-desc" id="tgl-desc">Encaminha o histórico completo do grupo</div>
             </div>
-            <div class="toggle-switch">
-              <input type="checkbox" id="toggle-only-new" onchange="updateMsgToggle()"/>
-              <span class="toggle-slider"></span>
-            </div>
+            <div class="tgl-sw"><input type="checkbox" id="tgl-new" onchange="onMsgToggle()"/><span class="tgl-slider"></span></div>
           </label>
 
           <div id="msg-limit-wrap" class="field">
             <label>Total máximo de mensagens</label>
-            <input type="number" id="msgLimit" value="100" min="1" max="2000"/>
+            <input type="number" id="msgLimit" value="100" min="1" max="5000"/>
           </div>
         </div>
 
-        <div class="notice"><strong>⚠ Dica:</strong> Delays adequados evitam flood ban. Operações longas rodam em batches no frontend.</div>
+        <div class="notice"><strong>⚠ Dica:</strong> Use delays altos para evitar flood ban. Operações longas rodam em batches com pause/cancel.</div>
         <div id="alert-4" class="alert"></div>
-
         <div class="btn-row">
           <button class="btn btn-secondary btn-sm" onclick="showPanel(3)">← Voltar</button>
-          <button class="btn btn-primary" onclick="startOperation()" style="flex:1">🚀 Iniciar Operação</button>
+          <button class="btn btn-primary" onclick="startOp()" style="flex:1">🚀 Iniciar Operação</button>
         </div>
       </div>
 
-      <!-- Session -->
-      <div id="session-panel" class="card" style="display:none;border-color:rgba(63,185,80,.2)">
+      <!-- Session ativa -->
+      <div id="sess-panel" class="card" style="display:none;border-color:rgba(63,185,80,.2)">
         <div class="card-title" style="font-size:13px;color:var(--green)">🔐 Sessão Ativa</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Salve para não precisar autenticar novamente:</p>
-        <div class="session-box" id="session-display">—<button class="copy-btn" onclick="copySession()">copiar</button></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Salva automaticamente no MongoDB.</p>
+        <div class="sbox" id="sess-display">—<button class="copy-btn" onclick="copySess()">copiar</button></div>
       </div>
-    </div><!-- /page-config -->
+    </div>
 
-    <!-- ══ PAGE: OPERAÇÕES ══ -->
+    <!-- ══ OPERAÇÕES ══ -->
     <div class="page" id="page-ops">
       <div class="page-header">
         <div class="page-title">📋 Operações</div>
-        <div class="page-sub">Acompanhe e controle todas as operações iniciadas nesta sessão.</div>
+        <div class="page-sub">Histórico e controle das operações. Dados persistidos no MongoDB.</div>
       </div>
-
-      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;gap:8px">
-        <button class="btn btn-secondary btn-sm" onclick="clearFinished()">🗑 Limpar finalizadas</button>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
+        <button class="btn btn-secondary btn-sm" onclick="loadOpsFromDb()">↺ Atualizar</button>
+        <button class="btn btn-danger btn-sm" onclick="clearFinished()">🗑 Limpar finalizadas</button>
       </div>
-
+      <div id="ops-loading" class="alert ai2" style="display:none"><span class="ai">⏳</span><span>Carregando...</span></div>
       <div id="ops-list" class="ops-list">
-        <div class="empty-state" id="ops-empty">
-          <div class="empty-icon">📭</div>
-          <div class="empty-text">Nenhuma operação iniciada ainda.<br>Configure uma na aba <strong>Configurar</strong>.</div>
+        <div class="empty-ops" id="ops-empty">
+          <div class="empty-ops-icon">📭</div>
+          <div>Nenhuma operação ainda.<br>Configure uma em <strong>Configurar</strong>.</div>
         </div>
       </div>
-    </div><!-- /page-ops -->
+    </div>
+
+    <!-- ══ SESSÕES ══ -->
+    <div class="page" id="page-sessions">
+      <div class="page-header">
+        <div class="page-title">🔐 Sessões Salvas</div>
+        <div class="page-sub">Sessões Telegram persistidas no MongoDB. Use-as para pular autenticação.</div>
+      </div>
+      <div id="page-sess-loading" class="alert ai2" style="display:none"><span class="ai">⏳</span><span>Carregando...</span></div>
+      <div id="page-sess-list"></div>
+      <div id="page-sess-empty" class="empty-ops" style="display:none">
+        <div class="empty-ops-icon">🔑</div>
+        <div>Nenhuma sessão salva ainda.<br>Autentique via <strong>Configurar</strong> para criar uma.</div>
+      </div>
+    </div>
 
   </main>
-</div><!-- /shell -->
-</div><!-- /app -->
+</div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 const S = {
   apiId:'', apiHash:'', phone:'', session:'',
   sessionId:'', requires2FA:false,
-  groups:[], sourceGroup:null, targetGroup:null,
+  groups:[], srcGroup:null, tgtGroup:null,
   mode:'members',
-  currentPanel: 1,
+  selectedSavedSession:null,
 };
-
-// Operations registry
-// { id, type, label, status:'running'|'paused'|'done'|'cancelled'|'error',
-//   ok, skip, err, total, progress, log, cancelFlag, pauseFlag, params }
-const ops = [];
-let opIdSeq = 0;
-
-const LS_CREDS = 'tgcloner_creds';
+const ops = []; // runtime ops (memória)
+let opSeq = 0;
 const LS_TOKEN = 'tgcloner_token';
+const LS_CREDS = 'tgcloner_creds';
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // LOGIN
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 function checkAuth(){
-  if(localStorage.getItem(LS_TOKEN)){ showApp(); return; }
+  if(localStorage.getItem(LS_TOKEN)){showApp();return;}
   document.getElementById('login-screen').style.display='flex';
 }
 async function doLogin(){
-  const pw=document.getElementById('site-password').value;
-  if(!pw)return;
-  setLoginLoading(true); hideAlertEl('login-alert');
+  const pw=document.getElementById('site-pw').value; if(!pw)return;
+  setBtnLoad('login',true);hideA('login-alert');
   try{
     const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
-    const d=await r.json();
-    if(!r.ok)throw new Error(d.error||'Senha incorreta');
-    localStorage.setItem(LS_TOKEN,d.token);
-    showApp();
-  }catch(e){showAlertEl('login-alert','error',e.message);}
-  finally{setLoginLoading(false);}
+    const d=await r.json(); if(!r.ok)throw new Error(d.error);
+    localStorage.setItem(LS_TOKEN,d.token); showApp();
+  }catch(e){showA('login-alert','ae',e.message);}
+  finally{setBtnLoad('login',false);}
 }
-function setLoginLoading(v){
-  document.getElementById('login-btn-text').style.display=v?'none':'inline';
-  document.getElementById('login-spinner').style.display=v?'inline-block':'none';
+function setBtnLoad(n,v){
+  document.getElementById(`${n}-txt`).style.display=v?'none':'inline';
+  document.getElementById(`${n}-spin`).style.display=v?'inline-block':'none';
 }
 function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  loadSaved();
+  loadSaved(); fetchSavedSessions();
 }
-function doLogout(){ localStorage.removeItem(LS_TOKEN); location.reload(); }
+function doLogout(){localStorage.removeItem(LS_TOKEN);location.reload();}
 
-// ═══════════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const map={'page-config':'nav-config','page-ops':'nav-ops'};
-  if(map[id]) document.getElementById(map[id]).classList.add('active');
+  ['nav-config','nav-ops','nav-sessions'].forEach(n=>document.getElementById(n).classList.remove('active'));
+  const m={  'page-config':'nav-config','page-ops':'nav-ops','page-sessions':'nav-sessions'};
+  if(m[id])document.getElementById(m[id]).classList.add('active');
 }
-
 function showPanel(n){
   [1,2,3,4].forEach(i=>{
-    document.getElementById(`panel-${i}`).style.display = i===n ? 'block' : 'none';
+    document.getElementById(`panel-${i}`).style.display=i===n?'block':'none';
     const st=document.getElementById(`step-${i}`);
     st.classList.remove('active','done');
-    if(i<n) st.classList.add('done');
-    else if(i===n) st.classList.add('active');
+    if(i<n)st.classList.add('done'); else if(i===n)st.classList.add('active');
   });
-  S.currentPanel=n;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // UTILS
-// ═══════════════════════════════════════════════════════════
-function showAlertEl(id,type,msg){
+// ═══════════════════════════════════════════
+function showA(id,cls,msg){
   const el=document.getElementById(id); if(!el)return;
-  const icons={error:'❌',success:'✅',info:'ℹ️',warn:'⚠️'};
-  el.className=`alert alert-${type} show`;
-  el.innerHTML=`<span class="ai">${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  const icons={'ae':'❌','as':'✅','ai2':'ℹ️','aw':'⚠️'};
+  el.className=`alert ${cls} show`;
+  el.innerHTML=`<span class="ai">${icons[cls]||'ℹ️'}</span><span>${msg}</span>`;
 }
-function hideAlertEl(id){ const el=document.getElementById(id); if(el){el.className='alert';el.innerHTML='';} }
-function showAlert(n,t,m){ showAlertEl(`alert-${n}`,t,m); }
-function hideAlert(n){ hideAlertEl(`alert-${n}`); }
-
-function setLoading(n,v){
-  const t=document.getElementById(`btn${n}-text`);
-  const s=document.getElementById(`btn${n}-spinner`);
-  if(t)t.style.display=v?'none':'inline';
-  if(s)s.style.display=v?'inline-block':'none';
-  const btn=document.querySelector(`#panel-${n} .btn-primary`);
-  if(btn)btn.disabled=v;
+function hideA(id){const el=document.getElementById(id);if(el){el.className='alert';el.innerHTML='';}}
+function sa(n,c,m){showA(`alert-${n}`,c,m);}
+function ha(n){hideA(`alert-${n}`);}
+function setLd(n,v){
+  const t=document.getElementById(`btn${n}-txt`),s=document.getElementById(`btn${n}-spin`);
+  if(t)t.style.display=v?'none':'inline'; if(s)s.style.display=v?'inline-block':'none';
+  const b=document.querySelector(`#panel-${n} .btn-primary`); if(b)b.disabled=v;
 }
-
 function loadSaved(){
-  try{
-    const s=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');
-    if(s.apiId)   document.getElementById('apiId').value=s.apiId;
-    if(s.apiHash) document.getElementById('apiHash').value=s.apiHash;
-    if(s.phone)   document.getElementById('phone').value=s.phone;
-    if(s.session) document.getElementById('existingSession').value=s.session;
+  try{const c=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');
+    if(c.apiId)document.getElementById('apiId').value=c.apiId;
+    if(c.apiHash)document.getElementById('apiHash').value=c.apiHash;
+    if(c.phone)document.getElementById('phone').value=c.phone;
   }catch{}
 }
 function saveCreds(){
-  try{ localStorage.setItem(LS_CREDS,JSON.stringify({apiId:S.apiId,apiHash:S.apiHash,phone:S.phone,session:S.session})); }catch{}
+  try{localStorage.setItem(LS_CREDS,JSON.stringify({apiId:S.apiId,apiHash:S.apiHash,phone:S.phone}));}catch{}
 }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 async function post(path,body){
   const r=await fetch(`/api${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json();
-  if(!r.ok)throw new Error(d.error||'Erro desconhecido');
+  const d=await r.json(); if(!r.ok)throw new Error(d.error||'Erro');
   return d;
 }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// SAVED SESSIONS (MongoDB)
+// ═══════════════════════════════════════════
+async function fetchSavedSessions(){
+  const wrap=document.getElementById('saved-sessions-wrap');
+  const loading=document.getElementById('saved-sessions-loading');
+  const orDiv=document.getElementById('or-div');
+  loading.style.display='flex';
+  try{
+    const d=await post('/auth',{action:'getSessions'});
+    loading.style.display='none';
+    if(d.sessions&&d.sessions.length>0){
+      wrap.style.display='block';
+      orDiv.style.display='flex';
+      renderSavedSessions(d.sessions);
+      document.getElementById('sess-badge').style.display='inline';
+      document.getElementById('sess-badge').textContent=d.sessions.length;
+    }
+  }catch(e){loading.style.display='none';}
+}
+
+function renderSavedSessions(sessions){
+  const list=document.getElementById('saved-sessions-list');
+  list.innerHTML=sessions.map(s=>`
+    <div class="session-item" id="si-${s._id}" onclick="selectSavedSession('${s._id}','${esc(s.phone)}','${s.apiId||''}','${esc(s.apiHash||'')}')">
+      <div style="font-size:20px">📱</div>
+      <div class="session-item-info">
+        <div class="session-item-phone">${esc(s.phone)}</div>
+        <div class="session-item-meta">Último uso: ${s.lastUsedAt?new Date(s.lastUsedAt).toLocaleString('pt-BR'):'nunca'}</div>
+      </div>
+      <button class="session-item-del" onclick="event.stopPropagation();deleteSavedSession('${s._id}')" title="Deletar">✕</button>
+    </div>`).join('');
+}
+
+function selectSavedSession(id,phone,apiId,apiHash){
+  document.querySelectorAll('.session-item').forEach(el=>el.classList.remove('selected'));
+  const el=document.getElementById(`si-${id}`); if(el)el.classList.add('selected');
+  S.selectedSavedSession={id,phone,apiId,apiHash};
+  document.getElementById('btn-load-sess').style.display='block';
+}
+
+async function loadSelectedSession(){
+  if(!S.selectedSavedSession)return;
+  try{
+    const d=await post('/auth',{action:'loadSession',sessionDbId:S.selectedSavedSession.id});
+    S.session=d.session; S.apiId=d.apiId||S.selectedSavedSession.apiId;
+    S.apiHash=d.apiHash||S.selectedSavedSession.apiHash;
+    S.phone=d.phone||S.selectedSavedSession.phone;
+    showSessPanel(S.session);
+    await loadGroups(); showPanel(3);
+  }catch(e){sa(1,'ae',e.message);}
+}
+
+async function deleteSavedSession(id){
+  if(!confirm('Deletar esta sessão?'))return;
+  try{
+    await post('/auth',{action:'deleteSession',sessionDbId:id});
+    document.getElementById(`si-${id}`)?.remove();
+    if(!document.querySelector('.session-item')){
+      document.getElementById('saved-sessions-wrap').style.display='none';
+      document.getElementById('or-div').style.display='none';
+    }
+  }catch(e){alert('Erro ao deletar: '+e.message);}
+}
+
+// Página de sessões
+async function loadSessions(){
+  const loading=document.getElementById('page-sess-loading');
+  const list=document.getElementById('page-sess-list');
+  const empty=document.getElementById('page-sess-empty');
+  loading.style.display='flex'; list.innerHTML=''; empty.style.display='none';
+  try{
+    const d=await post('/auth',{action:'getSessions'});
+    loading.style.display='none';
+    if(!d.sessions||!d.sessions.length){empty.style.display='block';return;}
+    list.innerHTML=d.sessions.map(s=>`
+      <div class="card" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:24px">📱</div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:14px">${esc(s.phone)}</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px">
+              Criada: ${s.createdAt?new Date(s.createdAt).toLocaleString('pt-BR'):'—'}<br>
+              Último uso: ${s.lastUsedAt?new Date(s.lastUsedAt).toLocaleString('pt-BR'):'—'}
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteSavedSession('${s._id}');this.closest('.card').remove()">✕ Deletar</button>
+        </div>
+      </div>`).join('');
+  }catch(e){loading.style.display='none';list.innerHTML=`<div style="color:var(--red);font-size:13px">${e.message}</div>`;}
+}
+
+// ═══════════════════════════════════════════
 // STEP 1
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 async function handleCredentials(){
-  hideAlert(1);
+  ha(1);
   const apiId=document.getElementById('apiId').value.trim();
   const apiHash=document.getElementById('apiHash').value.trim();
   const phone=document.getElementById('phone').value.trim();
-  const existing=document.getElementById('existingSession').value.trim();
-  if(!apiId||!apiHash)return showAlert(1,'error','API ID e API Hash são obrigatórios.');
-  if(!phone&&!existing)return showAlert(1,'error','Informe o telefone ou uma session string.');
-  S.apiId=apiId; S.apiHash=apiHash; S.phone=phone;
-  if(existing){ S.session=existing; saveCreds(); showSessionPanel(existing); await loadGroups(); showPanel(3); return; }
-  setLoading(1,true);
+  if(!apiId||!apiHash)return sa(1,'ae','API ID e API Hash são obrigatórios.');
+  if(!phone)return sa(1,'ae','Informe o número de telefone.');
+  S.apiId=apiId; S.apiHash=apiHash; S.phone=phone; saveCreds();
+  setLd(1,true);
   try{
     const d=await post('/auth',{action:'sendCode',apiId,apiHash,phone});
-    S.sessionId=d.sessionId; saveCreds(); showPanel(2); showAlert(2,'info',d.message);
-  }catch(e){ showAlert(1,'error',e.message); }
-  finally{ setLoading(1,false); }
+    S.sessionId=d.sessionId; showPanel(2); sa(2,'ai2',d.message);
+  }catch(e){sa(1,'ae',e.message);}
+  finally{setLd(1,false);}
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // STEP 2
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 async function handleVerify(){
-  hideAlert(2); setLoading(2,true);
+  ha(2); setLd(2,true);
   try{
     let d;
     if(S.requires2FA){
-      const pw=document.getElementById('twoFAPass').value;
-      if(!pw){showAlert(2,'error','Digite a senha 2FA.');return;}
+      const pw=document.getElementById('twoFAPass').value; if(!pw){sa(2,'ae','Digite a senha 2FA.');return;}
       d=await post('/auth',{action:'verify2FA',sessionId:S.sessionId,password:pw});
     }else{
-      const code=document.getElementById('verifyCode').value.trim();
-      if(!code){showAlert(2,'error','Digite o código.');return;}
+      const code=document.getElementById('verifyCode').value.trim(); if(!code){sa(2,'ae','Digite o código.');return;}
       d=await post('/auth',{action:'verifyCode',sessionId:S.sessionId,code});
       if(d.requires2FA){
         S.requires2FA=true;
         document.getElementById('code-field').style.display='none';
         document.getElementById('pass-field').style.display='block';
-        document.getElementById('panel2-desc').textContent='Sua conta tem 2FA. Digite sua senha:';
-        showAlert(2,'warn','Senha 2FA necessária.');
-        return;
+        document.getElementById('p2desc').textContent='Sua conta tem 2FA. Digite sua senha:';
+        sa(2,'aw','Senha 2FA necessária.'); return;
       }
     }
-    S.session=d.session; saveCreds(); showSessionPanel(d.session);
+    S.session=d.session; showSessPanel(d.session);
     await loadGroups(); showPanel(3);
-  }catch(e){ showAlert(2,'error',e.message); }
-  finally{ setLoading(2,false); }
+    fetchSavedSessions(); // atualiza lista
+  }catch(e){sa(2,'ae',e.message);}
+  finally{setLd(2,false);}
 }
 
-// ═══════════════════════════════════════════════════════════
-// STEP 3
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// STEP 3: GROUPS
+// ═══════════════════════════════════════════
 async function loadGroups(){
-  const lEl=document.getElementById('groups-loading');
-  lEl.className='alert alert-info show';
-  lEl.innerHTML='<span class="ai">⏳</span><span>Carregando grupos...</span>';
-  document.getElementById('groups-content').style.display='none';
+  const lEl=document.getElementById('grp-loading');
+  lEl.className='alert ai2 show'; lEl.innerHTML='<span class="ai">⏳</span><span>Carregando grupos...</span>';
+  document.getElementById('grp-content').style.display='none';
   try{
     const d=await post('/groups',{apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session});
     S.groups=d.groups; renderGroups(d.groups);
-    lEl.className='alert'; document.getElementById('groups-content').style.display='block';
+    lEl.className='alert'; document.getElementById('grp-content').style.display='block';
   }catch(e){
-    lEl.className='alert alert-error show';
+    lEl.className='alert ae show';
     lEl.innerHTML=`<span class="ai">❌</span><span>${e.message}</span>`;
   }
 }
-
 function renderGroups(groups){
-  ['source-groups','target-groups'].forEach((id,idx)=>{
+  ['src-groups','tgt-groups'].forEach((id,idx)=>{
     const el=document.getElementById(id); el.innerHTML='';
-    if(!groups.length){el.innerHTML='<p style="color:var(--muted);font-size:12px">Nenhum grupo encontrado.</p>';return;}
-    const role=idx===0?'source':'target';
+    if(!groups.length){el.innerHTML='<p style="color:var(--muted);font-size:12px">Nenhum grupo.</p>';return;}
+    const role=idx===0?'src':'tgt';
     groups.forEach(g=>{
       el.insertAdjacentHTML('beforeend',`
-        <div class="group-card" data-id="${g.id}" onclick="selectGroup(this,'${role}')">
-          <div class="g-avatar">${g.type==='channel'?'📢':'👥'}</div>
-          <div class="g-info">
-            <div class="g-name">${esc(g.title)}</div>
-            <div class="g-meta">${g.membersCount?g.membersCount+' membros':'id: '+g.id}</div>
-          </div>
+        <div class="group-card" data-id="${g.id}" onclick="pickGroup(this,'${role}')">
+          <div class="g-av">${g.type==='channel'?'📢':'👥'}</div>
+          <div class="g-info"><div class="g-name">${esc(g.title)}</div>
+          <div class="g-meta">${g.membersCount?g.membersCount+' membros':'id: '+g.id}</div></div>
           <span class="g-type">${g.type.toUpperCase()}</span>
         </div>`);
     });
   });
 }
-
-function selectGroup(card,role){
+function pickGroup(card,role){
   card.closest('.groups-grid').querySelectorAll('.group-card').forEach(c=>c.classList.remove('selected'));
   card.classList.add('selected');
   const g=S.groups.find(x=>x.id===card.dataset.id);
-  if(role==='source') S.sourceGroup=g; else S.targetGroup=g;
+  if(role==='src')S.srcGroup=g; else S.tgtGroup=g;
 }
-
-function goToOperation(){
-  if(!S.sourceGroup)return showAlert(3,'error','Selecione o grupo de origem.');
-  if(!S.targetGroup)return showAlert(3,'error','Selecione o grupo de destino.');
-  if(S.sourceGroup.id===S.targetGroup.id)return showAlert(3,'error','Grupos devem ser diferentes.');
-  const sumEl=document.getElementById('op-summary');
-  sumEl.className='alert alert-info show';
-  sumEl.innerHTML=`<span class="ai">ℹ️</span><span><strong>Origem:</strong> ${esc(S.sourceGroup.title)}<br><strong>Destino:</strong> ${esc(S.targetGroup.title)}</span>`;
+function goToOp(){
+  if(!S.srcGroup)return sa(3,'ae','Selecione o grupo de origem.');
+  if(!S.tgtGroup)return sa(3,'ae','Selecione o grupo de destino.');
+  if(S.srcGroup.id===S.tgtGroup.id)return sa(3,'ae','Grupos devem ser diferentes.');
+  const el=document.getElementById('op-summary');
+  el.className='alert ai2 show';
+  el.innerHTML=`<span class="ai">ℹ️</span><span><strong>Origem:</strong> ${esc(S.srcGroup.title)}<br><strong>Destino:</strong> ${esc(S.tgtGroup.title)}</span>`;
   showPanel(4);
 }
 
-// ═══════════════════════════════════════════════════════════
-// MODE TOGGLE
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// MODE
+// ═══════════════════════════════════════════
 function setMode(m){
   S.mode=m;
   document.getElementById('tab-members').classList.toggle('active',m==='members');
   document.getElementById('tab-messages').classList.toggle('active',m==='messages');
-  document.getElementById('config-members').style.display=m==='members'?'block':'none';
-  document.getElementById('config-messages').style.display=m==='messages'?'block':'none';
+  document.getElementById('cfg-members').style.display=m==='members'?'block':'none';
+  document.getElementById('cfg-messages').style.display=m==='messages'?'block':'none';
+}
+function onMsgToggle(){
+  const isNew=document.getElementById('tgl-new').checked;
+  document.getElementById('tgl-lbl').textContent=isNew?'🆕 Apenas mensagens novas':'📜 Todas as mensagens';
+  document.getElementById('tgl-desc').textContent=isNew?'Encaminha somente mensagens após esta operação iniciar':'Encaminha o histórico completo do grupo de origem';
+  document.getElementById('msg-limit-wrap').style.display=isNew?'none':'block';
 }
 
-function updateMsgToggle(){
-  const isNew=document.getElementById('toggle-only-new').checked;
-  document.getElementById('toggle-msg-label').textContent = isNew ? '🆕 Apenas mensagens novas' : '📜 Todas as mensagens';
-  document.getElementById('toggle-msg-desc').textContent  = isNew
-    ? 'Encaminha apenas mensagens após o início da operação'
-    : 'Encaminha o histórico completo do grupo de origem';
-  document.getElementById('msg-limit-wrap').style.display = isNew ? 'none' : 'block';
-}
+// ═══════════════════════════════════════════
+// START OP
+// ═══════════════════════════════════════════
+async function startOp(){
+  if(!S.srcGroup||!S.tgtGroup)return sa(4,'ae','Grupos não selecionados.');
+  ha(4);
+  const id=++opSeq;
+  const type=S.mode;
 
-// ═══════════════════════════════════════════════════════════
-// START OPERATION
-// ═══════════════════════════════════════════════════════════
-function startOperation(){
-  if(!S.sourceGroup||!S.targetGroup)return showAlert(4,'error','Grupos não selecionados.');
-  hideAlert(4);
-
-  const id = ++opIdSeq;
-  const type = S.mode;
-  const sourceTitle = S.sourceGroup.title;
-  const targetTitle = S.targetGroup.title;
+  // Salva no MongoDB
+  let dbId=null;
+  try{
+    const r=await post('/operations',{
+      action:'create', type,
+      label:`${type==='members'?'👥':'💬'} ${S.srcGroup.title} → ${S.tgtGroup.title}`,
+      sourceGroup:{id:S.srcGroup.id,title:S.srcGroup.title},
+      targetGroup:{id:S.tgtGroup.id,title:S.tgtGroup.title},
+      params:{},
+    });
+    dbId=r.opId;
+  }catch(e){console.warn('DB save failed:',e.message);}
 
   if(type==='members'){
-    const limit   = parseInt(document.getElementById('cloneLimit').value)||50;
-    const delayMs = parseInt(document.getElementById('cloneDelay').value)||3000;
-    const op = createOp(id,'members',`👥 Membros: ${sourceTitle} → ${targetTitle}`,{
-      apiId:S.apiId, apiHash:S.apiHash, sessionString:S.session,
-      sourceGroupId:S.sourceGroup.id, targetGroupId:S.targetGroup.id,
-      limit, delayMs,
+    const op=createOp(id,'members',`👥 Membros: ${S.srcGroup.title} → ${S.tgtGroup.title}`,dbId,{
+      apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,
+      sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id,
+      limit:parseInt(document.getElementById('cloneLimit').value)||50,
+      delayMs:parseInt(document.getElementById('cloneDelay').value)||3000,
     });
     runMembersOp(op);
-  } else {
-    const batchSize = parseInt(document.getElementById('msgBatch').value)||20;
-    const delayMs   = parseInt(document.getElementById('msgDelay').value)||1500;
-    const onlyNew   = document.getElementById('toggle-only-new').checked;
-    const msgLimit  = onlyNew ? Infinity : (parseInt(document.getElementById('msgLimit').value)||100);
-    const op = createOp(id,'messages',`💬 Mensagens: ${sourceTitle} → ${targetTitle}`,{
-      apiId:S.apiId, apiHash:S.apiHash, sessionString:S.session,
-      sourceGroupId:S.sourceGroup.id, targetGroupId:S.targetGroup.id,
-      batchSize, delayMs, onlyNew, msgLimit,
-      lastKnownId: 0, offsetId: 0,
+  }else{
+    const onlyNew=document.getElementById('tgl-new').checked;
+    const op=createOp(id,'messages',`💬 Msgs: ${S.srcGroup.title} → ${S.tgtGroup.title}`,dbId,{
+      apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,
+      sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id,
+      batchSize:parseInt(document.getElementById('msgBatch').value)||20,
+      delayMs:parseInt(document.getElementById('msgDelay').value)||1500,
+      onlyNew,
+      msgLimit:onlyNew?999999:(parseInt(document.getElementById('msgLimit').value)||100),
+      minId:0, offsetId:0,
     });
-    runMessagesOp(op);
+    runMsgsOp(op);
   }
-
-  // Switch to ops page
   showPage('page-ops');
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // OP MANAGEMENT
-// ═══════════════════════════════════════════════════════════
-function createOp(id,type,label,params){
-  const op = { id, type, label, status:'running', ok:0, skip:0, err:0, total:0, progress:0, log:'', cancelFlag:false, pauseFlag:false, params };
-  ops.unshift(op);
-  updateOpsBadge();
-  renderOps();
-  return op;
+// ═══════════════════════════════════════════
+function createOp(id,type,label,dbId,params){
+  const op={id,type,label,dbId,status:'running',ok:0,skip:0,err:0,total:0,progress:0,log:'',cancelFlag:false,pauseFlag:false,params};
+  ops.unshift(op); updateBadge(); renderOps(); return op;
 }
-
-function updateOpsBadge(){
-  const running = ops.filter(o=>o.status==='running'||o.status==='paused').length;
-  const badge = document.getElementById('ops-badge');
-  badge.style.display = running>0 ? 'inline' : 'none';
-  badge.textContent = running;
-  badge.className = 'nav-badge' + (running>0?' green':'');
+function updateBadge(){
+  const n=ops.filter(o=>o.status==='running'||o.status==='paused').length;
+  const b=document.getElementById('ops-badge');
+  b.style.display=n>0?'inline':'none'; b.textContent=n;
 }
+function statusLbl(s){return{running:'🔄 Rodando',paused:'⏸ Pausado',done:'✅ Concluído',cancelled:'⛔ Cancelado',error:'❌ Erro'}[s]||s;}
 
 function renderOps(){
-  const list = document.getElementById('ops-list');
-  const empty = document.getElementById('ops-empty');
-  if(!ops.length){ empty.style.display='block'; return; }
+  const list=document.getElementById('ops-list');
+  const empty=document.getElementById('ops-empty');
+  if(!ops.length){empty.style.display='block';return;}
   empty.style.display='none';
-  list.innerHTML = ops.map(op=>`
-    <div class="op-card ${op.status}" id="opcard-${op.id}">
-      <div class="op-header">
-        <div class="op-status-dot ${op.status}"></div>
-        <div class="op-info">
-          <div class="op-title">${esc(op.label)}</div>
-          <div class="op-subtitle">${statusLabel(op.status)} · ${op.ok} ok · ${op.skip} pulados · ${op.err} erros</div>
-        </div>
-        <div class="op-actions">
-          ${op.status==='running'?`<button class="btn btn-warn btn-sm" onclick="pauseOp(${op.id})">⏸ Pausar</button>`:''}
-          ${op.status==='paused'?`<button class="btn btn-secondary btn-sm" onclick="resumeOp(${op.id})">▶ Retomar</button>`:''}
-          ${(op.status==='running'||op.status==='paused')?`<button class="btn btn-danger btn-sm" onclick="cancelOp(${op.id})">✕ Cancelar</button>`:''}
-        </div>
-      </div>
-      ${(op.status==='running'||op.status==='paused'||op.total>0)?`
-      <div class="op-body">
-        <div class="op-progress-bar"><div class="op-progress-fill" style="width:${op.progress}%"></div></div>
-        <div class="op-stats">
-          <div class="op-stat ok"><span>${op.ok}</span> ok</div>
-          <div class="op-stat skip"><span>${op.skip}</span> pulados</div>
-          <div class="op-stat err"><span>${op.err}</span> erros</div>
-          ${op.total?`<div class="op-stat"><span>${op.progress}%</span></div>`:''}
-        </div>
-        ${op.log?`<div class="op-log">${esc(op.log)}</div>`:''}
-      </div>`:''}
-    </div>`).join('');
+  list.innerHTML=ops.map(op=>opCardHTML(op)).join('');
 }
 
-function statusLabel(s){
-  return {running:'🔄 Rodando',paused:'⏸ Pausado',done:'✅ Concluído',cancelled:'⛔ Cancelado',error:'❌ Erro'}[s]||s;
+function opCardHTML(op){
+  const acts=
+    (op.status==='running'?`<button class="btn btn-warn btn-sm" onclick="pauseOp(${op.id})">⏸ Pausar</button>`:'')+
+    (op.status==='paused'?`<button class="btn btn-secondary btn-sm" onclick="resumeOp(${op.id})">▶ Retomar</button>`:'')+
+    ((op.status==='running'||op.status==='paused')?`<button class="btn btn-danger btn-sm" onclick="cancelOp(${op.id})">✕ Cancelar</button>`:'');
+  const body=(op.status!=='done'&&op.status!=='cancelled'&&op.status!=='error')||op.total>0?`
+    <div class="op-body">
+      <div class="op-pb"><div class="op-pf" style="width:${op.progress}%"></div></div>
+      <div class="op-stats">
+        <div class="op-stat ok"><span>${op.ok}</span> ok</div>
+        <div class="op-stat sk"><span>${op.skip}</span> pulados</div>
+        <div class="op-stat er"><span>${op.err}</span> erros</div>
+        ${op.total?`<div class="op-stat"><span>${op.progress}%</span></div>`:''}
+      </div>
+      ${op.log?`<div class="op-log">${esc(op.log)}</div>`:''}
+    </div>`:'';
+  return `<div class="op-card ${op.status}" id="opc-${op.id}">
+    <div class="op-head">
+      <div class="op-dot ${op.status}"></div>
+      <div class="op-info">
+        <div class="op-title">${esc(op.label)}</div>
+        <div class="op-sub">${statusLbl(op.status)} · ${op.ok} ok · ${op.skip} pulados · ${op.err} erros</div>
+      </div>
+      <div class="op-acts">${acts}</div>
+    </div>${body}</div>`;
 }
 
 function updateOpCard(op){
-  const card = document.getElementById(`opcard-${op.id}`);
-  if(!card)return;
-  card.className=`op-card ${op.status}`;
-  const dot=card.querySelector('.op-status-dot');
-  if(dot)dot.className=`op-status-dot ${op.status}`;
-  const fill=card.querySelector('.op-progress-fill');
-  if(fill)fill.style.width=op.progress+'%';
-  const sub=card.querySelector('.op-subtitle');
-  if(sub)sub.textContent=`${statusLabel(op.status)} · ${op.ok} ok · ${op.skip} pulados · ${op.err} erros`;
-  const statsEl=card.querySelector('.op-stats');
-  if(statsEl){
-    statsEl.innerHTML=`
-      <div class="op-stat ok"><span>${op.ok}</span> ok</div>
-      <div class="op-stat skip"><span>${op.skip}</span> pulados</div>
-      <div class="op-stat err"><span>${op.err}</span> erros</div>
-      ${op.total?`<div class="op-stat"><span>${op.progress}%</span></div>`:''}`;
-  }
-  if(op.log){const logEl=card.querySelector('.op-log');if(logEl)logEl.textContent=op.log;}
-  const actEl=card.querySelector('.op-actions');
-  if(actEl){
-    actEl.innerHTML=
-      (op.status==='running'?`<button class="btn btn-warn btn-sm" onclick="pauseOp(${op.id})">⏸ Pausar</button>`:'')+
-      (op.status==='paused'?`<button class="btn btn-secondary btn-sm" onclick="resumeOp(${op.id})">▶ Retomar</button>`:'')+
-      ((op.status==='running'||op.status==='paused')?`<button class="btn btn-danger btn-sm" onclick="cancelOp(${op.id})">✕ Cancelar</button>`:'');
-  }
-  updateOpsBadge();
+  const card=document.getElementById(`opc-${op.id}`);
+  if(!card){renderOps();return;}
+  card.outerHTML=opCardHTML(op);
+  updateBadge();
 }
 
-function pauseOp(id){ const op=ops.find(o=>o.id===id); if(op&&op.status==='running'){op.pauseFlag=true;op.status='paused';updateOpCard(op);} }
-function resumeOp(id){ const op=ops.find(o=>o.id===id); if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);} }
-function cancelOp(id){ const op=ops.find(o=>o.id===id); if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);} }
+function pauseOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='running'){op.pauseFlag=true;op.status='paused';updateOpCard(op);updateDbOp(op);}}
+function resumeOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);}}
+function cancelOp(id){const op=ops.find(o=>o.id===id);if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);}}
 
-function clearFinished(){
-  const before=ops.length;
-  for(let i=ops.length-1;i>=0;i--){
-    if(['done','cancelled','error'].includes(ops[i].status)) ops.splice(i,1);
-  }
-  if(ops.length<before) renderOps();
-  updateOpsBadge();
+async function clearFinished(){
+  ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));
+  try{await post('/operations',{action:'clearFinished'});}catch(e){}
+  renderOps(); updateBadge();
 }
 
-const sleep = ms => new Promise(r=>setTimeout(r,ms));
-
-async function waitUnpause(op){
-  while(op.pauseFlag && !op.cancelFlag) await sleep(500);
+async function loadOpsFromDb(){
+  const loading=document.getElementById('ops-loading');
+  loading.style.display='flex';
+  try{
+    const d=await post('/operations',{action:'list'});
+    loading.style.display='none';
+    if(!d.operations||!d.operations.length){
+      if(!ops.length){document.getElementById('ops-empty').style.display='block';}
+      return;
+    }
+    document.getElementById('ops-empty').style.display='none';
+    // Merge: mostra ops em memória (com controles) + ops do DB (históricas)
+    const memIds=new Set(ops.map(o=>o.dbId).filter(Boolean));
+    const dbOps=d.operations.filter(o=>!memIds.has(o._id.toString()));
+    const allCards=[...ops.map(o=>opCardHTML(o)),
+      ...dbOps.map(o=>dbOpCardHTML(o))].join('');
+    document.getElementById('ops-list').innerHTML=allCards||
+      '<div class="empty-ops"><div class="empty-ops-icon">📭</div><div>Nenhuma operação.</div></div>';
+  }catch(e){loading.style.display='none';}
 }
 
-// ═══════════════════════════════════════════════════════════
-// RUN: MEMBERS
-// ═══════════════════════════════════════════════════════════
+function dbOpCardHTML(op){
+  const st=op.status;
+  const s=op.stats||{};
+  return `<div class="op-card ${st}">
+    <div class="op-head">
+      <div class="op-dot ${st}"></div>
+      <div class="op-info">
+        <div class="op-title">${esc(op.label||'Operação')}</div>
+        <div class="op-sub">${statusLbl(st)} · ${s.ok||0} ok · ${s.skip||0} pulados · ${s.err||0} erros · ${new Date(op.createdAt).toLocaleString('pt-BR')}</div>
+      </div>
+    </div>
+    ${s.total>0?`<div class="op-body">
+      <div class="op-pb"><div class="op-pf" style="width:${s.progress||0}%"></div></div>
+      <div class="op-stats">
+        <div class="op-stat ok"><span>${s.ok||0}</span> ok</div>
+        <div class="op-stat sk"><span>${s.skip||0}</span> pulados</div>
+        <div class="op-stat er"><span>${s.err||0}</span> erros</div>
+      </div></div>`:''}
+  </div>`;
+}
+
+async function updateDbOp(op){
+  if(!op.dbId)return;
+  try{await post('/operations',{action:'update',opId:op.dbId,status:op.status,stats:{ok:op.ok,skip:op.skip,err:op.err,total:op.total,progress:op.progress},log:op.log});}
+  catch(e){}
+}
+
+async function waitUnpause(op){while(op.pauseFlag&&!op.cancelFlag)await sleep(500);}
+
+// ═══════════════════════════════════════════
+// RUN MEMBERS
+// ═══════════════════════════════════════════
 async function runMembersOp(op){
   try{
-    op.log='Iniciando...'; updateOpCard(op);
-    const d = await post('/clone', op.params);
-    const r = d.results;
+    op.log='Enviando ao servidor...'; updateOpCard(op);
+    const d=await post('/clone',op.params);
+    const r=d.results;
     op.ok=r.added; op.skip=r.skipped; op.err=r.errors.length;
     op.progress=100; op.total=r.added+r.skipped+r.errors.length;
-    op.status = op.cancelFlag ? 'cancelled' : 'done';
-    op.log='';
-  }catch(e){
-    op.status='error'; op.log=e.message;
-  }
-  updateOpCard(op); updateOpsBadge();
+    op.status=op.cancelFlag?'cancelled':'done'; op.log='';
+  }catch(e){op.status='error';op.log=e.message;}
+  updateOpCard(op); await updateDbOp(op); updateBadge();
 }
 
-// ═══════════════════════════════════════════════════════════
-// RUN: MESSAGES (batches com pause/cancel)
-// ═══════════════════════════════════════════════════════════
-async function runMessagesOp(op){
+// ═══════════════════════════════════════════
+// RUN MESSAGES (batches, pause/cancel)
+// ═══════════════════════════════════════════
+async function runMsgsOp(op){
   const p=op.params;
-  let offsetId=0;
-  let totalProcessed=0;
-  const maxTotal = p.msgLimit===Infinity ? 999999 : p.msgLimit;
+  let offsetId=0;      // para histórico: avança com lastProcessedId
+  let minId=0;         // para onlyNew: ID a partir do qual buscar
+  let processed=0;
+  const maxTotal=p.msgLimit;
 
-  op.log='Iniciando...'; updateOpCard(op);
+  // Para "apenas novas": pega o ID da última mensagem atual para usar como baseline
+  if(p.onlyNew){
+    try{
+      const snap=await post('/messages',{
+        apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,
+        sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,
+        batchSize:1,delayMs:0,onlyNew:false,offsetId:0,minId:0,
+      });
+      minId=snap.lastProcessedId||0;
+      op.log=`Baseline definido: msg ID ${minId}. Aguardando novas mensagens...`;
+      updateOpCard(op);
+    }catch(e){}
+  }
 
   try{
     while(true){
       await waitUnpause(op);
-      if(op.cancelFlag){ op.status='cancelled'; break; }
+      if(op.cancelFlag){op.status='cancelled';break;}
 
-      const remaining = maxTotal - totalProcessed;
-      if(remaining<=0){ op.status='done'; break; }
+      const remaining=maxTotal-processed;
+      if(remaining<=0){op.status='done';break;}
 
-      const batchSize = Math.min(p.batchSize, remaining);
-      op.log=`Processando batch a partir da msg ${offsetId||'início'}...`;
+      const batchSize=Math.min(p.batchSize,remaining,50);
+      op.log=p.onlyNew?`Buscando novas após ID ${minId}...`:`Batch a partir do ID ${offsetId||0}...`;
       updateOpCard(op);
 
-      const d = await post('/messages',{
-        apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
-        batchSize, delayMs:p.delayMs,
-        onlyNew:p.onlyNew, lastKnownId:p.lastKnownId,
-        offsetId,
+      const d=await post('/messages',{
+        apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,
+        sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,
+        batchSize,delayMs:p.delayMs,
+        onlyNew:p.onlyNew,
+        minId:p.onlyNew?minId:0,
+        offsetId:p.onlyNew?0:offsetId,
       });
 
       const r=d.results;
-      op.ok   += r.forwarded;
-      op.skip += r.skipped;
-      op.err  += r.errors.length;
-      totalProcessed += r.total;
-      offsetId = d.lastProcessedId || offsetId;
+      op.ok+=r.forwarded; op.skip+=r.skipped; op.err+=r.errors.length;
+      processed+=r.total;
 
-      if(maxTotal!==999999){
-        op.progress = Math.min(100, Math.round(totalProcessed/maxTotal*100));
+      if(d.lastProcessedId>0){
+        if(p.onlyNew) minId=d.lastProcessedId; // avança o baseline para novas buscas
+        else offsetId=d.lastProcessedId;        // avança paginação do histórico
       }
-      op.total = totalProcessed;
+
+      if(maxTotal!==999999) op.progress=Math.min(100,Math.round(processed/maxTotal*100));
+      op.total=processed;
       updateOpCard(op);
+      await updateDbOp(op);
 
-      if(!d.hasMore || r.total===0){ op.status='done'; break; }
-
-      // Small pause between batches
-      await sleep(1000);
+      if(p.onlyNew){
+        // Modo "apenas novas": pausa entre polls, continua indefinidamente
+        if(r.total===0){
+          op.log=`Aguardando novas mensagens... (último ID: ${minId})`;
+          updateOpCard(op);
+          await sleep(10000); // poll a cada 10s
+        }
+      }else{
+        // Modo histórico: para quando não há mais mensagens
+        if(!d.hasMore||r.total===0){op.status='done';break;}
+        await sleep(1500);
+      }
     }
-  }catch(e){
-    op.status='error'; op.log=e.message;
-  }
+  }catch(e){op.status='error';op.log=e.message;}
 
-  if(op.status!=='cancelled'&&op.status!=='error') op.status='done';
-  op.log=''; op.progress=op.status==='done'?100:op.progress;
-  updateOpCard(op); updateOpsBadge();
+  if(op.status!=='cancelled'&&op.status!=='error')op.status='done';
+  op.log=''; if(op.status==='done')op.progress=100;
+  updateOpCard(op); await updateDbOp(op); updateBadge();
 }
 
-// ═══════════════════════════════════════════════════════════
-// SESSION
-// ═══════════════════════════════════════════════════════════
-function showSessionPanel(session){
-  const p=document.getElementById('session-panel');
-  p.style.display='block';
-  document.getElementById('session-display').childNodes[0].textContent=session;
+// ═══════════════════════════════════════════
+// SESSION DISPLAY
+// ═══════════════════════════════════════════
+function showSessPanel(session){
+  document.getElementById('sess-panel').style.display='block';
+  document.getElementById('sess-display').childNodes[0].textContent=session;
 }
-function copySession(){
-  const t=document.getElementById('session-display').childNodes[0].textContent.trim();
+function copySess(){
+  const t=document.getElementById('sess-display').childNodes[0].textContent.trim();
   navigator.clipboard.writeText(t).then(()=>{
     const b=document.querySelector('.copy-btn');
     b.textContent='copiado!'; setTimeout(()=>b.textContent='copiar',2000);
   });
 }
 
-// ═══════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════
 checkAuth();
 </script>
 </body>

@@ -1,7 +1,7 @@
 {
   "name": "telegram-cloner",
-  "version": "1.0.0",
-  "description": "Telegram Group Cloner via GramJS MTProto",
+  "version": "2.0.0",
+  "description": "Telegram Group Cloner via GramJS MTProto + MongoDB",
   "main": "api/index.js",
   "scripts": {
     "dev": "node api/server.js",
@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "telegram": "^2.26.12",
-    "input": "^1.0.1",
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "mongodb": "^6.3.0"
   },
   "engines": {
     "node": ">=18.0.0"
