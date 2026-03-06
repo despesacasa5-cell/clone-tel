@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
       offsetId = 0,      // para histórico: ID a partir do qual buscar (paginação)
       onlyNew = false,   // true = busca apenas mensagens APÓS minId
       minId = 0,         // para onlyNew: só mensagens com id > minId
+      dryRun = false,    // true = só lê mensagens, não encaminha (usado para baseline)
     } = req.body || {};
 
     if (!apiId || !apiHash || !sessionString || !sourceGroupId || !targetGroupId)
@@ -68,6 +69,9 @@ module.exports = async (req, res) => {
         continue;
       }
       lastProcessedId = msg.id;
+
+      // dryRun: apenas registra o ID, não encaminha
+      if (dryRun) { lastProcessedId = msg.id; continue; }
 
       try {
         await client.forwardMessages(targetEntity, {

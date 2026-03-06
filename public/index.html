@@ -235,15 +235,15 @@
       <button class="nav-item active" id="nav-config" onclick="showPage('page-config')">
         <span class="ni">⚙️</span><span>Configurar</span>
       </button>
-      <button class="nav-item" id="nav-ops" onclick="showPage('page-ops');loadOpsFromDb()">
+      <button class="nav-item" id="nav-ops" onclick="showPage('page-ops')">
         <span class="ni">📋</span><span>Operações</span>
         <span class="nav-badge green" id="ops-badge" style="display:none">0</span>
       </button>
-      <button class="nav-item" id="nav-sched" onclick="showPage('page-sched');loadSchedules()">
+      <button class="nav-item" id="nav-sched" onclick="showPage('page-sched')">
         <span class="ni">🕐</span><span>Agendamentos</span>
         <span class="nav-badge blue" id="sched-badge" style="display:none">0</span>
       </button>
-      <button class="nav-item" id="nav-sessions" onclick="showPage('page-sessions');loadSessionsPage()">
+      <button class="nav-item" id="nav-sessions" onclick="showPage('page-sessions')">
         <span class="ni">🔐</span><span>Sessões</span>
       </button>
     </nav>
@@ -530,8 +530,12 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   ['nav-config','nav-ops','nav-sched','nav-sessions'].forEach(n=>document.getElementById(n)?.classList.remove('active'));
-  const m={'page-config':'nav-config','page-ops':'nav-ops','page-sched':'nav-sched','page-sessions':'nav-sessions'};
-  if(m[id])document.getElementById(m[id]).classList.add('active');
+  const navMap={'page-config':'nav-config','page-ops':'nav-ops','page-sched':'nav-sched','page-sessions':'nav-sessions'};
+  if(navMap[id]) document.getElementById(navMap[id]).classList.add('active');
+  // Auto-load data when switching to data pages
+  if(id==='page-ops')      loadOpsFromDb();
+  if(id==='page-sched')    loadSchedules();
+  if(id==='page-sessions') loadSessionsPage();
 }
 function showPanel(n){
   [1,2,3,4].forEach(i=>{
@@ -993,46 +997,103 @@ async function runMembersOp(op){
 // ═══════════════════════════════════════════
 async function runMsgsOp(op){
   const p=op.params;
-  let offsetId=0,minId=0,processed=0;
-  const maxTotal=p.msgLimit||100;
+  let offsetId=0, minId=0, processed=0;
+  const maxTotal = p.msgLimit || 100;
 
+  // Modo "apenas novas": captura o ID da última mensagem EXISTENTE como baseline
+  // sem encaminhar nada — usa grupos.js para listar só 1 msg sem forward
   if(p.onlyNew){
     try{
-      const snap=await post('/messages',{apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,batchSize:1,delayMs:0,onlyNew:false,offsetId:0,minId:0});
-      minId=snap.lastProcessedId||0;
-      op.log=`Baseline ID ${minId}. Aguardando novas...`;updateOpCard(op);
-    }catch{}
+      op.log='Definindo baseline...'; updateOpCard(op);
+      // Chama messages mas com batchSize=0 tricks: usa getMessages direto via groups endpoint
+      // Na prática: busca 1 msg sem delay e sem encaminhar, só para saber o lastId
+      const snap = await post('/messages',{
+        apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
+        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        batchSize:1, delayMs:0, onlyNew:false, offsetId:0, minId:0,
+        dryRun:true, // flag para o backend não encaminhar
+      });
+      minId = snap.lastProcessedId || 0;
+      op.log=`Monitorando novas mensagens após ID ${minId}...`;
+      updateOpCard(op);
+    }catch(e){ op.log='Monitorando mensagens novas...'; updateOpCard(op); }
   }
 
   try{
     while(true){
       await waitUnpause(op);
-      if(op.cancelFlag){op.status='cancelled';break;}
-      const remaining=maxTotal-processed;
-      if(remaining<=0){op.status='done';break;}
-      const batchSize=Math.min(p.batchSize||20,remaining,50);
-      op.log=p.onlyNew?`Buscando novas após ID ${minId}...`:`Batch após ID ${offsetId}...`;
+      if(op.cancelFlag){ op.status='cancelled'; break; }
+
+      const remaining = maxTotal - processed;
+      if(!p.onlyNew && remaining <= 0){ op.status='done'; break; }
+
+      const batchSize = p.onlyNew ? (p.batchSize||20) : Math.min(p.batchSize||20, remaining, 50);
+
+      op.log = p.onlyNew
+        ? `Verificando novas após ID ${minId}...`
+        : `Encaminhando batch (processado: ${processed}/${maxTotal})...`;
       updateOpCard(op);
 
-      const d=await post('/messages',{apiId:p.apiId,apiHash:p.apiHash,sessionString:p.sessionString,sourceGroupId:p.sourceGroupId,targetGroupId:p.targetGroupId,batchSize,delayMs:p.delayMs,onlyNew:p.onlyNew,minId:p.onlyNew?minId:0,offsetId:p.onlyNew?0:offsetId});
-      const r=d.results;
-      op.ok+=r.forwarded;op.skip+=r.skipped;op.err+=r.errors.length;
-      processed+=r.total;
-      if(d.lastProcessedId>0){if(p.onlyNew)minId=d.lastProcessedId;else offsetId=d.lastProcessedId;}
-      if(maxTotal!==999999)op.progress=Math.min(100,Math.round(processed/maxTotal*100));
-      op.total=processed;updateOpCard(op);await updateDbOp(op);
+      const payload = {
+        apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
+        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        batchSize, delayMs:p.delayMs,
+        onlyNew: p.onlyNew,
+        minId:  p.onlyNew ? minId    : 0,
+        offsetId: p.onlyNew ? 0      : offsetId,
+      };
+
+      const d = await post('/messages', payload);
+      const r = d.results;
+
+      op.ok   += r.forwarded;
+      op.skip += r.skipped;
+      op.err  += r.errors.length;
+      processed += r.total;
+
+      // Avança cursor de paginação
+      if(d.lastProcessedId > 0){
+        if(p.onlyNew) minId     = d.lastProcessedId;
+        else          offsetId  = d.lastProcessedId;
+      }
+
+      if(maxTotal !== 999999)
+        op.progress = Math.min(100, Math.round(processed / maxTotal * 100));
+      op.total = processed;
+      updateOpCard(op);
+      await updateDbOp(op);
 
       if(p.onlyNew){
-        if(r.total===0){op.log=`Aguardando novas... (último ID: ${minId})`;updateOpCard(op);await sleep(10000);}
+        // Sem novas mensagens → espera 10s e tenta de novo
+        if(r.total === 0){
+          op.log = `Aguardando novas mensagens... (último ID: ${minId})`;
+          updateOpCard(op);
+          await sleep(10000);
+        }
+        // Com novas → processa imediatamente sem espera extra
       }else{
-        if(!d.hasMore||r.total===0){op.status='done';break;}
+        // Modo histórico: para quando não há mais mensagens
+        // hasMore=false OU batch totalmente vazio de msgs reais (só service msgs)
+        if(!d.hasMore){
+          op.status='done'; break;
+        }
+        // Se batch retornou 0 itens reais mas ainda tem mais, tenta avançar
+        // sem contar como "processado" para não travar o loop
+        if(r.total === 0 && d.lastProcessedId > 0){
+          await sleep(500); continue;
+        }
+        if(r.total === 0){ op.status='done'; break; }
         await sleep(1500);
       }
     }
-  }catch(e){op.status='error';op.log=e.message;}
-  if(op.status!=='cancelled'&&op.status!=='error')op.status='done';
-  op.log='';if(op.status==='done')op.progress=100;
-  updateOpCard(op);await updateDbOp(op);updateBadge();
+  }catch(e){ op.status='error'; op.log=e.message; }
+
+  if(op.status !== 'cancelled' && op.status !== 'error') op.status = 'done';
+  op.log = '';
+  if(op.status === 'done') op.progress = 100;
+  updateOpCard(op);
+  await updateDbOp(op);
+  updateBadge();
 }
 
 // ═══════════════════════════════════════════
@@ -1100,7 +1161,7 @@ async function saveSchedule(){
       sessionDbId:S.sessionDbId||null,
     });
     closeModal();
-    showPage('page-sched');loadSchedules();
+    showPage('page-sched');
     updateSchedBadge();
   }catch(e){showA('modal-alert','ae',e.message);}
 }
