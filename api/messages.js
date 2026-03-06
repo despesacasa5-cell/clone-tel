@@ -1,18 +1,8 @@
 // api/messages.js - Encaminha mensagens em batch
 const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
-const { Api } = require("telegram/tl");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-function buildInputPeer(group) {
-  const id = parseInt(group.id);
-  const hash = BigInt(group.accessHash || "0");
-  if (group.isChannel || group.type === "channel") {
-    return new Api.InputPeerChannel({ channelId: id, accessHash: hash });
-  }
-  return new Api.InputPeerChat({ chatId: id });
-}
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -22,28 +12,31 @@ module.exports = async (req, res) => {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  let client;
+  const {
+    apiId, apiHash, sessionString,
+    sourceGroupId, targetGroupId,
+    batchSize = 20,
+    delayMs = 1500,
+    offsetId = 0,
+    onlyNew = false,
+    minId = 0,
+    dryRun = false,
+  } = req.body || {};
+
+  if (!apiId || !apiHash || !sessionString || !sourceGroupId || !targetGroupId)
+    return res.status(400).json({ error: "Campos obrigatórios faltando." });
+
+  const client = new TelegramClient(
+    new StringSession(sessionString),
+    parseInt(apiId), apiHash,
+    { connectionRetries: 5, retryDelay: 1000 }
+  );
+
   try {
-    const {
-      apiId, apiHash, sessionString,
-      sourceGroup, targetGroup,   // objetos completos com id + accessHash
-      batchSize = 20,
-      delayMs = 1500,
-      offsetId = 0,
-      onlyNew = false,
-      minId = 0,
-      dryRun = false,
-    } = req.body || {};
-
-    if (!apiId || !apiHash || !sessionString || !sourceGroup || !targetGroup)
-      return res.status(400).json({ error: "Campos obrigatórios faltando." });
-
-    client = new TelegramClient(new StringSession(sessionString), parseInt(apiId), apiHash,
-      { connectionRetries: 3, retryDelay: 1000, autoReconnect: false });
     await client.connect();
 
-    const sourcePeer = buildInputPeer(sourceGroup);
-    const targetPeer = buildInputPeer(targetGroup);
+    const sourceEntity = await client.getEntity(sourceGroupId);
+    const targetEntity = await client.getEntity(targetGroupId);
 
     const fetchOptions = {
       limit: Math.min(parseInt(batchSize), 50),
@@ -56,23 +49,22 @@ module.exports = async (req, res) => {
       fetchOptions.minId = parseInt(offsetId);
     }
 
-    const messages = await client.getMessages(sourcePeer, fetchOptions);
+    const messages = await client.getMessages(sourceEntity, fetchOptions);
 
     const results = { total: messages.length, forwarded: 0, skipped: 0, errors: [] };
     let lastProcessedId = parseInt(offsetId) || parseInt(minId) || 0;
 
     for (const msg of messages) {
       if (!msg.id) { results.skipped++; continue; }
-      // Pula mensagens de serviço (sem texto e sem mídia)
       if (!msg.message && !msg.media) { results.skipped++; continue; }
 
       lastProcessedId = msg.id;
-      if (dryRun) continue; // só registra o ID, não encaminha
+      if (dryRun) continue;
 
       try {
-        await client.forwardMessages(targetPeer, {
+        await client.forwardMessages(targetEntity, {
           messages: [msg.id],
-          fromPeer: sourcePeer,
+          fromPeer: sourceEntity,
           dropAuthor: false,
         });
         results.forwarded++;

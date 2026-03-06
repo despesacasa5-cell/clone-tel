@@ -10,37 +10,30 @@ module.exports = async (req, res) => {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  let client;
+  const { apiId, apiHash, sessionString } = req.body || {};
+  if (!apiId || !apiHash || !sessionString)
+    return res.status(400).json({ error: "apiId, apiHash e sessionString são obrigatórios" });
+
+  const client = new TelegramClient(
+    new StringSession(sessionString),
+    parseInt(apiId), apiHash,
+    { connectionRetries: 5, retryDelay: 1000 }
+  );
+
   try {
-    const { apiId, apiHash, sessionString } = req.body || {};
-    if (!apiId || !apiHash || !sessionString)
-      return res.status(400).json({ error: "apiId, apiHash e sessionString são obrigatórios" });
-
-    client = new TelegramClient(new StringSession(sessionString), parseInt(apiId), apiHash,
-      { connectionRetries: 3, retryDelay: 1000, autoReconnect: false });
     await client.connect();
-
     const dialogs = await client.getDialogs({ limit: 200 });
 
     const groups = dialogs
       .filter(d => d.isGroup || d.isChannel)
-      .map(d => {
-        const e = d.entity;
-        return {
-          // Guarda o ID como string simples do BigInt (positivo, sem -100)
-          id: e.id?.toString(),
-          // accessHash necessário para InputPeerChannel
-          accessHash: e.accessHash?.toString() || "0",
-          // Tipo: channel (broadcast/supergroup) ou group (chat normal)
-          type: d.isChannel ? "channel" : "group",
-          title: d.title || "(sem nome)",
-          membersCount: e.participantsCount || e.migratedTo?.pts || 0,
-          username: e.username || null,
-          // Flags de peer
-          isChannel: !!d.isChannel,
-          isMegagroup: !!e.megagroup,
-        };
-      });
+      .map(d => ({
+        id: d.id?.toString(),           // ID simples, positivo — getEntity() aceita direto
+        title: d.title || "(sem nome)",
+        type: d.isChannel ? "channel" : "group",
+        membersCount: d.entity?.participantsCount || 0,
+        username: d.entity?.username || null,
+        accessHash: d.entity?.accessHash?.toString() || null,
+      }));
 
     await client.disconnect().catch(() => {});
     return res.status(200).json({ success: true, groups });
