@@ -467,6 +467,7 @@ const ops=[];
 let opSeq=0;
 const LS_TOKEN='tgcloner_token';
 const LS_CREDS='tgcloner_creds';
+const LS_SESS='tgcloner_sess'; // persiste sessionDbId entre reloads
 
 // ═══════════════════════════════════════════
 // LOGIN
@@ -481,8 +482,14 @@ async function doLogin(){
   }catch(e){showA('login-alert','ae',e.message);}finally{setBL('login',false);}
 }
 function setBL(n,v){document.getElementById(`${n}-txt`).style.display=v?'none':'inline';document.getElementById(`${n}-spin`).style.display=v?'inline-block':'none';}
-function showApp(){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';loadSaved();fetchSavedSessions();startSchedulerTick();}
-function doLogout(){localStorage.removeItem(LS_TOKEN);location.reload();}
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadSaved();
+  fetchSavedSessions(); // busca sessões do MongoDB; auto-usa se houver apenas uma
+  startSchedulerTick();
+}
+function doLogout(){localStorage.removeItem(LS_TOKEN);localStorage.removeItem(LS_SESS);location.reload();}
 
 // ═══════════════════════════════════════════
 // NAV
@@ -512,8 +519,21 @@ function hideA(id){const el=document.getElementById(id);if(el){el.className='ale
 function sa(n,c,m){showA(`alert-${n}`,c,m);}
 function ha(n){hideA(`alert-${n}`);}
 function setLd(n,v){const t=document.getElementById(`btn${n}-txt`),s=document.getElementById(`btn${n}-spin`);if(t)t.style.display=v?'none':'inline';if(s)s.style.display=v?'inline-block':'none';const b=document.querySelector(`#panel-${n} .btn-primary`);if(b)b.disabled=v;}
-function loadSaved(){try{const c=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');if(c.apiId)document.getElementById('apiId').value=c.apiId;if(c.apiHash)document.getElementById('apiHash').value=c.apiHash;if(c.phone)document.getElementById('phone').value=c.phone;}catch{}}
+function loadSaved(){
+  try{
+    const c=JSON.parse(localStorage.getItem(LS_CREDS)||'{}');
+    if(c.apiId){document.getElementById('apiId').value=c.apiId; S.apiId=c.apiId;}
+    if(c.apiHash){document.getElementById('apiHash').value=c.apiHash; S.apiHash=c.apiHash;}
+    if(c.phone){document.getElementById('phone').value=c.phone; S.phone=c.phone;}
+  }catch{}
+  // Restaura sessionDbId salvo (será confirmado pelo MongoDB em fetchSavedSessions)
+  try{
+    const saved=JSON.parse(localStorage.getItem(LS_SESS)||'{}');
+    if(saved.sessionDbId) S.sessionDbId=saved.sessionDbId;
+  }catch{}
+}
 function saveCreds(){try{localStorage.setItem(LS_CREDS,JSON.stringify({apiId:S.apiId,apiHash:S.apiHash,phone:S.phone}));}catch{}}
+function saveSessRef(dbId){try{localStorage.setItem(LS_SESS,JSON.stringify({sessionDbId:dbId}));}catch{}}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 async function post(path,body){const r=await fetch(`/api${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erro');return d;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -527,18 +547,54 @@ async function fetchSavedSessions(){
   try{
     const d=await post('/auth',{action:'getSessions'});
     document.getElementById('saved-sess-loading').style.display='none';
-    if(d.sessions&&d.sessions.length){
-      document.getElementById('saved-sess-wrap').style.display='block';
-      document.getElementById('or-div').style.display='flex';
-      document.getElementById('saved-sess-list').innerHTML=d.sessions.map(s=>`
-        <div class="session-item" id="si-${s._id}" onclick="selectSess('${s._id}','${esc(s.phone)}','${s.apiId||''}','${esc(s.apiHash||'')}')">
-          <div style="font-size:20px">📱</div>
-          <div class="si-info">
-            <div class="si-phone">${esc(s.phone)}</div>
-            <div class="si-meta">Último uso: ${fmtDate(s.lastUsedAt)}</div>
-          </div>
-          <button class="si-del" onclick="event.stopPropagation();delSess('${s._id}')">✕</button>
-        </div>`).join('');
+    if(!d.sessions||!d.sessions.length) return;
+
+    document.getElementById('saved-sess-wrap').style.display='block';
+    document.getElementById('or-div').style.display='flex';
+    document.getElementById('saved-sess-list').innerHTML=d.sessions.map(s=>`
+      <div class="session-item" id="si-${s._id}" onclick="selectSess('${s._id}','${esc(s.phone)}','${s.apiId||''}','${esc(s.apiHash||'')}')">
+        <div style="font-size:20px">📱</div>
+        <div class="si-info">
+          <div class="si-phone">${esc(s.phone)}</div>
+          <div class="si-meta">Último uso: ${fmtDate(s.lastUsedAt)}</div>
+        </div>
+        <button class="si-del" onclick="event.stopPropagation();delSess('${s._id}')">✕</button>
+      </div>`).join('');
+
+    // AUTO-RESTAURAÇÃO: usa a sessão anterior (pelo ID salvo no localStorage)
+    // ou, se só há uma sessão, usa ela automaticamente sem intervenção do usuário
+    const prevId = S.sessionDbId; // restaurado por loadSaved() antes desta chamada
+    const autoTarget = prevId
+      ? d.sessions.find(s => s._id.toString() === prevId)
+      : d.sessions.length === 1 ? d.sessions[0] : null;
+
+    if(autoTarget){
+      // Seleciona visualmente
+      document.getElementById(`si-${autoTarget._id}`)?.classList.add('selected');
+      S.sessionDbId=autoTarget._id.toString();
+      S.apiId=autoTarget.apiId||S.apiId;
+      S.apiHash=autoTarget.apiHash||S.apiHash;
+      S.phone=autoTarget.phone||S.phone;
+      // Carrega a sessão do MongoDB e vai direto para grupos
+      try{
+        const sd=await post('/auth',{action:'loadSession',sessionDbId:S.sessionDbId});
+        S.session=sd.session;
+        S.apiId=sd.apiId||S.apiId;
+        S.apiHash=sd.apiHash||S.apiHash;
+        S.phone=sd.phone||S.phone;
+        saveSessRef(S.sessionDbId); // mantém referência para próximo reload
+        await loadGroups();
+        showPanel(3); // pula direto para seleção de grupos
+      }catch(e){
+        // Sessão inválida/expirada no Telegram — mostra aviso mas não quebra
+        sa(1,'aw',`Sessão de ${S.phone} expirou no Telegram. Autentique novamente.`);
+        // Limpa ref para não tentar de novo
+        localStorage.removeItem(LS_SESS);
+        S.sessionDbId='';
+      }
+    } else if(d.sessions.length>1){
+      // Múltiplas sessões, nenhuma anterior conhecida → mostra botão para o usuário escolher
+      document.getElementById('btn-use-sess').style.display='none';
     }
   }catch(e){document.getElementById('saved-sess-loading').style.display='none';}
 }
@@ -554,8 +610,13 @@ async function useSelectedSession(){
   if(!S.sessionDbId)return;
   try{
     const d=await post('/auth',{action:'loadSession',sessionDbId:S.sessionDbId});
-    S.session=d.session; S.apiId=d.apiId||S.apiId; S.apiHash=d.apiHash||S.apiHash; S.phone=d.phone||S.phone;
-    await loadGroups(); showPanel(3);
+    S.session=d.session;
+    S.apiId=d.apiId||S.apiId;
+    S.apiHash=d.apiHash||S.apiHash;
+    S.phone=d.phone||S.phone;
+    saveSessRef(S.sessionDbId); // persiste para próximo reload
+    await loadGroups();
+    showPanel(3);
   }catch(e){sa(1,'ae',e.message);}
 }
 
@@ -621,8 +682,15 @@ async function handleVerify(){
       if(d.requires2FA){S.requires2FA=true;document.getElementById('code-field').style.display='none';document.getElementById('pass-field').style.display='block';document.getElementById('p2desc').textContent='Sua conta tem 2FA. Digite sua senha:';sa(2,'aw','Senha 2FA necessária.');return;}
     }
     S.session=d.session;
-    await loadGroups();showPanel(3);
-    fetchSavedSessions();
+    // Após nova autenticação: busca o _id da sessão recém-salva para persistir ref
+    try{
+      const sd=await post('/auth',{action:'getSessions'});
+      const match=sd.sessions?.find(s=>s.phone===S.phone);
+      if(match){ S.sessionDbId=match._id.toString(); saveSessRef(S.sessionDbId); }
+    }catch{}
+    await loadGroups();
+    showPanel(3);
+    fetchSavedSessions(); // atualiza lista visual
   }catch(e){sa(2,'ae',e.message);}finally{setLd(2,false);}
 }
 
