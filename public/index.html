@@ -168,6 +168,9 @@
     .sched-card.paused{opacity:.6;}
     .sched-dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);margin-top:4px;flex-shrink:0;}
     .sched-card.paused .sched-dot{background:var(--muted);}
+    .day-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;user-select:none;}
+    .day-btn:has(input:checked){border-color:var(--accent2);background:rgba(123,97,255,.15);color:var(--accent2);}
+    .day-btn input{display:none;}
     .sched-info{flex:1;min-width:0;}
     .sched-title{font-size:13px;font-weight:700;}
     .sched-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;line-height:1.6;}
@@ -431,20 +434,49 @@
         <div id="modal-summary" class="alert ai2 show" style="margin-bottom:16px"></div>
         <div class="field">
           <label>Tipo de agendamento</label>
-          <div class="sched-tabs">
-            <button class="sched-tab active" id="stab-once" onclick="setSchedMode('once')">Uma vez</button>
-            <button class="sched-tab" id="stab-interval" onclick="setSchedMode('interval')">Intervalo</button>
-            <button class="sched-tab" id="stab-daily" onclick="setSchedMode('daily')">Diário</button>
+          <div class="sched-tabs" style="flex-wrap:wrap">
+            <button class="sched-tab active" id="stab-once" onclick="setSchedMode('once')">📅 Uma vez</button>
+            <button class="sched-tab" id="stab-interval" onclick="setSchedMode('interval')">🔁 Intervalo</button>
+            <button class="sched-tab" id="stab-daily" onclick="setSchedMode('daily')">🕐 Diário</button>
+            <button class="sched-tab" id="stab-business" onclick="setSchedMode('business')">🏢 Comercial</button>
           </div>
         </div>
+
+        <!-- Uma vez -->
         <div id="sched-once">
           <div class="field"><label>Data e hora</label><input type="datetime-local" id="sched-datetime"/></div>
         </div>
+
+        <!-- Intervalo -->
         <div id="sched-interval" style="display:none">
           <div class="field"><label>Repetir a cada (minutos)</label><input type="number" id="sched-interval-min" value="60" min="5" max="1440"/></div>
         </div>
+
+        <!-- Diário simples -->
         <div id="sched-daily" style="display:none">
           <div class="field"><label>Horário diário</label><input type="time" id="sched-daily-time" value="08:00"/></div>
+        </div>
+
+        <!-- Horário Comercial -->
+        <div id="sched-business" style="display:none">
+          <div class="field">
+            <label>Dias da semana</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              <label class="day-btn" id="day-btn-1"><input type="checkbox" value="1" class="day-chk" checked/><span>Seg</span></label>
+              <label class="day-btn" id="day-btn-2"><input type="checkbox" value="2" class="day-chk" checked/><span>Ter</span></label>
+              <label class="day-btn" id="day-btn-3"><input type="checkbox" value="3" class="day-chk" checked/><span>Qua</span></label>
+              <label class="day-btn" id="day-btn-4"><input type="checkbox" value="4" class="day-chk" checked/><span>Qui</span></label>
+              <label class="day-btn" id="day-btn-5"><input type="checkbox" value="5" class="day-chk" checked/><span>Sex</span></label>
+              <label class="day-btn" id="day-btn-6"><input type="checkbox" value="6" class="day-chk"/><span>Sáb</span></label>
+              <label class="day-btn" id="day-btn-0"><input type="checkbox" value="0" class="day-chk"/><span>Dom</span></label>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Horário início</label><input type="time" id="biz-start" value="09:00"/></div>
+            <div class="field"><label>Horário fim</label><input type="time" id="biz-end" value="18:00"/></div>
+          </div>
+          <div class="field"><label>Intervalo entre execuções (min)</label><input type="number" id="biz-interval" value="60" min="15" max="480"/></div>
+          <div class="alert ai2 show" style="font-size:12px;margin-bottom:0"><span class="ai">ℹ️</span><span>Executa a cada <strong id="biz-interval-lbl">60</strong> min, somente nos dias e horários selecionados.</span></div>
         </div>
         <div id="modal-alert" class="alert" style="margin-bottom:12px"></div>
         <div class="btn-row">
@@ -859,7 +891,15 @@ function updateOpCard(op){
 function pauseOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='running'){op.pauseFlag=true;op.status='paused';updateOpCard(op);updateDbOp(op);}}
 function resumeOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);}}
 function cancelOp(id){const op=ops.find(o=>o.id===id);if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);}}
-async function clearFinished(){ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));try{await post('/operations',{action:'clearFinished'});}catch{}renderAllOps();updateBadge();}
+async function clearFinished(){
+  // 1. Remove finalizadas do array em memória
+  ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));
+  // 2. Remove do MongoDB
+  try{await post('/operations',{action:'clearFinished'});}catch(e){console.warn('DB clear:',e.message);}
+  // 3. Re-renderiza: agora que o DB foi limpo, loadOpsFromDb mostrará só as ativas
+  await loadOpsFromDb();
+  updateBadge();
+}
 
 async function loadOpsFromDb(){
   const loading=document.getElementById('ops-loading');
@@ -981,11 +1021,17 @@ function openScheduler(){
 function closeModal(){document.getElementById('modal-overlay').style.display='none';}
 function setSchedMode(m){
   S.schedMode=m;
-  ['once','interval','daily'].forEach(k=>{
-    document.getElementById(`stab-${k}`).classList.toggle('active',k===m);
+  ['once','interval','daily','business'].forEach(k=>{
+    document.getElementById(`stab-${k}`)?.classList.toggle('active',k===m);
     document.getElementById(`sched-${k}`).style.display=k===m?'block':'none';
   });
 }
+// Update business hours label live
+document.addEventListener('input', e=>{
+  if(e.target.id==='biz-interval'){
+    document.getElementById('biz-interval-lbl').textContent=e.target.value||60;
+  }
+});
 
 async function saveSchedule(){
   if(!S.srcGroup||!S.tgtGroup)return;
@@ -999,8 +1045,18 @@ async function saveSchedule(){
     schedule.runAt=new Date(dt).toISOString();
   }else if(S.schedMode==='interval'){
     schedule.intervalMinutes=parseInt(document.getElementById('sched-interval-min').value)||60;
-  }else{
+  }else if(S.schedMode==='daily'){
     schedule.dailyTime=document.getElementById('sched-daily-time').value||'08:00';
+  }else if(S.schedMode==='business'){
+    const days=[...document.querySelectorAll('.day-chk:checked')].map(el=>parseInt(el.value));
+    if(!days.length)return showA('modal-alert','ae','Selecione ao menos um dia da semana.');
+    const start=document.getElementById('biz-start').value||'09:00';
+    const end=document.getElementById('biz-end').value||'18:00';
+    if(start>=end)return showA('modal-alert','ae','Horário de início deve ser antes do fim.');
+    schedule.days=days;
+    schedule.startTime=start;
+    schedule.endTime=end;
+    schedule.intervalMinutes=parseInt(document.getElementById('biz-interval').value)||60;
   }
   try{
     await post('/scheduler',{
@@ -1030,10 +1086,15 @@ async function loadSchedules(){
   }catch(e){loading.style.display='none';}
 }
 
+const DAY_NAMES=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 function schedModeLbl(s){
-  if(s.mode==='once')return`Uma vez em ${fmtDate(s.runAt)}`;
-  if(s.mode==='interval')return`A cada ${s.intervalMinutes} min`;
-  if(s.mode==='daily')return`Diariamente às ${s.dailyTime}`;
+  if(s.mode==='once')return`📅 Uma vez em ${fmtDate(s.runAt)}`;
+  if(s.mode==='interval')return`🔁 A cada ${s.intervalMinutes} min`;
+  if(s.mode==='daily')return`🕐 Diariamente às ${s.dailyTime}`;
+  if(s.mode==='business'){
+    const dias=(s.days||[]).map(d=>DAY_NAMES[d]).join(', ');
+    return`🏢 ${dias} · ${s.startTime}–${s.endTime} · a cada ${s.intervalMinutes}min`;
+  }
   return s.mode;
 }
 

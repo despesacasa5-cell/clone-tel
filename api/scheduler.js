@@ -82,10 +82,12 @@ module.exports = async (req, res) => {
     // ── Buscar agendamentos pendentes (para o ticker do frontend) ─────────
     if (action === "getDue") {
       const now = new Date();
-      const due = await col.find({
+      const candidates = await col.find({
         status: "active",
         nextRun: { $lte: now },
       }).toArray();
+      // Filtra business-hours: só executa se estiver dentro da janela ativa
+      const due = candidates.filter(s => isBusinessDue(s.schedule, now));
       return res.status(200).json({ success: true, schedules: due });
     }
 
@@ -100,16 +102,72 @@ module.exports = async (req, res) => {
 function computeNextRun(schedule, isDone = false) {
   if (isDone || schedule.mode === "once") return null;
   const now = new Date();
+
   if (schedule.mode === "interval") {
     return new Date(now.getTime() + (schedule.intervalMinutes || 60) * 60000);
   }
+
   if (schedule.mode === "daily") {
-    // dailyTime = "HH:MM"
     const [h, m] = (schedule.dailyTime || "08:00").split(":").map(Number);
     const next = new Date(now);
     next.setHours(h, m, 0, 0);
     if (next <= now) next.setDate(next.getDate() + 1);
     return next;
   }
+
+  if (schedule.mode === "business") {
+    // days: array of weekday numbers (0=Sun,1=Mon,...,6=Sat)
+    // startTime/endTime: "HH:MM"
+    // intervalMinutes: interval between runs
+    const days = schedule.days || [1,2,3,4,5];
+    const [sh, sm] = (schedule.startTime || "09:00").split(":").map(Number);
+    const [eh, em] = (schedule.endTime   || "18:00").split(":").map(Number);
+    const intervalMs = (schedule.intervalMinutes || 60) * 60000;
+
+    // Try from now + interval, look up to 8 days ahead
+    let candidate = new Date(now.getTime() + intervalMs);
+    for (let attempt = 0; attempt < 8 * 24 * 60; attempt++) {
+      const dow = candidate.getDay();
+      const h = candidate.getHours();
+      const m = candidate.getMinutes();
+      const afterStart = h > sh || (h === sh && m >= sm);
+      const beforeEnd  = h < eh || (h === eh && m <= em);
+      if (days.includes(dow) && afterStart && beforeEnd) return candidate;
+      // Snap to next valid slot
+      if (!days.includes(dow) || h > eh || (h === eh && m > em)) {
+        // Move to start of next valid day
+        candidate = new Date(candidate);
+        candidate.setHours(sh, sm, 0, 0);
+        candidate.setDate(candidate.getDate() + 1);
+        while (!days.includes(candidate.getDay())) {
+          candidate.setDate(candidate.getDate() + 1);
+        }
+        return candidate;
+      }
+      if (h < sh || (h === sh && m < sm)) {
+        // Move to start of today
+        candidate = new Date(candidate);
+        candidate.setHours(sh, sm, 0, 0);
+        return candidate;
+      }
+      candidate = new Date(candidate.getTime() + intervalMs);
+    }
+    return null;
+  }
+
   return null;
+}
+
+// Check if a business-hours schedule is currently "due" (within active window)
+function isBusinessDue(schedule, now = new Date()) {
+  if (schedule.mode !== "business") return true;
+  const days = schedule.days || [1,2,3,4,5];
+  const [sh, sm] = (schedule.startTime || "09:00").split(":").map(Number);
+  const [eh, em] = (schedule.endTime   || "18:00").split(":").map(Number);
+  const dow = now.getDay();
+  const h   = now.getHours();
+  const mn  = now.getMinutes();
+  const afterStart = h > sh || (h === sh && mn >= sm);
+  const beforeEnd  = h < eh || (h === eh && mn <= em);
+  return days.includes(dow) && afterStart && beforeEnd;
 }
