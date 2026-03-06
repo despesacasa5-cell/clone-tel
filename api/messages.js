@@ -36,8 +36,24 @@ module.exports = async (req, res) => {
 
     await client.connect();
 
-    const sourceEntity = await client.getEntity(sourceGroupId);
-    const targetEntity = await client.getEntity(targetGroupId);
+    // Resolve entities — normalise IDs (strip leading '-100' for channels/supergroups)
+    const resolveEntity = async (id) => {
+      const s = String(id);
+      // Try as-is first
+      try { return await client.getEntity(s); } catch (_) {}
+      // Try as integer
+      try { return await client.getEntity(parseInt(s)); } catch (_) {}
+      // Try stripping -100 prefix (supergroup/channel)
+      if (s.startsWith('-100')) {
+        try { return await client.getEntity(parseInt(s.slice(4))); } catch (_) {}
+      }
+      // Try as negative int
+      try { return await client.getEntity(-Math.abs(parseInt(s))); } catch (_) {}
+      throw new Error(`Não foi possível resolver o grupo: ${id}`);
+    };
+
+    const sourceEntity = await resolveEntity(sourceGroupId);
+    const targetEntity = await resolveEntity(targetGroupId);
 
     // ── Busca as mensagens ─────────────────────────────────────────────────
     // Para histórico completo: offsetId avança do mais antigo para o mais novo

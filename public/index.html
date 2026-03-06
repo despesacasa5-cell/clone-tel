@@ -796,7 +796,7 @@ function onMsgToggle(){
 // ═══════════════════════════════════════════
 function buildParams(){
   if(S.mode==='members'){
-    return{limit:parseInt(document.getElementById('cloneLimit').value)||50,delayMs:parseInt(document.getElementById('cloneDelay').value)||3000};
+    return{batchSize:parseInt(document.getElementById('cloneLimit').value)||50,delayMs:parseInt(document.getElementById('cloneDelay').value)||3000};
   }else{
     const onlyNew=document.getElementById('tgl-new').checked;
     return{batchSize:parseInt(document.getElementById('msgBatch').value)||20,delayMs:parseInt(document.getElementById('msgDelay').value)||1500,onlyNew,msgLimit:onlyNew?999999:(parseInt(document.getElementById('msgLimit').value)||100)};
@@ -903,9 +903,11 @@ async function clearFinished(){
   ops.splice(0,ops.length,...ops.filter(o=>active.includes(o.status)));
   // 2. Remove do MongoDB
   try{await post('/operations',{action:'clearFinished'});}catch(e){console.warn('DB clear:',e.message);}
-  // 3. Re-renderiza direto — array já está limpo, DB também
+  // 3. Mostra ops ativas da memória imediatamente
   renderAllOps();
   updateBadge();
+  // 4. Recarrega do DB para mostrar estado atual (ops ativas persistidas)
+  await loadOpsFromDb();
 }
 
 async function loadOpsFromDb(){
@@ -981,14 +983,51 @@ async function waitUnpause(op){while(op.pauseFlag&&!op.cancelFlag)await sleep(50
 // RUN MEMBERS
 // ═══════════════════════════════════════════
 async function runMembersOp(op){
+  const p=op.params;
+  let offset=0;
+  const maxTotal=p.batchSize||50; // batchSize aqui é o total máximo de membros
+
   try{
-    op.log='Enviando ao servidor...';updateOpCard(op);
-    const d=await post('/clone',op.params);
-    const r=d.results;
-    op.ok=r.added;op.skip=r.skipped;op.err=r.errors.length;
-    op.progress=100;op.total=r.added+r.skipped+r.errors.length;
-    op.status=op.cancelFlag?'cancelled':'done';op.log='';
+    while(true){
+      await waitUnpause(op);
+      if(op.cancelFlag){op.status='cancelled';break;}
+
+      op.log=`Buscando membros (offset: ${offset})...`;
+      updateOpCard(op);
+
+      // Pega até 50 por chamada, limitado ao máximo configurado
+      const remaining=maxTotal-op.total;
+      if(remaining<=0){op.status='done';break;}
+      const callBatch=Math.min(50, remaining);
+
+      const d=await post('/clone',{
+        apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
+        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        batchSize:callBatch,
+        delayMs:p.delayMs,
+        offset,
+      });
+
+      const r=d.results;
+      op.ok   +=r.added;
+      op.skip +=r.skipped;
+      op.err  +=r.errors.length;
+      op.total+=r.total;
+      op.progress=Math.min(100,Math.round(op.total/maxTotal*100));
+      op.log=`${op.ok} adicionados, ${op.skip} pulados, ${op.err} erros`;
+      updateOpCard(op);
+      await updateDbOp(op);
+
+      offset=d.nextOffset||offset+r.total;
+
+      if(!d.hasMore||r.total===0){op.status='done';break;}
+      await sleep(500);
+    }
   }catch(e){op.status='error';op.log=e.message;}
+
+  if(op.status!=='cancelled'&&op.status!=='error')op.status='done';
+  op.log='';
+  if(op.status==='done')op.progress=100;
   updateOpCard(op);await updateDbOp(op);updateBadge();
 }
 
