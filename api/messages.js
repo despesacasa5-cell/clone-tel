@@ -1,8 +1,18 @@
-// api/messages.js - Encaminha mensagens em batch (frontend controla o loop)
+// api/messages.js - Encaminha mensagens em batch
 const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
+const { Api } = require("telegram/tl");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function buildInputPeer(group) {
+  const id = parseInt(group.id);
+  const hash = BigInt(group.accessHash || "0");
+  if (group.isChannel || group.type === "channel") {
+    return new Api.InputPeerChannel({ channelId: id, accessHash: hash });
+  }
+  return new Api.InputPeerChat({ chatId: id });
+}
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -16,83 +26,53 @@ module.exports = async (req, res) => {
   try {
     const {
       apiId, apiHash, sessionString,
-      sourceGroupId, targetGroupId,
+      sourceGroup, targetGroup,   // objetos completos com id + accessHash
       batchSize = 20,
       delayMs = 1500,
-      offsetId = 0,      // para histórico: ID a partir do qual buscar (paginação)
-      onlyNew = false,   // true = busca apenas mensagens APÓS minId
-      minId = 0,         // para onlyNew: só mensagens com id > minId
-      dryRun = false,    // true = só lê mensagens, não encaminha (usado para baseline)
+      offsetId = 0,
+      onlyNew = false,
+      minId = 0,
+      dryRun = false,
     } = req.body || {};
 
-    if (!apiId || !apiHash || !sessionString || !sourceGroupId || !targetGroupId)
+    if (!apiId || !apiHash || !sessionString || !sourceGroup || !targetGroup)
       return res.status(400).json({ error: "Campos obrigatórios faltando." });
 
-    client = new TelegramClient(
-      new StringSession(sessionString),
-      parseInt(apiId), apiHash,
-      { connectionRetries: 3, retryDelay: 1000, autoReconnect: false }
-    );
-
+    client = new TelegramClient(new StringSession(sessionString), parseInt(apiId), apiHash,
+      { connectionRetries: 3, retryDelay: 1000, autoReconnect: false });
     await client.connect();
 
-    // Resolve entities — normalise IDs (strip leading '-100' for channels/supergroups)
-    const resolveEntity = async (id) => {
-      const s = String(id);
-      // Try as-is first
-      try { return await client.getEntity(s); } catch (_) {}
-      // Try as integer
-      try { return await client.getEntity(parseInt(s)); } catch (_) {}
-      // Try stripping -100 prefix (supergroup/channel)
-      if (s.startsWith('-100')) {
-        try { return await client.getEntity(parseInt(s.slice(4))); } catch (_) {}
-      }
-      // Try as negative int
-      try { return await client.getEntity(-Math.abs(parseInt(s))); } catch (_) {}
-      throw new Error(`Não foi possível resolver o grupo: ${id}`);
-    };
+    const sourcePeer = buildInputPeer(sourceGroup);
+    const targetPeer = buildInputPeer(targetGroup);
 
-    const sourceEntity = await resolveEntity(sourceGroupId);
-    const targetEntity = await resolveEntity(targetGroupId);
-
-    // ── Busca as mensagens ─────────────────────────────────────────────────
-    // Para histórico completo: offsetId avança do mais antigo para o mais novo
-    // Para apenas novas:       minId filtra só as mais recentes que o último ID visto
     const fetchOptions = {
       limit: Math.min(parseInt(batchSize), 50),
-      reverse: true, // do mais antigo para o mais novo
+      reverse: true,
     };
 
     if (onlyNew) {
-      // minId faz o Telegram retornar só mensagens com id MAIOR que minId
       fetchOptions.minId = parseInt(minId) || 0;
-    } else {
-      // offsetId faz o Telegram pular as mensagens já processadas
-      if (parseInt(offsetId) > 0) {
-        fetchOptions.minId = parseInt(offsetId); // usar minId aqui também para paginação crescente
-      }
+    } else if (parseInt(offsetId) > 0) {
+      fetchOptions.minId = parseInt(offsetId);
     }
 
-    const messages = await client.getMessages(sourceEntity, fetchOptions);
+    const messages = await client.getMessages(sourcePeer, fetchOptions);
 
     const results = { total: messages.length, forwarded: 0, skipped: 0, errors: [] };
     let lastProcessedId = parseInt(offsetId) || parseInt(minId) || 0;
 
     for (const msg of messages) {
-      if (!msg.id || !msg.message && !msg.media) {
-        // Pula mensagens de serviço (entrou no grupo, saiu, etc.)
-        results.skipped++;
-        continue;
-      }
-      lastProcessedId = msg.id;
+      if (!msg.id) { results.skipped++; continue; }
+      // Pula mensagens de serviço (sem texto e sem mídia)
+      if (!msg.message && !msg.media) { results.skipped++; continue; }
 
-      // dryRun: apenas registra o ID, não encaminha
-      if (dryRun) { lastProcessedId = msg.id; continue; }
+      lastProcessedId = msg.id;
+      if (dryRun) continue; // só registra o ID, não encaminha
 
       try {
-        await client.forwardMessages(targetEntity, {
+        await client.forwardMessages(targetPeer, {
           messages: [msg.id],
-          fromPeer: sourceEntity,
+          fromPeer: sourcePeer,
           dropAuthor: false,
         });
         results.forwarded++;
@@ -108,20 +88,13 @@ module.exports = async (req, res) => {
           results.errors.push({ msgId: msg.id, error: m });
         }
       }
-
       await sleep(parseInt(delayMs));
     }
 
-    // hasMore: true se provavelmente há mais mensagens antigas para buscar
-    const hasMore = !onlyNew && messages.length === parseInt(batchSize);
+    const hasMore = !onlyNew && messages.length === Math.min(parseInt(batchSize), 50);
 
     await client.disconnect().catch(() => {});
-    return res.status(200).json({
-      success: true,
-      results,
-      lastProcessedId, // frontend usa para próximo offsetId / novo minId
-      hasMore,
-    });
+    return res.status(200).json({ success: true, results, lastProcessedId, hasMore });
 
   } catch (err) {
     console.error("[messages] Erro:", err);

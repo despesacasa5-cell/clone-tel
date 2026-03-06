@@ -820,7 +820,7 @@ async function startOp(){
     dbId=r.opId;
   }catch(e){console.warn('DB:',e.message);}
 
-  const fullParams={...params,apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id};
+  const fullParams={...params,apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,sourceGroup:S.srcGroup,targetGroup:S.tgtGroup};
   const op=createOp(id,type,label,dbId,fullParams);
 
   // ← FIXED: navigate THEN run
@@ -1002,7 +1002,7 @@ async function runMembersOp(op){
 
       const d=await post('/clone',{
         apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        sourceGroup:p.sourceGroup, targetGroup:p.targetGroup,
         batchSize:callBatch,
         delayMs:p.delayMs,
         offset,
@@ -1048,9 +1048,9 @@ async function runMsgsOp(op){
       // Na prática: busca 1 msg sem delay e sem encaminhar, só para saber o lastId
       const snap = await post('/messages',{
         apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        sourceGroup:p.sourceGroup, targetGroup:p.targetGroup,
         batchSize:1, delayMs:0, onlyNew:false, offsetId:0, minId:0,
-        dryRun:true, // flag para o backend não encaminhar
+        dryRun:true,
       });
       minId = snap.lastProcessedId || 0;
       op.log=`Monitorando novas mensagens após ID ${minId}...`;
@@ -1075,7 +1075,7 @@ async function runMsgsOp(op){
 
       const payload = {
         apiId:p.apiId, apiHash:p.apiHash, sessionString:p.sessionString,
-        sourceGroupId:p.sourceGroupId, targetGroupId:p.targetGroupId,
+        sourceGroup:p.sourceGroup, targetGroup:p.targetGroup,
         batchSize, delayMs:p.delayMs,
         onlyNew: p.onlyNew,
         minId:  p.onlyNew ? minId    : 0,
@@ -1302,7 +1302,7 @@ async function checkDueSchedules(){
       // Cria e executa a operação
       const id=++opSeq;
       const p=sched.params||{};
-      const fullParams={...p,apiId,apiHash,sessionString:session,sourceGroupId:sched.sourceGroup?.id,targetGroupId:sched.targetGroup?.id};
+      const fullParams={...p,apiId,apiHash,sessionString:session,sourceGroup:sched.sourceGroup,targetGroup:sched.targetGroup};
       const label=`🕐 ${sched.label}`;
       let dbId=null;
       try{const r=await post('/operations',{action:'create',type:sched.type,label,sourceGroup:sched.sourceGroup,targetGroup:sched.targetGroup,params:{}});dbId=r.opId;}catch{}
