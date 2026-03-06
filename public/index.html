@@ -876,7 +876,9 @@ function opCardHTML(op){
 function renderAllOps(){
   const list=document.getElementById('ops-list');
   const empty=document.getElementById('ops-empty');
-  if(!ops.length){empty.style.display='block';list.innerHTML='';return;}
+  // Limpa TODO o DOM da lista (inclusive cards vindos do DB)
+  list.innerHTML='';
+  if(!ops.length){empty.style.display='block';return;}
   empty.style.display='none';
   list.innerHTML=ops.map(o=>opCardHTML(o)).join('');
 }
@@ -892,12 +894,13 @@ function pauseOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='running
 function resumeOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);}}
 function cancelOp(id){const op=ops.find(o=>o.id===id);if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);}}
 async function clearFinished(){
-  // 1. Remove finalizadas do array em memória
-  ops.splice(0,ops.length,...ops.filter(o=>o.status==='running'||o.status==='paused'));
+  // 1. Remove finalizadas do array em memória (done, cancelled, error)
+  const active=['running','paused'];
+  ops.splice(0,ops.length,...ops.filter(o=>active.includes(o.status)));
   // 2. Remove do MongoDB
   try{await post('/operations',{action:'clearFinished'});}catch(e){console.warn('DB clear:',e.message);}
-  // 3. Re-renderiza: agora que o DB foi limpo, loadOpsFromDb mostrará só as ativas
-  await loadOpsFromDb();
+  // 3. Re-renderiza direto — array já está limpo, DB também
+  renderAllOps();
   updateBadge();
 }
 
