@@ -916,14 +916,21 @@ async function loadOpsFromDb(){
 }
 
 function dbOpCardHTML(op){
-  const st=op.status;const s=op.stats||{};
-  return `<div class="op-card ${st}">
+  const st=op.status;
+  const s=op.stats||{};
+  const id=op._id.toString();
+  const canCancel=st==='running'||st==='paused';
+  const acts=canCancel
+    ?`<button class="btn btn-danger btn-sm" onclick="cancelDbOp('${id}',this)">✕ Cancelar</button>`
+    :'';
+  return `<div class="op-card ${st}" id="dbopc-${id}">
     <div class="op-head">
       <div class="op-dot ${st}"></div>
       <div class="op-info">
         <div class="op-title">${esc(op.label||'Operação')}</div>
         <div class="op-sub">${statusLbl(st)} · ${s.ok||0} ok · ${s.skip||0} pulados · ${s.err||0} erros · ${fmtDate(op.createdAt)}</div>
       </div>
+      <div class="op-acts">${acts}</div>
     </div>
     <div class="op-body">
       <div class="op-pb"><div class="op-pf" style="width:${s.progress||0}%"></div></div>
@@ -934,6 +941,27 @@ function dbOpCardHTML(op){
       </div>
     </div>
   </div>`;
+}
+
+async function cancelDbOp(dbId, btn){
+  if(!confirm('Cancelar esta operação? Ela será marcada como cancelada no banco.')) return;
+  btn.disabled=true;
+  btn.textContent='Cancelando...';
+  try{
+    await post('/operations',{action:'update', opId:dbId, status:'cancelled', stats:{}, log:'Cancelado manualmente'});
+    // Atualiza o card visualmente sem recarregar tudo
+    const card=document.getElementById(`dbopc-${dbId}`);
+    if(card){
+      card.className='op-card cancelled';
+      card.querySelector('.op-dot').className='op-dot cancelled';
+      card.querySelector('.op-sub').textContent=statusLbl('cancelled')+' · Cancelado manualmente';
+      card.querySelector('.op-acts').innerHTML='';
+    }
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='✕ Cancelar';
+    alert('Erro: '+e.message);
+  }
 }
 
 async function updateDbOp(op){
