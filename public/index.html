@@ -526,16 +526,18 @@ function doLogout(){localStorage.removeItem(LS_TOKEN);localStorage.removeItem(LS
 // ═══════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════
-function showPage(id){
+function showPage(id, skipLoad){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   ['nav-config','nav-ops','nav-sched','nav-sessions'].forEach(n=>document.getElementById(n)?.classList.remove('active'));
   const navMap={'page-config':'nav-config','page-ops':'nav-ops','page-sched':'nav-sched','page-sessions':'nav-sessions'};
   if(navMap[id]) document.getElementById(navMap[id]).classList.add('active');
-  // Auto-load data when switching to data pages
-  if(id==='page-ops')      loadOpsFromDb();
-  if(id==='page-sched')    loadSchedules();
-  if(id==='page-sessions') loadSessionsPage();
+  // Auto-load data — skip when called from startOp to avoid wiping active ops
+  if(!skipLoad){
+    if(id==='page-ops')      loadOpsFromDb();
+    if(id==='page-sched')    loadSchedules();
+    if(id==='page-sessions') loadSessionsPage();
+  }
 }
 function showPanel(n){
   [1,2,3,4].forEach(i=>{
@@ -820,11 +822,11 @@ async function startOp(){
     dbId=r.opId;
   }catch(e){console.warn('DB:',e.message);}
 
+  // Navega PRIMEIRO — garante que ops-list/ops-empty existem no DOM
+  showPage('page-ops', true); // skipLoad=true: não apaga lista durante startOp
+
   const fullParams={...params,apiId:S.apiId,apiHash:S.apiHash,sessionString:S.session,sourceGroupId:S.srcGroup.id,targetGroupId:S.tgtGroup.id};
   const op=createOp(id,type,label,dbId,fullParams);
-
-  // ← FIXED: navigate THEN run
-  showPage('page-ops');
 
   if(type==='members') runMembersOp(op);
   else runMsgsOp(op);
@@ -845,7 +847,7 @@ function createOp(id,type,label,dbId,params){
 function updateBadge(){
   const n=ops.filter(o=>o.status==='running'||o.status==='paused').length;
   const b=document.getElementById('ops-badge');
-  b.style.display=n>0?'inline':'none';b.textContent=n;
+  if(b){b.style.display=n>0?'inline':'none';b.textContent=n;}
 }
 
 function statusLbl(s){return{running:'🔄 Rodando',paused:'⏸ Pausado',done:'✅ Concluído',cancelled:'⛔ Cancelado',error:'❌ Erro'}[s]||s;}
@@ -880,7 +882,7 @@ function opCardHTML(op){
 function renderAllOps(){
   const list=document.getElementById('ops-list');
   const empty=document.getElementById('ops-empty');
-  // Limpa TODO o DOM da lista (inclusive cards vindos do DB)
+  if(!list||!empty) return; // page-ops ainda não está no DOM
   list.innerHTML='';
   if(!ops.length){empty.style.display='block';return;}
   empty.style.display='none';
@@ -898,30 +900,29 @@ function pauseOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='running
 function resumeOp(id){const op=ops.find(o=>o.id===id);if(op&&op.status==='paused'){op.pauseFlag=false;op.status='running';updateOpCard(op);}}
 function cancelOp(id){const op=ops.find(o=>o.id===id);if(op){op.cancelFlag=true;op.pauseFlag=false;op.log='Cancelando...';updateOpCard(op);}}
 async function clearFinished(){
-  // 1. Remove finalizadas do array em memória (done, cancelled, error)
   const active=['running','paused'];
   ops.splice(0,ops.length,...ops.filter(o=>active.includes(o.status)));
-  // 2. Remove do MongoDB
   try{await post('/operations',{action:'clearFinished'});}catch(e){console.warn('DB clear:',e.message);}
-  // 3. Mostra ops ativas da memória imediatamente
   renderAllOps();
   updateBadge();
-  // 4. Recarrega do DB para mostrar estado atual (ops ativas persistidas)
   await loadOpsFromDb();
 }
 
 async function loadOpsFromDb(){
   const loading=document.getElementById('ops-loading');
-  loading.style.display='flex';
+  const listEl=document.getElementById('ops-list');
+  const emptyEl=document.getElementById('ops-empty');
+  if(!listEl||!emptyEl) return; // page not mounted yet
+  if(loading) loading.style.display='flex';
   try{
     const d=await post('/operations',{action:'list'});
-    loading.style.display='none';
+    if(loading) loading.style.display='none';
     const memIds=new Set(ops.map(o=>o.dbId).filter(Boolean));
-    const dbOps=d.operations.filter(o=>!memIds.has(o._id.toString()));
+    const dbOps=(d.operations||[]).filter(o=>!memIds.has(o._id.toString()));
     const html=[...ops.map(o=>opCardHTML(o)),...dbOps.map(o=>dbOpCardHTML(o))].join('');
-    document.getElementById('ops-empty').style.display=html?'none':'block';
-    document.getElementById('ops-list').innerHTML=html||'';
-  }catch(e){loading.style.display='none';}
+    emptyEl.style.display=html?'none':'block';
+    listEl.innerHTML=html||'';
+  }catch(e){if(loading) loading.style.display='none';}
 }
 
 function dbOpCardHTML(op){
