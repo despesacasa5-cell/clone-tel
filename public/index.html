@@ -1024,11 +1024,14 @@ async function runMembersOp(op){
       if(!d.hasMore||r.total===0){op.status='done';break;}
       await sleep(500);
     }
-  }catch(e){op.status='error';op.log=e.message;}
+  }catch(e){
+    op.status='error';
+    op.log=e.message||'Erro desconhecido';
+    console.error('[members]',e.message);
+  }
 
   if(op.status!=='cancelled'&&op.status!=='error')op.status='done';
-  op.log='';
-  if(op.status==='done')op.progress=100;
+  if(op.status==='done'){op.log='';op.progress=100;}
   updateOpCard(op);await updateDbOp(op);updateBadge();
 }
 
@@ -1126,7 +1129,7 @@ async function runMsgsOp(op){
         await sleep(1500);
       }
     }
-  }catch(e){ op.status='error'; op.log=e.message; }
+  }catch(e){ op.status='error'; op.log=e.message||'Erro desconhecido'; console.error('[msgs]',e.message); }
 
   if(op.status !== 'cancelled' && op.status !== 'error') op.status = 'done';
   op.log = '';

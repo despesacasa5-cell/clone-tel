@@ -26,14 +26,31 @@ module.exports = async (req, res) => {
 
     const groups = dialogs
       .filter(d => d.isGroup || d.isChannel)
-      .map(d => ({
-        id: d.id?.toString(),           // ID simples, positivo — getEntity() aceita direto
-        title: d.title || "(sem nome)",
-        type: d.isChannel ? "channel" : "group",
-        membersCount: d.entity?.participantsCount || 0,
-        username: d.entity?.username || null,
-        accessHash: d.entity?.accessHash?.toString() || null,
-      }));
+      .map(d => {
+        const e = d.entity;
+        const rawId = e.id?.toString() || d.id?.toString();
+
+        // Para canais e supergrupos, o GramJS usa IDs positivos internamente
+        // mas getEntity() precisa do formato -100XXXXXXXXXX (peer completo)
+        // Para grupos normais (chat), o ID já é negativo: -XXXXXXXXXX
+        let peerId;
+        if (d.isChannel) {
+          // Canal ou supergrupo: prefixo -100
+          peerId = `-100${rawId}`;
+        } else {
+          // Grupo normal: ID negativo
+          peerId = rawId.startsWith('-') ? rawId : `-${rawId}`;
+        }
+
+        return {
+          id: peerId,             // ID no formato correto para getEntity()
+          rawId: rawId,           // ID original sem prefixo (para referência)
+          title: d.title || "(sem nome)",
+          type: d.isChannel ? "channel" : "group",
+          membersCount: e?.participantsCount || 0,
+          username: e?.username || null,
+        };
+      });
 
     await client.disconnect().catch(() => {});
     return res.status(200).json({ success: true, groups });

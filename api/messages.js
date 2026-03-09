@@ -35,8 +35,17 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
-    const sourceEntity = await client.getEntity(sourceGroupId);
-    const targetEntity = await client.getEntity(targetGroupId);
+    let sourceEntity, targetEntity;
+    try {
+      sourceEntity = await client.getEntity(sourceGroupId);
+    } catch(e) {
+      return res.status(500).json({ error: `Grupo de origem não encontrado (${sourceGroupId}): ${e.message}` });
+    }
+    try {
+      targetEntity = await client.getEntity(targetGroupId);
+    } catch(e) {
+      return res.status(500).json({ error: `Grupo de destino não encontrado (${targetGroupId}): ${e.message}` });
+    }
 
     const fetchOptions = {
       limit: Math.min(parseInt(batchSize), 50),
@@ -89,7 +98,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, results, lastProcessedId, hasMore });
 
   } catch (err) {
-    console.error("[messages] Erro:", err);
+    console.error("[messages] Erro:", err.message);
     if (client) await client.disconnect().catch(() => {});
     return res.status(500).json({ error: err.message || "Erro interno" });
   }

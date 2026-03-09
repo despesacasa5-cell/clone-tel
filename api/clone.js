@@ -34,8 +34,19 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
-    const sourceEntity = await client.getEntity(sourceGroupId);
-    const targetEntity = await client.getEntity(targetGroupId);
+    // getEntity aceita string "-100XXXXXXXXXX" para canais/supergrupos
+    // e string "-XXXXXXXXXX" para grupos normais
+    let sourceEntity, targetEntity;
+    try {
+      sourceEntity = await client.getEntity(sourceGroupId);
+    } catch(e) {
+      return res.status(500).json({ error: `Não foi possível encontrar grupo de origem (${sourceGroupId}): ${e.message}` });
+    }
+    try {
+      targetEntity = await client.getEntity(targetGroupId);
+    } catch(e) {
+      return res.status(500).json({ error: `Não foi possível encontrar grupo de destino (${targetGroupId}): ${e.message}` });
+    }
 
     const participants = await client.getParticipants(sourceEntity, {
       limit: Math.min(parseInt(limit), 200),
@@ -58,7 +69,8 @@ module.exports = async (req, res) => {
           msg.includes("USER_ALREADY_PARTICIPANT") ||
           msg.includes("USER_NOT_MUTUAL_CONTACT") ||
           msg.includes("INPUT_USER_DEACTIVATED") ||
-          msg.includes("USER_PRIVACY_RESTRICTED")
+          msg.includes("USER_PRIVACY_RESTRICTED") ||
+          msg.includes("PEER_FLOOD")
         ) {
           results.skipped++;
         } else if (msg.includes("FLOOD_WAIT")) {
@@ -79,7 +91,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, results, nextOffset, hasMore });
 
   } catch (err) {
-    console.error("[clone] Erro:", err);
+    console.error("[clone] Erro:", err.message);
     if (client) await client.disconnect().catch(() => {});
     return res.status(500).json({ error: err.message || "Erro interno" });
   }
